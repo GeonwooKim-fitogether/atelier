@@ -207,6 +207,38 @@ atelier/                          ← 별도 GitHub repo (private)
 - 가설 산출물: agent용 PRD + working MVP code prototype.
 - 첫 실작업 = 부트스트래핑 종료 후 첫 사업 프로젝트.
 
+### 9.3 시드 시스템 — 두 시스템의 *복제 모델 비대칭* *(확정)*
+
+새 프로젝트가 시작될 때 두 시스템은 *근본적으로 다르게* 사용된다:
+
+| | Atelier | Foundry |
+|---|---|---|
+| 복제 | **0** (영구 단일 repo) | **매번** (프로젝트마다 1개) |
+| 누적 | *모든 프로젝트의 상품기획 산출물 통합* (idea-funnel / briefs / lessons) | 프로젝트별 *자기 코드 + 자기 메타* |
+| GitHub | `Atelier` (영구) | `foundry` Template repo → "Use this template" 1클릭 |
+| 진화 | charter v0.x.y 점진 진화 | seed v0.x.y, 새 프로젝트는 *복제 시점 freeze* |
+
+이유 — *Atelier는 공방장 1명의 경험 축적*이라 복제 = 매 프로젝트 새 머리 시작 = 어색. *Foundry는 방법론 + 도구*라 복제 = 자연스러움.
+
+### 9.4 Sync 모델 *(확정)*
+
+**Model A — Freeze at Clone**. 새 프로젝트는 복제 시점의 Foundry seed로 freeze. 진행 중 seed 변경 자동 반영 0. 프로젝트 종료 후 *Flywheel로 seed에 역반영* (§11).
+
+Live Sync 모델은 *Flywheel 원칙 위반* + *진행 중 프로젝트 흔들림 위험*으로 **금지**.
+
+### 9.5 새 프로젝트 시작 워크플로우 *(부트스트래핑 종료 + Foundry v1 freeze + Template 표시 후)*
+
+```
+1. GitHub.com → foundry repo → "Use this template" 1클릭
+2. 새 repo 생성 (예: GeonwooKim-fitogether/13.next-project)
+3. Local: cd C:\Users\rlaaj\Dev\ && git clone <new-repo>
+4. Atelier (Dev/atelier/) 에서 Stage 1+2 진행 → brief 생성
+5. brief를 새 프로젝트로 인계 (구체 인계 형식 = handshake §9.2, 발견 예정)
+6. 새 프로젝트 안에서 개발 시작
+```
+
+상세는 *Foundry charter*에서 박을 사항. 본 charter는 *Atelier 측 관계*만 명시.
+
 ---
 
 ## 10. 런타임 환경 *(확정)*
@@ -357,6 +389,8 @@ GPT 답 → 24h 묵힘 → 사용자 판단 → 채택할 lesson만 `meta/lesson
 - Foundry handshake 산출물의 구체 형식
 - Flywheel 1회전 후 변경 크기 측정 방식
 - claude.ai/code (Claude Code web 버전) capability 검증 (필요해질 때만)
+- **Foundry charter v0.1 작성** — Atelier charter와 동일 패턴. §9 시드 시스템 결정의 Foundry 측 박제 포함.
+- **Foundry rename + relocation + Template 표시** — 12 cycle 종료 후. 상세는 `~/.claude/plans/future-foundry-relocation.md` 참조.
 
 ---
 
