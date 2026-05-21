@@ -215,23 +215,23 @@ stage-2/<idea>/
 
 ```
 atelier/                          ← 별도 GitHub repo (private)
-├── charter.md                    ← 이 문서
-├── README.md                     ← 사용법 한 화면
-├── idea-inbox.md                 ← 떠오를 때 1줄 메모 (수동)
-├── idea-funnel.md                ← 누적 history (Kill/Hold/Pass + freeze 기록)
-├── decisions.md                  ← Atelier 운영 결정 박제 (charter 변경 외)
-├── lessons-learned.md            ← cycle 종료 후 정제된 교훈
-├── stage-1/                      ← Stage 1 산출물 (per idea, Skill이 자동 생성)
-├── stage-2/                      ← Stage 2 PRD 패키지 (per passed idea, Skill이 자동 생성)
-├── workflows/                    ← workflow 시각화 산출물 (type1·type2 등 HTML)
-├── Reference/                    ← 책 PDF 등 외부 자료 (agent 자율 참고)
+├── charter.md                    ← 이 문서 (CEO 검토 + Agent 정정 — 헌법 변경)
+├── README.md                     ← 사용법 한 화면 (Agent 작성)
+├── idea-inbox.md                 ← 떠오른 idea 한 줄 누적 (Agent가 CEO 발화에서 박음)
+├── idea-funnel.md                ← Stage 1/2 history + Phase 2 대기 상태 (Agent 자동 갱신)
+├── decisions.md                  ← Atelier 운영 결정 박제 (Agent가 대화 발견에서 박음)
+├── lessons-learned.md            ← cycle 종료 후 정제 교훈 (Agent가 정제, CEO 확인)
+├── stage-1/                      ← Stage 1 산출물 (Skill이 자동 생성)
+├── stage-2/                      ← Stage 2 PRD 패키지 (Skill이 자동 생성)
+├── workflows/                    ← workflow 시각화 산출물 (Agent 작성 HTML)
+├── Reference/                    ← 책 PDF 등 외부 자료 (Agent 자율 참고)
 └── .claude/
     └── skills/
         └── atelier-npi/
             └── SKILL.md          ← Stage 1/2 자동 진행 Skill
 ```
 
-폴더 평면화 — *애매한 meta/ 카테고리 없음*. 모든 파일이 루트에서 즉시 보임. 일원화 원칙.
+**작성 주체 원칙** — *모든 md/HTML 파일은 세션 안에서 Agent가 작성*. CEO는 말·답변·판정·확인만. 출퇴근길 등 세션 밖 메모는 *Atelier에 직접 박지 않고* 핸드폰 메모 등에 두었다가, 다음 세션에서 *말로 전달* → Agent가 idea-inbox.md 등에 박음. 일원화 원칙 + §2 "User=판단 / AI=조작" 정합.
 
 추정으로 폴더 미리 만들지 않음. 운영하면서 *필요한 게 발견되면 추가*.
 
@@ -359,7 +359,7 @@ HCP 진짜 정의: *"CEO 도메인 vs CTO 도메인"*.
 2. **추정으로 agent fleet 만들기.** 7-agent 사례 재발 금지. *replacement only*.
 3. **Over-engineering.** 도구 list를 charter에 박지 않음. Skill 안 agent가 동적 선택.
 4. **자기참조 self-test에 매몰.** 외부 가치 (실 프로젝트 도움) 가 진짜 검증.
-5. **Director를 operator로 만드는 모든 요청.** 파일 확인 / 로그 검증 / 테스트 수동 확인 = 금지.
+5. **Director를 operator로 만드는 모든 요청.** 파일 확인 / 로그 검증 / 테스트 수동 확인 / **md 파일 직접 작성 요청** = 금지. 모든 md/HTML 산출물은 *세션 안 Agent가 작성*. CEO는 말·답변·판정·확인만 (§7 작성 주체 원칙).
 6. **Premature optimization.** 측정 layer / 지표를 *큰 그림 확정 전에* 깎지 않음.
 7. **Frame 표준화로 사고 깊이 회피.** 옵션 A/B/C 메뉴 패턴 반복 = frame이 답 대신함. 깊이 토론으로 전환.
 8. **시간 강제 묵힘**. 정성을 정량 시간으로 막지 않음 (§3.3).
