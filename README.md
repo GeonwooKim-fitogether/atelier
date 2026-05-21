@@ -10,9 +10,11 @@
 
 - `idea-inbox.md` 떠오를 때 1줄 메모
 - `idea-funnel.md` Stage 1/2 진행 history
+- `decisions.md` Atelier 운영 결정 박제
+- `lessons-learned.md` Flywheel 종료 후 정제된 교훈
 - `stage-1/<idea>/` Stage 1 산출물 (Skill이 자동 생성)
 - `stage-2/<idea>/` Stage 2 PRD 패키지 (PRD.md + mockups/ + prototype/)
-- `meta/` Atelier 운영 결정 + Flywheel 종료 후 교훈
+- `workflows/` workflow 시각화 산출물 (HTML)
 - `Reference/` 외부 자료 (Skill 내부 agent가 자율 참고)
 - `.claude/skills/atelier-npi/SKILL.md` Skill 본체
 

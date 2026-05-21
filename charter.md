@@ -219,17 +219,19 @@ atelier/                          ← 별도 GitHub repo (private)
 ├── README.md                     ← 사용법 한 화면
 ├── idea-inbox.md                 ← 떠오를 때 1줄 메모 (수동)
 ├── idea-funnel.md                ← 누적 history (Kill/Hold/Pass + freeze 기록)
+├── decisions.md                  ← Atelier 운영 결정 박제 (charter 변경 외)
+├── lessons-learned.md            ← cycle 종료 후 정제된 교훈
 ├── stage-1/                      ← Stage 1 산출물 (per idea, Skill이 자동 생성)
 ├── stage-2/                      ← Stage 2 PRD 패키지 (per passed idea, Skill이 자동 생성)
-├── meta/
-│   ├── decisions.md              ← Atelier 내부 결정 박제
-│   └── lessons-learned.md        ← cycle 종료 후 정제된 교훈
+├── workflows/                    ← workflow 시각화 산출물 (type1·type2 등 HTML)
 ├── Reference/                    ← 책 PDF 등 외부 자료 (agent 자율 참고)
 └── .claude/
     └── skills/
         └── atelier-npi/
             └── SKILL.md          ← Stage 1/2 자동 진행 Skill
 ```
+
+폴더 평면화 — *애매한 meta/ 카테고리 없음*. 모든 파일이 루트에서 즉시 보임. 일원화 원칙.
 
 추정으로 폴더 미리 만들지 않음. 운영하면서 *필요한 게 발견되면 추가*.
 

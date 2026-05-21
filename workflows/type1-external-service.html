@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Atelier NPI Workflow — 유형 1 외부 시장 서비스</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; height: 100vh; overflow: hidden; }
+    body {
+      background: #0d0d0d;
+      color: #e5e5e5;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .top-header {
+      padding: 18px 40px 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      text-align: center;
+      flex-shrink: 0;
+    }
+    .top-header h1 {
+      font-size: 20px;
+      color: #fafafa;
+      margin: 0 0 6px 0;
+      font-weight: 600;
+    }
+    .top-header .meta {
+      font-size: 11.5px;
+      color: #888;
+    }
+
+    .container {
+      display: flex;
+      gap: 0;
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+    }
+    .left-pane {
+      flex: 1 1 50%;
+      padding: 24px 14px 40px 18px;
+      border-right: 1px solid rgba(255,255,255,0.06);
+      overflow-y: auto;
+      height: 100%;
+    }
+    .right-pane {
+      flex: 1 1 50%;
+      padding: 24px 18px 40px 14px;
+      overflow-y: auto;
+      height: 100%;
+    }
+
+    /* thin scrollbar */
+    .left-pane::-webkit-scrollbar,
+    .right-pane::-webkit-scrollbar { width: 6px; height: 6px; }
+    .left-pane::-webkit-scrollbar-track,
+    .right-pane::-webkit-scrollbar-track { background: transparent; }
+    .left-pane::-webkit-scrollbar-thumb,
+    .right-pane::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,0.10);
+      border-radius: 3px;
+    }
+    .left-pane::-webkit-scrollbar-thumb:hover,
+    .right-pane::-webkit-scrollbar-thumb:hover {
+      background: rgba(255,255,255,0.22);
+    }
+    .left-pane, .right-pane {
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255,255,255,0.12) transparent;
+    }
+
+    @media (max-width: 1100px) {
+      html, body { height: auto; overflow: auto; }
+      .container { flex-direction: column; overflow: visible; }
+      .left-pane, .right-pane { height: auto; overflow-y: visible; }
+      .right-pane { border-top: 1px solid rgba(255,255,255,0.06); }
+    }
+
+    .workflow {
+      width: 100%;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .phase {
+      position: relative;
+      border-radius: 12px;
+      padding: 14px 18px;
+      border: 1px solid rgba(255,255,255,0.08);
+      cursor: pointer;
+      transition: transform 0.12s, border-color 0.12s, box-shadow 0.12s;
+    }
+    .phase:hover {
+      transform: translateX(-2px);
+      border-color: rgba(255,255,255,0.35);
+    }
+    .phase.active {
+      box-shadow: 0 0 0 2px rgba(255,255,255,0.25);
+      border-color: rgba(255,255,255,0.5);
+    }
+    .phase-title {
+      font-size: 13.5px;
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: #fafafa;
+    }
+    .phase-hint {
+      font-size: 10px;
+      color: rgba(255,255,255,0.4);
+      margin-bottom: 10px;
+    }
+    .phase-meta {
+      font-size: 10.5px;
+      color: #888;
+      letter-spacing: 0.2px;
+      margin: 0;
+      padding: 0;
+    }
+
+    .tools {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .tool {
+      background: rgba(0,0,0,0.35);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 6px;
+      padding: 7px 10px;
+      font-size: 11.5px;
+      min-width: 95px;
+      flex: 1 1 95px;
+      text-align: center;
+    }
+    .tool .label {
+      display: block;
+      font-size: 9.5px;
+      color: #888;
+      margin-top: 3px;
+    }
+    .arrow {
+      text-align: center;
+      color: #555;
+      font-size: 16px;
+      margin: 0;
+      line-height: 1;
+    }
+    .arrow-label {
+      font-size: 10px;
+      color: #aaa;
+      margin-left: 6px;
+      font-style: italic;
+    }
+    .diamond-shape {
+      width: 230px;
+      height: 64px;
+      margin: 4px auto;
+      background: rgba(239, 68, 68, 0.10);
+      border: 1px solid rgba(239, 68, 68, 0.50);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fca5a5;
+      font-size: 11.5px;
+      text-align: center;
+      clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+      font-weight: 500;
+    }
+    .diamond-shape.warn {
+      background: rgba(234, 179, 8, 0.10);
+      border-color: rgba(234, 179, 8, 0.55);
+      color: #fde68a;
+    }
+    .branches {
+      display: flex;
+      gap: 10px;
+      justify-content: space-around;
+      margin: 6px auto;
+    }
+    .branch {
+      flex: 1;
+      text-align: center;
+    }
+    .branch-label {
+      font-size: 10px;
+      color: #aaa;
+      margin-bottom: 4px;
+      font-style: italic;
+    }
+    .branch-result {
+      padding: 8px 10px;
+      background: #181818;
+      border: 1px dashed rgba(255,255,255,0.2);
+      border-radius: 6px;
+      font-size: 10.5px;
+      color: #ccc;
+    }
+    .branch-result.kill { border-color: rgba(239, 68, 68, 0.4); color: #fca5a5; }
+    .branch-result.hold { border-color: rgba(234, 179, 8, 0.4); color: #fde68a; }
+    .branch-result.pass { border-color: rgba(34, 197, 94, 0.5); color: #86efac; }
+    .branch .down-arrow { color: #555; font-size: 13px; margin: 3px 0; }
+
+    .recurse {
+      width: fit-content;
+      margin: 4px auto;
+      padding: 5px 12px;
+      background: rgba(250, 204, 21, 0.08);
+      border: 1px dashed rgba(250, 204, 21, 0.5);
+      border-radius: 6px;
+      font-size: 10.5px;
+      color: #fde68a;
+    }
+
+    .phase-1 { background: rgba(34, 197, 94, 0.10); border-color: rgba(34, 197, 94, 0.35); }
+    .phase-1 .phase-title { color: #86efac; }
+    .phase-2a { background: rgba(168, 85, 247, 0.10); border-color: rgba(168, 85, 247, 0.35); }
+    .phase-2a .phase-title { color: #d8b4fe; }
+    .phase-2b { background: rgba(244, 114, 182, 0.10); border-color: rgba(244, 114, 182, 0.35); }
+    .phase-2b .phase-title { color: #f9a8d4; }
+    .phase-2c { background: rgba(251, 146, 60, 0.10); border-color: rgba(251, 146, 60, 0.35); }
+    .phase-2c .phase-title { color: #fdba74; }
+    .phase-2d { background: rgba(250, 204, 21, 0.10); border-color: rgba(250, 204, 21, 0.35); }
+    .phase-2d .phase-title { color: #fde68a; }
+    .phase-3 { background: rgba(148, 163, 184, 0.10); border-color: rgba(148, 163, 184, 0.35); }
+    .phase-3 .phase-title { color: #cbd5e1; }
+
+    .pill {
+      width: fit-content;
+      margin: 0 auto;
+      padding: 7px 18px;
+      font-size: 11px;
+      border-radius: 999px;
+    }
+    .pill.start {
+      background: #181818;
+      border: 1px dashed rgba(255,255,255,0.2);
+      color: #ccc;
+    }
+    .pill.end {
+      background: rgba(99, 102, 241, 0.10);
+      border: 1px solid rgba(99, 102, 241, 0.35);
+      color: #c7d2fe;
+    }
+    .package {
+      width: fit-content;
+      margin: 0 auto;
+      padding: 10px 18px;
+      background: rgba(99, 102, 241, 0.10);
+      border: 1px solid rgba(99, 102, 241, 0.4);
+      border-radius: 8px;
+      font-size: 11px;
+      color: #c7d2fe;
+      text-align: center;
+      line-height: 1.6;
+    }
+    .package .pkg-title {
+      font-weight: 600;
+      color: #e0e7ff;
+      margin-bottom: 2px;
+      display: block;
+    }
+    .star { color: #f0abfc; font-weight: 600; }
+
+    .right-empty {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      color: #555;
+      font-size: 13px;
+      text-align: center;
+      gap: 12px;
+    }
+    .right-empty .arrow-hint { font-size: 22px; color: #444; }
+
+    .detail-card {
+      width: 100%;
+      margin: 0;
+    }
+    .detail-header {
+      margin-bottom: 20px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .detail-tag {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 10px;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+    .detail-h2 {
+      font-size: 18px;
+      color: #fafafa;
+      margin: 0 0 4px 0;
+      font-weight: 600;
+    }
+    .detail-sub {
+      font-size: 12px;
+      color: #888;
+      line-height: 1.6;
+    }
+
+    .step-flow {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .step-block {
+      background: rgba(0,0,0,0.30);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 8px;
+      padding: 10px 14px;
+    }
+    .step-block .step-row {
+      display: flex;
+      gap: 10px;
+      align-items: baseline;
+      margin-bottom: 4px;
+    }
+    .step-block .step-num {
+      font-size: 10.5px;
+      color: #999;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      flex-shrink: 0;
+      min-width: 36px;
+    }
+    .step-block .step-name {
+      font-size: 13px;
+      color: #fafafa;
+      font-weight: 500;
+    }
+    .step-block .step-info {
+      font-size: 11.5px;
+      color: #aaa;
+      line-height: 1.6;
+      margin-top: 4px;
+    }
+    .step-block .info-line {
+      display: flex;
+      gap: 8px;
+      margin: 2px 0;
+    }
+    .step-block .info-key {
+      color: #888;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      min-width: 38px;
+      flex-shrink: 0;
+      padding-top: 2px;
+    }
+    .step-block .info-val {
+      color: #ddd;
+      font-size: 11.5px;
+      flex: 1;
+    }
+    .step-block code {
+      background: rgba(255,255,255,0.08);
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-size: 10.5px;
+      color: #f0abfc;
+    }
+    .check {
+      width: fit-content;
+      margin: 4px auto;
+      padding: 6px 14px;
+      background: rgba(234, 179, 8, 0.10);
+      border: 1px solid rgba(234, 179, 8, 0.50);
+      border-radius: 6px;
+      color: #fde68a;
+      font-size: 11.5px;
+      text-align: center;
+    }
+    .check.danger { background: rgba(239, 68, 68, 0.10); border-color: rgba(239, 68, 68, 0.50); color: #fca5a5; }
+    .branch-arrow {
+      text-align: center;
+      color: #777;
+      font-size: 12px;
+      margin: 4px 0;
+    }
+    .recurse-arrow {
+      width: fit-content;
+      margin: 4px auto;
+      padding: 5px 12px;
+      background: rgba(250, 204, 21, 0.08);
+      border: 1px dashed rgba(250, 204, 21, 0.45);
+      border-radius: 6px;
+      font-size: 10.5px;
+      color: #fde68a;
+    }
+    .sig-line {
+      margin-top: 18px;
+      padding: 10px 14px;
+      background: rgba(99, 102, 241, 0.08);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      border-radius: 6px;
+      font-size: 11px;
+      color: #c7d2fe;
+      font-family: "Consolas", "Monaco", monospace;
+    }
+
+    .footer {
+      padding: 10px 20px;
+      text-align: center;
+      font-size: 10.5px;
+      color: #555;
+      line-height: 1.7;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="top-header">
+    <h1>Atelier NPI Workflow — 유형 1: 외부 시장 서비스</h1>
+    <div class="meta">draft v0.3 · 2026-05-21 · charter v0.2 §5 기반 · Phase 박스 클릭 → 우측 상세</div>
+  </div>
+
+  <div class="container">
+
+    <div class="left-pane">
+      <div class="workflow">
+
+        <div class="pill start">새 idea — <code>idea-inbox.md</code> 메모 — <code>/atelier-npi</code></div>
+        <div class="arrow">↓</div>
+
+        <div class="phase-meta">CEO 작성 · Agent 리뷰</div>
+        <div class="phase phase-1" data-phase="p1">
+          <div class="phase-title">Phase 1 — Stage 1 Ideation</div>
+          <div class="phase-hint">▸ 클릭 — 상세 흐름</div>
+          <div class="tools">
+            <div class="tool">1.1 CEO 초안<span class="label">통증 raw</span></div>
+            <div class="tool">1.2 3축 매핑<span class="label">R/D/O</span></div>
+            <div class="tool">1.3 데스크 리서치<span class="label">자동</span></div>
+            <div class="tool">1.4 cross-examine<span class="label">논리·본질</span></div>
+            <div class="tool">1.5 판정<span class="label">P/H/K</span></div>
+          </div>
+        </div>
+
+        <div class="arrow">↓</div>
+        <div class="diamond-shape">판정 — Pass / Hold / Kill</div>
+
+        <div class="branches">
+          <div class="branch">
+            <div class="branch-label">Kill</div>
+            <div class="down-arrow">↓</div>
+            <div class="branch-result kill">funnel<br/>Kill 사유</div>
+          </div>
+          <div class="branch">
+            <div class="branch-label">Hold</div>
+            <div class="down-arrow">↓</div>
+            <div class="branch-result hold">funnel<br/>Hold 사유</div>
+          </div>
+          <div class="branch">
+            <div class="branch-label">Pass</div>
+            <div class="down-arrow">↓</div>
+            <div class="branch-result pass">ideation.md<br/>→ Phase 2 (지금/미룸)</div>
+          </div>
+        </div>
+
+        <div class="arrow">↓ <span class="arrow-label">Pass (지금 진행)</span></div>
+
+        <div class="phase-meta">Agent 작성 · CEO 확인</div>
+        <div class="phase phase-2a" data-phase="p2a">
+          <div class="phase-title">Phase 2A — 방향성 도출</div>
+          <div class="phase-hint">▸ 클릭 — 상세 흐름</div>
+          <div class="tools">
+            <div class="tool">퍼소나<span class="label">Owner</span></div>
+            <div class="tool">경쟁 분석표<span class="label">3~5사</span></div>
+            <div class="tool">HMW<span class="label">Wedge</span></div>
+            <div class="tool">방향성 한 문장<span class="label">PRD §1</span></div>
+            <div class="tool">As is/To be<span class="label">PRD §2</span></div>
+          </div>
+        </div>
+
+        <div class="arrow">↓</div>
+        <div class="diamond-shape warn">Moat &gt; Wall?</div>
+        <div class="recurse">↻ Wall &gt; Moat → HMW 회귀 (Wedge 재설계)</div>
+        <div class="arrow">↓ <span class="arrow-label">Moat &gt; Wall</span></div>
+
+        <div class="phase-meta">Agent 작성 · CEO 확인</div>
+        <div class="phase phase-2b" data-phase="p2b">
+          <div class="phase-title">Phase 2B — 시각 산출물</div>
+          <div class="phase-hint">▸ 클릭 — 상세 흐름</div>
+          <div class="tools">
+            <div class="tool">와이어프레임<span class="label">low-fi</span></div>
+            <div class="tool">디자인<span class="label">high-fi</span></div>
+            <div class="tool"><span class="star">⭐ HTML 프로토</span><span class="label">사용 시뮬레이션</span></div>
+          </div>
+        </div>
+
+        <div class="arrow">↓</div>
+
+        <div class="phase-meta">Agent 작성 · CEO 확인</div>
+        <div class="phase phase-2c" data-phase="p2c">
+          <div class="phase-title">Phase 2C — PRD 글자 완성</div>
+          <div class="phase-hint">▸ 클릭 — 상세 흐름</div>
+          <div class="tools">
+            <div class="tool">유저 스토리<span class="label">AS/WANT/SO</span></div>
+            <div class="tool">AC<span class="label">G/W/T</span></div>
+            <div class="tool">Moat & Wall<span class="label">PRD §4</span></div>
+            <div class="tool">Kill Signal<span class="label">PRD §5</span></div>
+          </div>
+        </div>
+
+        <div class="arrow">↓</div>
+
+        <div class="phase-meta">CEO ↔ Agent 양방향</div>
+        <div class="phase phase-2d" data-phase="p2d">
+          <div class="phase-title">Phase 2D — Freeze loop</div>
+          <div class="phase-hint">▸ 클릭 — 상세 흐름</div>
+          <div class="tools">
+            <div class="tool">CEO 프로토 사용<span class="label">점검</span></div>
+            <div class="tool">PRD calibrate<span class="label">디테일 보완</span></div>
+            <div class="tool">프로토 재생성<span class="label">반영</span></div>
+          </div>
+        </div>
+
+        <div class="arrow">↓</div>
+        <div class="diamond-shape warn">양쪽 OK?</div>
+        <div class="recurse">↻ 아직 — Phase 2D loop 회귀</div>
+        <div class="arrow">↓ <span class="arrow-label">OK</span></div>
+
+        <div class="package">
+          <span class="pkg-title">PRD 패키지 freeze</span>
+          stage-2/&lt;idea&gt;/ ─ PRD.md + mockups/ + prototype/
+        </div>
+
+        <div class="arrow">↓</div>
+
+        <div class="phase-meta">CEO 실행 · Agent 안내</div>
+        <div class="phase phase-3" data-phase="p3">
+          <div class="phase-title">Phase 3 — Foundry 인계</div>
+          <div class="phase-hint">▸ 클릭 — 상세 흐름</div>
+          <div class="tools">
+            <div class="tool">repo 생성<span class="label">Template</span></div>
+            <div class="tool">PRD 복사<span class="label">01-product/</span></div>
+            <div class="tool">funnel 기록<span class="label">freeze</span></div>
+          </div>
+        </div>
+
+        <div class="arrow">↓</div>
+        <div class="pill end">Foundry 개발 사이클 — 실 동작 MVP</div>
+
+      </div>
+    </div>
+
+    <div class="right-pane" id="detail-pane">
+      <div class="right-empty">
+        <div class="arrow-hint">←</div>
+        <div>왼쪽 Phase 박스를 <strong>클릭</strong>하면<br/>그 Phase의 상세 workflow가 여기에 표시됩니다.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    실제 진행은 <code>/atelier-npi</code> Skill로 외부화 · v0.3 (Step별 calibrate 진행 중)
+  </div>
+
+  <script>
+    const phaseDetails = {
+      p1: `
+        <div class="detail-card">
+          <div class="detail-header">
+            <span class="detail-tag" style="background:rgba(34,197,94,0.15);border:1px solid rgba(34,197,94,0.4);color:#86efac">PHASE 1</span>
+            <h2 class="detail-h2">Stage 1 — Ideation 내부 흐름</h2>
+            <div class="detail-sub">v0.3 — 5질문 prompt 폐기, 5요소 폐기, 5 Whys 별도 도구 폐기. 3축이 agent 동적 체크리스트. 작성 권한 = CEO 초안 · Agent 리뷰.</div>
+          </div>
+          <div class="step-flow">
+
+            <div class="step-block">
+              <div class="step-row"><div class="step-num">1.1</div><div class="step-name">통증 raw 입력</div></div>
+              <div class="step-info">
+                <div class="info-line"><div class="info-key">입력</div><div class="info-val"><code>idea-inbox.md</code>의 idea 한 줄</div></div>
+                <div class="info-line"><div class="info-key">도구</div><div class="info-val">한 줄 prompt — "통증을 떠오르는 대로 적어주세요. 누가·언제·어떤 행동 마찰인지. 정리 안 해도 흐릿해도 OK. 정리는 제가 합니다."</div></div>
+                <div class="info-line"><div class="info-key">처리</div><div class="info-val">CEO가 raw 텍스트로 쏟아냄. 형식 강제 X.</div></div>
+                <div class="info-line"><div class="info-key">출력</div><div class="info-val">raw 텍스트 (정리되지 않은 통증 묘사)</div></div>
+              </div>
+            </div>
+            <div class="branch-arrow">↓</div>
+
+            <div class="step-block">
+              <div class="step-row"><div class="step-num">1.2</div><div class="step-name">3축 매핑 (agent 자동)</div></div>
+              <div class="step-info">
+                <div class="info-line"><div class="info-key">도구</div><div class="info-val">Pain 3축 — Reality / Depth / Owner (agent 백엔드 체크리스트)</div></div>
+                <div class="info-line"><div class="info-key">처리</div><div class="info-val">agent가 raw 텍스트에서 3축 추출 → 비어 있는 슬롯만 targeted 질문으로 보강. CEO 확인.</div></div>
+                <div class="info-line"><div class="info-key">출력</div><div class="info-val">Pain 3축 정리 (Reality/Depth/Owner 채워짐)</div></div>
+              </div>
+            </div>
+            <div class="branch-arrow">↓ 자동</div>
+
+            <div class="step-block">
+              <div class="step-row"><div class="step-num">1.3</div><div class="step-name">데스크 리서치 — 외부 흔적 자동 수집</div></div>
+              <div class="step-info">
+                <div class="info-line"><div class="info-key">도구</div><div class="info-val">WebSearch + WebFetch. 5요소 별도 분류 X — Pain 3축에 직접 보강.</div></div>
+                <div class="info-line"><div class="info-key">처리</div><div class="info-val">3축에서 검색어 자동 추출 → 카페·Reddit·SNS·후기 수집 → 3축 각 항목 옆에 보강 데이터 박음 (source URL 함께)</div></div>
+                <div class="info-line"><div class="info-key">출력</div><div class="info-val">3축 + 외부 흔적 보강된 보고</div></div>
+              </div>
+            </div>
+            <div class="check danger">⚠ 흔적 0건 — Reality 항목 옆 경고 (Step 1.5에 명시)</div>
+            <div class="branch-arrow">↓</div>
+
+            <div class="step-block">
+              <div class="step-row"><div class="step-num">1.4</div><div class="step-name">Agent cross-examine — 논리·본질</div></div>
+              <div class="step-info">
+                <div class="info-line"><div class="info-key">도구</div><div class="info-val">agent의 자유 사고 — 논리(가정 짚기) + 본질(Kill 안전장치). 5 Whys 별도 도구 X (agent LLM이 자연 활용).</div></div>
+                <div class="info-line"><div class="info-key">처리</div><div class="info-val">"당연하다" 가정 짚기. 진짜 통증 vs 모른다는 이유로 단정한 niche.</div></div>
+                <div class="info-line"><div class="info-key">출력</div><div class="info-val">cross-examine 보고 + CEO 답변 요청</div></div>
+              </div>
+            </div>
+            <div class="check danger">⚠ 본질 결함 → Step 1.5에 Kill 권장 표시</div>
+            <div class="branch-arrow">↓</div>
+
+            <div class="step-block">
+              <div class="step-row"><div class="step-num">1.5</div><div class="step-name">CEO 재리뷰 + 판정</div></div>
+              <div class="step-info">
+                <div class="info-line"><div class="info-key">처리</div><div class="info-val">CEO 자유 답변 → agent가 Pass/Hold/Kill 신호 추출. Hold/Kill 시 agent가 자동으로 사유 묻기.</div></div>
+                <div class="info-line"><div class="info-key">출력</div><div class="info-val">판정 + 사유</div></div>
+                <div class="info-line"><div class="info-key">분기</div><div class="info-val"><strong style="color:#86efac">Pass</strong> → ideation.md → "지금 Phase 2 진행 vs 미룸" 묻기<br/><strong style="color:#fde68a">Hold</strong> → 사유 + funnel 기록 → 종료<br/><strong style="color:#fca5a5">Kill</strong> → 사유 + funnel 기록 → 종료</div></div>
+              </div>
+            </div>
+
+            <div class="branch-arrow">↓ Pass 시</div>
+            <div class="check">"Phase 2를 지금 이어서 진행 vs 별도 세션으로 미룸" — CEO 선택. 미룸 시 funnel에 "Phase 2 대기" 기록 (대시보드로 가시화 예정 — decisions.md).</div>
+
+          </div>
+          <div class="sig-line">function Phase1(idea) → { judgement, ideation_md?, foundry_resume_flag? }</div>
+        </div>
+      `,
+      p2a: `
+        <div class="detail-card">
+          <div class="detail-header">
+            <span class="detail-tag" style="background:rgba(168,85,247,0.15);border:1px solid rgba(168,85,247,0.4);color:#d8b4fe">PHASE 2A</span>
+            <h2 class="detail-h2">방향성 도출 내부 흐름</h2>
+            <div class="detail-sub">아직 calibrate 안 됨 — Phase 1 검토 마무리 후 진행 예정. 현재 잠정 가설.</div>
+          </div>
+          <div class="step-flow">
+            <div class="step-block">
+              <div class="step-info">잠정 — 퍼소나 → 경쟁 분석표 → HMW → 방향성 한 문장 → As is/To be. 끝에 Moat&gt;Wall 검증으로 분기 (Wall&gt;Moat이면 HMW 회귀).</div>
+            </div>
+          </div>
+        </div>
+      `,
+      p2b: `<div class="detail-card"><div class="detail-header"><span class="detail-tag" style="background:rgba(244,114,182,0.15);border:1px solid rgba(244,114,182,0.4);color:#f9a8d4">PHASE 2B</span><h2 class="detail-h2">시각 산출물 (잠정)</h2><div class="detail-sub">와이어 → 디자인 → HTML 프로토. Phase 1 calibrate 후 진행.</div></div></div>`,
+      p2c: `<div class="detail-card"><div class="detail-header"><span class="detail-tag" style="background:rgba(251,146,60,0.15);border:1px solid rgba(251,146,60,0.4);color:#fdba74">PHASE 2C</span><h2 class="detail-h2">PRD 글자 완성 (잠정)</h2><div class="detail-sub">유저 스토리 → AC → Moat&Wall → Kill Signal. Phase 1 calibrate 후 진행.</div></div></div>`,
+      p2d: `<div class="detail-card"><div class="detail-header"><span class="detail-tag" style="background:rgba(250,204,21,0.15);border:1px solid rgba(250,204,21,0.4);color:#fde68a">PHASE 2D</span><h2 class="detail-h2">Freeze loop (잠정)</h2><div class="detail-sub">CEO 프로토 사용 → calibrate → 재생성 → 양쪽 OK까지 loop.</div></div></div>`,
+      p3: `<div class="detail-card"><div class="detail-header"><span class="detail-tag" style="background:rgba(148,163,184,0.15);border:1px solid rgba(148,163,184,0.4);color:#cbd5e1">PHASE 3</span><h2 class="detail-h2">Foundry 인계 (잠정)</h2><div class="detail-sub">repo 생성 → PRD 복사 → funnel freeze 기록.</div></div></div>`
+    };
+
+    document.querySelectorAll('.phase[data-phase]').forEach(el => {
+      el.addEventListener('click', () => {
+        const key = el.dataset.phase;
+        document.getElementById('detail-pane').innerHTML = phaseDetails[key];
+        document.querySelectorAll('.phase').forEach(p => p.classList.remove('active'));
+        el.classList.add('active');
+      });
+    });
+  </script>
+
+</body>
+</html>
