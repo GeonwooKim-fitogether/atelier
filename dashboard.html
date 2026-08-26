@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Atelier Dashboard</title>
+<style>
+/* 의도적 단일 다크 테마 — workflows/type1-external-service.html 의 Ground Control 계열을 따른다 */
+*{box-sizing:border-box}
+body{margin:0;background:#0d0d0d;color:#e5e5e5;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  font-size:15px;line-height:1.65;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1060px;margin:0 auto;padding:36px 22px 80px}
+header{display:flex;flex-wrap:wrap;align-items:baseline;gap:12px 20px;border-bottom:1px solid #2a2a2a;padding-bottom:18px;margin-bottom:26px}
+h1{font-size:21px;margin:0;letter-spacing:.04em}
+h1 .accent{color:#57c7a3}
+.stamp{font-size:12px;color:#8a8a8a;font-variant-numeric:tabular-nums}
+.chips{display:flex;gap:8px;margin-left:auto;flex-wrap:wrap}
+.chip{font-size:11.5px;font-weight:700;padding:3px 11px;border-radius:99px;border:1px solid #333;white-space:nowrap}
+.chip.done{color:#57c7a3;border-color:#2b5c4b}
+.chip.live{color:#0d0d0d;background:#57c7a3;border-color:#57c7a3}
+.chip.hold{color:#c9a54a;border-color:#5c4d22}
+h2{font-size:13px;letter-spacing:.14em;color:#8a8a8a;text-transform:uppercase;margin:34px 0 12px;font-weight:700}
+h2 .n{color:#57c7a3}
+
+/* 결정 큐 */
+.decision{background:#161616;border:1px solid #3d5c50;border-left:4px solid #57c7a3;border-radius:8px;padding:18px 22px;margin-bottom:12px}
+.decision .id{font-family:ui-monospace,Menlo,monospace;font-size:12px;color:#57c7a3;font-weight:700}
+.decision h3{margin:6px 0 8px;font-size:16.5px}
+.decision p{margin:0 0 8px;color:#c9c9c9;font-size:14px;max-width:78ch}
+.decision .rec{background:#12201b;border:1px solid #2b5c4b;border-radius:6px;padding:10px 14px;font-size:13.5px;margin:10px 0}
+.decision .rec b{color:#57c7a3}
+.decision .ask{font-size:13px;color:#8a8a8a}
+.qempty{color:#666;font-size:14px;border:1px dashed #333;border-radius:8px;padding:14px 18px}
+
+/* 깔때기 보드 */
+.board{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.col{background:#121212;border:1px solid #262626;border-radius:8px;padding:12px;min-height:120px}
+.col .ct{font-size:11.5px;letter-spacing:.1em;color:#8a8a8a;font-weight:700;text-transform:uppercase;margin-bottom:10px;display:flex;justify-content:space-between}
+.col .ct .cnt{color:#57c7a3;font-variant-numeric:tabular-nums}
+.card{background:#1b1b1b;border:1px solid #2e2e2e;border-radius:7px;padding:12px 14px;margin-bottom:10px}
+.card h4{margin:0 0 6px;font-size:14.5px}
+.card .meta{font-size:12px;color:#8a8a8a;line-height:1.6}
+.badge{display:inline-block;font-size:10.5px;font-weight:700;padding:1px 8px;border-radius:99px;margin:2px 4px 2px 0}
+.badge.pass{background:#12201b;color:#57c7a3;border:1px solid #2b5c4b}
+.badge.wait{background:#211c10;color:#c9a54a;border:1px solid #5c4d22}
+.badge.act{background:#57c7a3;color:#0d0d0d}
+.empty{color:#555;font-size:12.5px;text-align:center;padding:18px 0}
+
+/* 로그·홀드 */
+table{border-collapse:collapse;width:100%;font-size:13.5px;background:#121212;border:1px solid #262626;border-radius:8px;overflow:hidden}
+th{text-align:left;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#8a8a8a;padding:9px 14px;border-bottom:1px solid #2a2a2a;white-space:nowrap}
+td{padding:9px 14px;border-bottom:1px solid #1f1f1f;vertical-align:top;color:#c9c9c9}
+tr:last-child td{border-bottom:none}
+td.d{color:#8a8a8a;white-space:nowrap;font-variant-numeric:tabular-nums}
+code{font-family:ui-monospace,Menlo,monospace;font-size:.88em;background:#1f1f1f;padding:1px 6px;border-radius:4px;color:#9fd6c2}
+footer{margin-top:44px;border-top:1px solid #2a2a2a;padding-top:14px;font-size:12px;color:#777;line-height:1.8}
+@media(max-width:760px){.board{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1><span class="accent">ATELIER</span> DASHBOARD</h1>
+  <span class="stamp">생성 2026-08-26 · 원본: idea-funnel.md / decisions.md / stage-1/*</span>
+  <div class="chips">
+    <span class="chip done">Phase 0 완료 · charter v0.3 발효</span>
+    <span class="chip live">Phase 1 진행 중</span>
+    <span class="chip hold">Phase 2 보류 · Foundry 이관 대기</span>
+  </div>
+</header>
+
+<h2><span class="n">■</span> 결정 큐 — CEO 판단 대기 <span style="color:#57c7a3">1건</span></h2>
+
+<div class="decision">
+  <span class="id">D1</span>
+  <h3>MyRosary Stage 2 — 도구 세트 확정</h3>
+  <p>Stage 1이 Pass로 판정됐다(아래 보드). Stage 2(PRD 패키지 제작)를 시작하려면 이번 프로젝트에 쓸 기획 도구 세트를 확정해야 한다 (charter §5.2 Step 1 — Agent 권장 + CEO confirm).</p>
+  <div class="rec"><b>권고안</b> — B2C 모바일 앱 기준 7종: 퍼소나(자투리 시간 기도자 구체화) · 어피니티(외부 흔적→인사이트) · HMW(통증→기능 변환) · As is/To be 표 · 유저 스토리+AC · Moat &amp; Wall(수익화 경고 정면 대응) · Kill Signal(<b>기간형 지표</b> — 상시 사용률이 아니라 기도 기간 중 완주율. 근거: Stage 1의 기간형 Depth)</div>
+  <p class="ask">판단 재료: <code>stage-1/myrosary/ideation.md</code>(판정·wedge) · <code>stage-1/myrosary/external-traces.md</code>(기존 앱 지형·반증). 답변: "D1 권고안으로" 또는 조정 내용을 채팅으로.</p>
+</div>
+
+<h2><span class="n">■</span> 깔때기 보드</h2>
+
+<div class="board">
+  <div class="col">
+    <div class="ct">Stage 1 <span class="cnt">0</span></div>
+    <div class="empty">진행 중인 안건 없음</div>
+  </div>
+  <div class="col">
+    <div class="ct">Stage 2 <span class="cnt">2</span></div>
+    <div class="card">
+      <h4>묵주기도 앱 (MyRosary)</h4>
+      <span class="badge pass">Stage 1 Pass 08-26</span><span class="badge act">진행 중 — D1 대기</span>
+      <div class="meta">wedge: 내 페이스로 · 진행이 기억되고 · 준비가 필요 없는 <b>이동 중 기도</b><br>
+      제약: 기간형 Kill Signal · 수익화 경고 대응 · 이동 중 UX 중심<br>
+      근거: <code>stage-1/myrosary/</code></div>
+    </div>
+    <div class="card">
+      <h4>사내 상품기획 시스템</h4>
+      <span class="badge pass">Stage 1 Pass 08-26</span><span class="badge wait">Stage 2 대기</span>
+      <div class="meta">대기 사유: CEO 순서 결정 — MyRosary 사이클 완주 후 두 번째 사이클로.<br>
+      제약: Kill Signal이 Depth 정량화 · 과잉 도구 금지<br>
+      근거: <code>stage-1/internal-planning-system/</code> · 설계 출발점 <code>architecture-review.md</code> §5</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="ct">PRD Freeze <span class="cnt">0</span></div>
+    <div class="empty">—</div>
+  </div>
+  <div class="col">
+    <div class="ct">Foundry 인계 <span class="cnt">0</span></div>
+    <div class="empty">이관 완료 후 재개<br>(plan.md Phase 2 보류)</div>
+  </div>
+</div>
+
+<h2><span class="n">■</span> Hold 재검토 — 0건</h2>
+<div class="qempty">Hold 상태의 안건이 없다. Hold가 생기면 사유와 함께 여기 보이고, 비슷한 아이디어가 들어올 때 대조 근거가 된다.</div>
+
+<h2><span class="n">■</span> 최근 결정 로그</h2>
+<table>
+  <tr><th>일자</th><th>결정</th><th>근거 위치</th></tr>
+  <tr><td class="d">08-26</td><td><b>판단의 표면 = 대시보드</b> — 최종 결정은 대시보드를 보고 내린다 (CEO 지시). 이 화면(v0)이 그 집행이다</td><td><code>decisions.md</code></td></tr>
+  <tr><td class="d">08-26</td><td>MyRosary Stage 1 <b>Pass</b> — 이동 중 기도 통증, wedge 4요소 확정</td><td><code>stage-1/myrosary/ideation.md</code></td></tr>
+  <tr><td class="d">08-26</td><td>첫 실사이클 안건 = <b>MyRosary</b>, 사내 시스템 Stage 2는 대기 (순서 결정)</td><td><code>decisions.md</code></td></tr>
+  <tr><td class="d">08-26</td><td>사내 상품기획 시스템 Stage 1 <b>Pass</b> — 97일 공백은 증거에서 기각, 통증은 주 단위 일상 기획 판단</td><td><code>stage-1/internal-planning-system/ideation.md</code></td></tr>
+  <tr><td class="d">08-26</td><td><b>charter v0.3 ACCEPT</b> (PR #1 머지) — 단계적 개방·척추 신설. 창고 동기화 봇 첫 실행 성공(규칙 4종·훅 수신)</td><td><code>charter.md</code> · PR #1</td></tr>
+  <tr><td class="d">08-26</td><td>진행 계획 승인 — <b>Phase 1까지</b>, Phase 2는 Foundry→창고 이관 완료 후 재설계</td><td><code>plan.md</code></td></tr>
+</table>
+
+<footer>
+  이 대시보드는 1단계(문서 운영)의 판단 표면이다 — <code>idea-funnel.md</code>·<code>decisions.md</code>·<code>stage-1/</code>을 원본으로 Agent가 세션마다 재생성하며, 손으로 여기만 고쳐 원본과 갈라지게 하지 않는다(생성 시각이 위에 찍혀 있다). 실시간화(DB 기반)는 2단계 시스템의 몫이며, 그 요구사항은 <code>decisions.md</code>의 대시보드 절에 누적된다.
+</footer>
+
+</div>
+</body>
+</html>
