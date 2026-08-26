@@ -4,3 +4,7 @@ Thumbs.db
 
 # OS
 .DS_Store
+
+# 대시보드 엔진 산출물 — 소스(meta/·ai-npi/·dashboard.config.json)에서 매번 재생성되므로 커밋하지 않는다
+.claude/progress-dashboard.html
+.claude/progress-dashboard.body.html

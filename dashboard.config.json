@@ -1,0 +1,44 @@
+{
+  "projectName": "Atelier — 상품기획 공방",
+  "adapter": "npi-docs",
+  "lanes": [
+    { "id": "phase0", "label": "Phase 0 · 기반 정비", "parent": "Product", "outcome": "헌장을 새 방향으로 발효하고 공용 규율을 받아 온다" },
+    { "id": "stage1", "label": "Stage 1 · Ideation", "parent": "Product", "outcome": "통증이 진짜인지 판정한다 — Pass / Hold / Kill" },
+    { "id": "stage2", "label": "Stage 2 · PRD 패키지", "parent": "Product", "outcome": "MVP 한 사이클을 돌릴 만큼 명확해질 때까지 프로토와 PRD를 왕복한다" },
+    { "id": "handoff", "label": "Foundry 인계 (보류)", "parent": "Product", "outcome": "freeze 된 PRD 패키지를 공장으로 넘긴다 — 이관 완료 후 재개" },
+    { "id": "meta", "label": "Meta · 방법론 진화", "parent": "Meta", "outcome": "사이클을 돌며 발견한 것을 규칙과 도구로 격상한다" },
+    { "id": "control", "label": "Control · 결정과 판정", "parent": "Control", "outcome": "판정은 사람 전속이다 (charter §1.4)" }
+  ],
+  "workPackages": [
+    { "laneId": "phase0", "wp": "WP-001", "legacy": "WP-001", "title": "Phase 0 기반 정비", "plainTitle": "헌장 v0.3 발효 · 창고 동기화 편입" },
+    { "laneId": "stage1", "wp": "WP-002", "legacy": "WP-002", "title": "MyRosary Stage 1 Ideation", "plainTitle": "묵주기도 앱 — 통증 판정 (Pass)" },
+    { "laneId": "stage2", "wp": "WP-003", "legacy": "WP-003", "title": "MyRosary Stage 2 PRD 패키지", "plainTitle": "묵주기도 앱 — 프로토타입과 PRD (freeze 대기)" },
+    { "laneId": "stage1", "wp": "WP-004", "legacy": "WP-004", "title": "사내 상품기획 시스템 Stage 1", "plainTitle": "사내 시스템 — 통증 판정 (Pass · Stage 2 대기)" }
+  ],
+  "metaItems": [
+    { "ip": "IP-001", "title": "정본 대조 규칙", "plainTitle": "\"따른다\"는 정본을 읽은 뒤에만 쓴다", "nextAction": "규칙 문서화 완료 (D-007) · 창고 승격 여부는 미정", "description": "대시보드를 정본 패턴을 읽지 않고 만든 사고에서 나온 규칙." },
+    { "ip": "IP-002", "title": "atelier-npi Skill v0.2 진화", "plainTitle": "첫 사이클에서 발견한 마찰을 Skill 에 반영", "nextAction": "MyRosary 사이클 완주 후 정제", "description": "charter §16 예정 항목. 도구 권장 순서·프롬프트 문구·프로토 생성 방식." },
+    { "ip": "IP-003", "title": "판단 표면의 실시간화", "plainTitle": "대시보드를 2단계 시스템의 화면으로", "nextAction": "사내 시스템 Stage 2 에서 PRD 1급 요구사항으로", "description": "지금은 문서를 원본으로 세션마다 재생성. DB 기반 실시간화는 2단계의 몫." }
+  ],
+  "architecturalHcps": [
+    { "code": "HCP-FREEZE", "title": "PRD freeze 는 사람만 선언한다", "anchor": "charter §5.2 Step 7", "reason": "프로토를 직접 써 본 사람만 \"이상한 흐름·누락 없음\"을 말할 수 있다. Agent 가 대신하면 freeze 의 의미가 사라진다.", "status": "future" },
+    { "code": "HCP-VERDICT", "title": "Pass / Hold / Kill 은 사람 전속", "anchor": "charter §1.4 불변 ①", "reason": "단계가 바뀌려면 근거 딸린 사람의 판정이 있어야 한다 — 척추(§3.4).", "status": "future" },
+    { "code": "HCP-PHASE2", "title": "Phase 2 착수 보류", "anchor": "plan.md Phase 2", "reason": "Foundry → 창고 이관이 진행 중이라 인계 경로를 재설계한 뒤에 연다.", "status": "out-of-cycle" }
+  ],
+  "vocabulary": {
+    "WP-001": "기반 정비",
+    "WP-002": "묵주기도 앱 · 판정",
+    "WP-003": "묵주기도 앱 · PRD",
+    "WP-004": "사내 시스템 · 판정"
+  },
+  "actors": [
+    { "label": "공방장 (대표)", "outcome": "판정·추인 — Pass/Hold/Kill/Freeze 와 결정 큐" },
+    { "label": "Atelier Agent", "outcome": "조작 — 근거 수집·cross-examine·산출물 제작" },
+    { "label": "System", "outcome": "자동 — 동기화 봇·검사·방법론 자산" }
+  ],
+  "roles": {
+    "implementer": "Atelier Agent",
+    "director": "공방장 (대표)",
+    "system": "System"
+  }
+}
