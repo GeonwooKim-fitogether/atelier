@@ -1,8 +1,10 @@
 # Atelier
 
-1인 비전공자 CEO의 공방. 상품기획 ↔ HTML 프로토타입까지 만드는 곳. 프로토타입은 Foundry(공장)로 인계되어 실 코드 MVP가 된다.
+회사의 상품기획을 담당하는 시스템. **단계적으로 개방된다** — 1단계 공방(CEO 1인의 대화 도구, **현재**) → 2단계 사내 상품기획 시스템(애플리케이션) → 3단계 외부 제품(SaaS 자회사). 상품기획 ↔ HTML 프로토타입까지 만들고, 프로토타입은 Foundry(공장)로 인계되어 실 코드 MVP가 된다.
 
-헌법은 [`charter.md`](./charter.md)에 있다.
+- 헌법: [`charter.md`](./charter.md) — 정체성·프로세스·척추·거부 목록. v0.3부터 단계적 개방(§1.4)과 척추(§3.4)가 명시돼 있다.
+- 진행 계획: [`plan.md`](./plan.md) — 헌장 발효부터 SaaS 게이트까지 6개 국면. **현재 승인 범위는 Phase 1까지**다.
+- 발전 리뷰: [`architecture-review.md`](./architecture-review.md) — Hardware Team System과의 격차 실측과 2단계 시스템의 설계 출발점.
 
 새 idea가 떠올랐다면 [`idea-inbox.md`](./idea-inbox.md)에 한 줄 메모하고, 정식 진입 결정 시 Claude Code에서 `/atelier-npi`를 호출한다. Skill이 Stage 1 Ideation → Stage 2 PRD 패키지 확정까지 대화로 리드한다.
 
@@ -16,7 +18,8 @@
 - `stage-2/<idea>/` Stage 2 PRD 패키지 — Skill 자동 생성
 - `workflows/` workflow 시각화 HTML — Agent 작성
 - `Reference/` 외부 자료 — Agent 자율 참고
-- `.claude/skills/atelier-npi/SKILL.md` Skill 본체
+- `.claude/skills/atelier-npi/SKILL.md` Skill 본체 (이 저장소 고유)
+- `.claude/` 아래 공용 규칙·스킬·훅 — 창고(Template-repository)에서 동기화 봇(`.github/workflows/sync-skills.yml`)이 내려 줌. 공용 파일은 여기서 고치지 않고 창고에서 고친다(원본 우선 규칙)
 
 세션 밖 떠오른 idea는 *Atelier에 직접 박지 않고* 핸드폰 메모 등에 두었다가, 다음 세션에서 말로 전달.
 
