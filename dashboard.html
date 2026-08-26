@@ -1,138 +1,407 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Atelier Dashboard</title>
-<style>
-/* 의도적 단일 다크 테마 — workflows/type1-external-service.html 의 Ground Control 계열을 따른다 */
-*{box-sizing:border-box}
-body{margin:0;background:#0d0d0d;color:#e5e5e5;
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
-  font-size:15px;line-height:1.65;-webkit-font-smoothing:antialiased}
-.wrap{max-width:1060px;margin:0 auto;padding:36px 22px 80px}
-header{display:flex;flex-wrap:wrap;align-items:baseline;gap:12px 20px;border-bottom:1px solid #2a2a2a;padding-bottom:18px;margin-bottom:26px}
-h1{font-size:21px;margin:0;letter-spacing:.04em}
-h1 .accent{color:#57c7a3}
-.stamp{font-size:12px;color:#8a8a8a;font-variant-numeric:tabular-nums}
-.chips{display:flex;gap:8px;margin-left:auto;flex-wrap:wrap}
-.chip{font-size:11.5px;font-weight:700;padding:3px 11px;border-radius:99px;border:1px solid #333;white-space:nowrap}
-.chip.done{color:#57c7a3;border-color:#2b5c4b}
-.chip.live{color:#0d0d0d;background:#57c7a3;border-color:#57c7a3}
-.chip.hold{color:#c9a54a;border-color:#5c4d22}
-h2{font-size:13px;letter-spacing:.14em;color:#8a8a8a;text-transform:uppercase;margin:34px 0 12px;font-weight:700}
-h2 .n{color:#57c7a3}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Atelier Dashboard</title>
+  <style>
+    /* 정본 패턴: workflows/type1-external-service.html — 레이아웃·색 계열·컴포넌트 문법을 그대로 따른다 */
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; height: 100vh; overflow: hidden; }
+    body {
+      background: #0d0d0d;
+      color: #e5e5e5;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+      display: flex;
+      flex-direction: column;
+    }
 
-/* 결정 큐 */
-.decision{background:#161616;border:1px solid #3d5c50;border-left:4px solid #57c7a3;border-radius:8px;padding:18px 22px;margin-bottom:12px}
-.decision .id{font-family:ui-monospace,Menlo,monospace;font-size:12px;color:#57c7a3;font-weight:700}
-.decision h3{margin:6px 0 8px;font-size:16.5px}
-.decision p{margin:0 0 8px;color:#c9c9c9;font-size:14px;max-width:78ch}
-.decision .rec{background:#12201b;border:1px solid #2b5c4b;border-radius:6px;padding:10px 14px;font-size:13.5px;margin:10px 0}
-.decision .rec b{color:#57c7a3}
-.decision .ask{font-size:13px;color:#8a8a8a}
-.qempty{color:#666;font-size:14px;border:1px dashed #333;border-radius:8px;padding:14px 18px}
+    .top-header {
+      padding: 18px 40px 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      text-align: center;
+      flex-shrink: 0;
+    }
+    .top-header h1 { font-size: 20px; color: #fafafa; margin: 0 0 6px 0; font-weight: 600; }
+    .top-header .meta { font-size: 11.5px; color: #888; }
 
-/* 깔때기 보드 */
-.board{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-.col{background:#121212;border:1px solid #262626;border-radius:8px;padding:12px;min-height:120px}
-.col .ct{font-size:11.5px;letter-spacing:.1em;color:#8a8a8a;font-weight:700;text-transform:uppercase;margin-bottom:10px;display:flex;justify-content:space-between}
-.col .ct .cnt{color:#57c7a3;font-variant-numeric:tabular-nums}
-.card{background:#1b1b1b;border:1px solid #2e2e2e;border-radius:7px;padding:12px 14px;margin-bottom:10px}
-.card h4{margin:0 0 6px;font-size:14.5px}
-.card .meta{font-size:12px;color:#8a8a8a;line-height:1.6}
-.badge{display:inline-block;font-size:10.5px;font-weight:700;padding:1px 8px;border-radius:99px;margin:2px 4px 2px 0}
-.badge.pass{background:#12201b;color:#57c7a3;border:1px solid #2b5c4b}
-.badge.wait{background:#211c10;color:#c9a54a;border:1px solid #5c4d22}
-.badge.act{background:#57c7a3;color:#0d0d0d}
-.empty{color:#555;font-size:12.5px;text-align:center;padding:18px 0}
+    .container { display: flex; gap: 0; flex: 1; min-height: 0; overflow: hidden; }
+    .left-pane {
+      flex: 1 1 50%;
+      padding: 24px 14px 40px 18px;
+      border-right: 1px solid rgba(255,255,255,0.06);
+      overflow-y: auto; height: 100%;
+    }
+    .right-pane { flex: 1 1 50%; padding: 24px 18px 40px 14px; overflow-y: auto; height: 100%; }
 
-/* 로그·홀드 */
-table{border-collapse:collapse;width:100%;font-size:13.5px;background:#121212;border:1px solid #262626;border-radius:8px;overflow:hidden}
-th{text-align:left;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#8a8a8a;padding:9px 14px;border-bottom:1px solid #2a2a2a;white-space:nowrap}
-td{padding:9px 14px;border-bottom:1px solid #1f1f1f;vertical-align:top;color:#c9c9c9}
-tr:last-child td{border-bottom:none}
-td.d{color:#8a8a8a;white-space:nowrap;font-variant-numeric:tabular-nums}
-code{font-family:ui-monospace,Menlo,monospace;font-size:.88em;background:#1f1f1f;padding:1px 6px;border-radius:4px;color:#9fd6c2}
-footer{margin-top:44px;border-top:1px solid #2a2a2a;padding-top:14px;font-size:12px;color:#777;line-height:1.8}
-@media(max-width:760px){.board{grid-template-columns:1fr 1fr}}
-</style>
+    .left-pane::-webkit-scrollbar, .right-pane::-webkit-scrollbar { width: 6px; height: 6px; }
+    .left-pane::-webkit-scrollbar-track, .right-pane::-webkit-scrollbar-track { background: transparent; }
+    .left-pane::-webkit-scrollbar-thumb, .right-pane::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.10); border-radius: 3px; }
+    .left-pane, .right-pane { scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.12) transparent; }
+
+    @media (max-width: 1100px) {
+      html, body { height: auto; overflow: auto; }
+      .container { flex-direction: column; overflow: visible; }
+      .left-pane, .right-pane { height: auto; overflow-y: visible; }
+      .right-pane { border-top: 1px solid rgba(255,255,255,0.06); }
+    }
+
+    .workflow { width: 100%; margin: 0; display: flex; flex-direction: column; gap: 8px; }
+
+    .phase {
+      position: relative;
+      border-radius: 12px;
+      padding: 14px 18px;
+      border: 1px solid rgba(255,255,255,0.08);
+      cursor: pointer;
+      transition: transform 0.12s, border-color 0.12s, box-shadow 0.12s;
+    }
+    .phase:hover { transform: translateX(-2px); border-color: rgba(255,255,255,0.35); }
+    .phase.active { box-shadow: 0 0 0 2px rgba(255,255,255,0.25); border-color: rgba(255,255,255,0.5); }
+    .phase-title { font-size: 13.5px; font-weight: 600; margin-bottom: 4px; color: #fafafa; }
+    .phase-hint { font-size: 10px; color: rgba(255,255,255,0.4); margin-bottom: 10px; }
+    .phase-meta { font-size: 10.5px; color: #888; letter-spacing: 0.2px; margin: 0; padding: 0; }
+
+    .tools { display: flex; flex-wrap: wrap; gap: 6px; }
+    .tool {
+      background: rgba(0,0,0,0.35);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 6px;
+      padding: 7px 10px;
+      font-size: 11.5px;
+      min-width: 95px; flex: 1 1 95px;
+      text-align: center;
+    }
+    .tool .label { display: block; font-size: 9.5px; color: #888; margin-top: 3px; }
+    .arrow { text-align: center; color: #555; font-size: 16px; margin: 0; line-height: 1; }
+    .arrow-label { font-size: 10px; color: #aaa; margin-left: 6px; font-style: italic; }
+
+    .diamond-shape {
+      width: 230px; height: 64px; margin: 4px auto;
+      background: rgba(234, 179, 8, 0.10);
+      border: 1px solid rgba(234, 179, 8, 0.55);
+      display: flex; align-items: center; justify-content: center;
+      color: #fde68a; font-size: 11.5px; text-align: center;
+      clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+      font-weight: 500;
+    }
+
+    .branch-result {
+      padding: 8px 10px;
+      background: #181818;
+      border: 1px dashed rgba(255,255,255,0.2);
+      border-radius: 6px;
+      font-size: 10.5px; color: #ccc;
+      width: fit-content; margin: 4px auto;
+    }
+    .branch-result.hold { border-color: rgba(234, 179, 8, 0.4); color: #fde68a; }
+    .branch-result.pass { border-color: rgba(34, 197, 94, 0.5); color: #86efac; }
+
+    /* 정본의 색 계열: 초록 = Stage 1, 보라 = Stage 2(진행), 노랑 = 대기/루프, 남보라 = freeze 패키지, 슬레이트 = 인계 */
+    .phase-1 { background: rgba(34, 197, 94, 0.10); border-color: rgba(34, 197, 94, 0.35); }
+    .phase-1 .phase-title { color: #86efac; }
+    .phase-2a { background: rgba(168, 85, 247, 0.10); border-color: rgba(168, 85, 247, 0.35); }
+    .phase-2a .phase-title { color: #d8b4fe; }
+    .phase-2d { background: rgba(250, 204, 21, 0.10); border-color: rgba(250, 204, 21, 0.35); }
+    .phase-2d .phase-title { color: #fde68a; }
+    .phase-3 { background: rgba(148, 163, 184, 0.10); border-color: rgba(148, 163, 184, 0.35); }
+    .phase-3 .phase-title { color: #cbd5e1; }
+    .phase.idle { cursor: default; opacity: 0.75; }
+    .phase.idle:hover { transform: none; border-color: rgba(34,197,94,0.35); }
+
+    .pill { width: fit-content; margin: 0 auto; padding: 7px 18px; font-size: 11px; border-radius: 999px; }
+    .pill.start { background: #181818; border: 1px dashed rgba(255,255,255,0.2); color: #ccc; }
+    .package {
+      width: fit-content; margin: 0 auto; padding: 10px 18px;
+      background: rgba(99, 102, 241, 0.10);
+      border: 1px solid rgba(99, 102, 241, 0.4);
+      border-radius: 8px; font-size: 11px; color: #c7d2fe;
+      text-align: center; line-height: 1.6;
+    }
+    .package .pkg-title { font-weight: 600; color: #e0e7ff; margin-bottom: 2px; display: block; }
+
+    .right-empty {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      height: 100%; color: #555; font-size: 13px; text-align: center; gap: 12px;
+    }
+    .right-empty .arrow-hint { font-size: 22px; color: #444; }
+
+    .detail-card { width: 100%; margin: 0; }
+    .detail-header { margin-bottom: 20px; padding-bottom: 14px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .detail-tag {
+      display: inline-block; padding: 3px 10px; border-radius: 999px;
+      font-size: 10px; letter-spacing: 0.5px; margin-bottom: 8px;
+    }
+    .detail-h2 { font-size: 18px; color: #fafafa; margin: 0 0 4px 0; font-weight: 600; }
+    .detail-sub { font-size: 12px; color: #888; line-height: 1.6; }
+
+    .step-flow { display: flex; flex-direction: column; gap: 6px; }
+    .step-block {
+      background: rgba(0,0,0,0.30);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 8px; padding: 10px 14px;
+    }
+    .step-block .step-row { display: flex; gap: 10px; align-items: baseline; margin-bottom: 4px; }
+    .step-block .step-num { font-size: 10.5px; color: #999; font-weight: 600; letter-spacing: 0.5px; flex-shrink: 0; min-width: 36px; }
+    .step-block .step-name { font-size: 13px; color: #fafafa; font-weight: 500; }
+    .step-block .step-info { font-size: 11.5px; color: #aaa; line-height: 1.6; margin-top: 4px; }
+    .step-block .info-line { display: flex; gap: 8px; margin: 2px 0; }
+    .step-block .info-key { color: #888; font-size: 10px; text-transform: uppercase; letter-spacing: 0.4px; min-width: 38px; flex-shrink: 0; padding-top: 2px; }
+    .step-block .info-val { color: #ddd; font-size: 11.5px; flex: 1; }
+    .step-block code, .phase code, .branch-result code {
+      background: rgba(255,255,255,0.08); padding: 1px 5px; border-radius: 3px;
+      font-size: 10.5px; color: #f0abfc;
+    }
+    .check {
+      width: fit-content; margin: 4px auto; padding: 6px 14px;
+      background: rgba(234, 179, 8, 0.10);
+      border: 1px solid rgba(234, 179, 8, 0.50);
+      border-radius: 6px; color: #fde68a; font-size: 11.5px; text-align: center;
+    }
+    .branch-arrow { text-align: center; color: #777; font-size: 12px; margin: 4px 0; }
+    .sig-line {
+      margin-top: 18px; padding: 10px 14px;
+      background: rgba(99, 102, 241, 0.08);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      border-radius: 6px; font-size: 11px; color: #c7d2fe;
+      font-family: "Consolas", "Monaco", monospace;
+    }
+
+    .footer {
+      padding: 10px 20px; text-align: center; font-size: 10.5px; color: #555;
+      line-height: 1.7; border-top: 1px solid rgba(255,255,255,0.05); flex-shrink: 0;
+    }
+  </style>
 </head>
 <body>
-<div class="wrap">
 
-<header>
-  <h1><span class="accent">ATELIER</span> DASHBOARD</h1>
-  <span class="stamp">생성 2026-08-26 · 원본: idea-funnel.md / decisions.md / stage-1/*</span>
-  <div class="chips">
-    <span class="chip done">Phase 0 완료 · charter v0.3 발효</span>
-    <span class="chip live">Phase 1 진행 중</span>
-    <span class="chip hold">Phase 2 보류 · Foundry 이관 대기</span>
+  <div class="top-header">
+    <h1>Atelier Dashboard — 판단의 표면</h1>
+    <div class="meta">v0 · 생성 2026-08-26 · 원본: <span style="color:#aaa">idea-funnel.md · decisions.md · stage-1/*</span> · Phase 0 완료 — Phase 1 진행 — Phase 2 보류 · 좌측 박스 클릭 → 우측 상세</div>
   </div>
-</header>
 
-<h2><span class="n">■</span> 결정 큐 — CEO 판단 대기 <span style="color:#57c7a3">1건</span></h2>
+  <div class="container">
 
-<div class="decision">
-  <span class="id">D1</span>
-  <h3>MyRosary Stage 2 — 도구 세트 확정</h3>
-  <p>Stage 1이 Pass로 판정됐다(아래 보드). Stage 2(PRD 패키지 제작)를 시작하려면 이번 프로젝트에 쓸 기획 도구 세트를 확정해야 한다 (charter §5.2 Step 1 — Agent 권장 + CEO confirm).</p>
-  <div class="rec"><b>권고안</b> — B2C 모바일 앱 기준 7종: 퍼소나(자투리 시간 기도자 구체화) · 어피니티(외부 흔적→인사이트) · HMW(통증→기능 변환) · As is/To be 표 · 유저 스토리+AC · Moat &amp; Wall(수익화 경고 정면 대응) · Kill Signal(<b>기간형 지표</b> — 상시 사용률이 아니라 기도 기간 중 완주율. 근거: Stage 1의 기간형 Depth)</div>
-  <p class="ask">판단 재료: <code>stage-1/myrosary/ideation.md</code>(판정·wedge) · <code>stage-1/myrosary/external-traces.md</code>(기존 앱 지형·반증). 답변: "D1 권고안으로" 또는 조정 내용을 채팅으로.</p>
-</div>
+    <div class="left-pane">
+      <div class="workflow">
 
-<h2><span class="n">■</span> 깔때기 보드</h2>
+        <div class="pill start">최종 결정은 이 화면을 보고 내린다 — <code>decisions.md</code> 2026-08-26 (CEO 지시)</div>
+        <div class="arrow">↓</div>
 
-<div class="board">
-  <div class="col">
-    <div class="ct">Stage 1 <span class="cnt">0</span></div>
-    <div class="empty">진행 중인 안건 없음</div>
-  </div>
-  <div class="col">
-    <div class="ct">Stage 2 <span class="cnt">2</span></div>
-    <div class="card">
-      <h4>묵주기도 앱 (MyRosary)</h4>
-      <span class="badge pass">Stage 1 Pass 08-26</span><span class="badge act">진행 중 — D1 대기</span>
-      <div class="meta">wedge: 내 페이스로 · 진행이 기억되고 · 준비가 필요 없는 <b>이동 중 기도</b><br>
-      제약: 기간형 Kill Signal · 수익화 경고 대응 · 이동 중 UX 중심<br>
-      근거: <code>stage-1/myrosary/</code></div>
+        <div class="diamond-shape">결정 대기 — 1건</div>
+        <div class="arrow">↓</div>
+
+        <div class="phase-meta">CEO 판정 대기 · Agent 권고 첨부</div>
+        <div class="phase phase-2d" data-phase="d1">
+          <div class="phase-title">D1 — MyRosary Stage 2 도구 세트 확정</div>
+          <div class="phase-hint">▸ 클릭 — 권고안 · 판단 재료</div>
+          <div class="tools">
+            <div class="tool">퍼소나<span class="label">Owner</span></div>
+            <div class="tool">경쟁 분석표<span class="label">3~5사</span></div>
+            <div class="tool">HMW<span class="label">Wedge</span></div>
+            <div class="tool">As is/To be<span class="label">PRD §2</span></div>
+            <div class="tool">유저 스토리+AC<span class="label">PRD §3</span></div>
+            <div class="tool">Moat & Wall<span class="label">PRD §4</span></div>
+            <div class="tool">Kill Signal<span class="label">기간형</span></div>
+          </div>
+        </div>
+
+        <div class="arrow">↓ <span class="arrow-label">깔때기 현황</span></div>
+
+        <div class="phase-meta">Stage 1 — Ideation · 진행 중 0건</div>
+        <div class="phase phase-1 idle">
+          <div class="phase-title">Stage 1 — 진행 중인 안건 없음</div>
+          <div class="phase-meta">새 안건은 <code>idea-inbox.md</code> → <code>/atelier-npi</code></div>
+        </div>
+
+        <div class="arrow">↓</div>
+
+        <div class="phase-meta">Stage 2 — PRD 확정 · 2건 (진행 1 · 대기 1)</div>
+        <div class="phase phase-2a" data-phase="myrosary">
+          <div class="phase-title">묵주기도 앱 (MyRosary) — Stage 2 진행 중</div>
+          <div class="phase-hint">▸ 클릭 — 판정 이력 · wedge · 제약</div>
+          <div class="tools">
+            <div class="tool">Stage 1 Pass<span class="label">08-26 · CEO</span></div>
+            <div class="tool">wedge — 이동 중 기도<span class="label">내 페이스 · 진행 기억 · 무준비</span></div>
+            <div class="tool">다음: D1<span class="label">도구 확정</span></div>
+          </div>
+        </div>
+        <div class="phase phase-2d" data-phase="ips">
+          <div class="phase-title">사내 상품기획 시스템 — Stage 2 대기</div>
+          <div class="phase-hint">▸ 클릭 — 대기 사유 · 판정 이력</div>
+          <div class="tools">
+            <div class="tool">Stage 1 Pass<span class="label">08-26 · CEO</span></div>
+            <div class="tool">대기<span class="label">MyRosary 사이클 뒤</span></div>
+            <div class="tool">설계 출발점<span class="label">architecture-review §5</span></div>
+          </div>
+        </div>
+
+        <div class="arrow">↓</div>
+
+        <div class="package">
+          <span class="pkg-title">PRD Freeze — 0건</span>
+          stage-2/&lt;idea&gt;/ ─ PRD.md + mockups/ + prototype/
+        </div>
+
+        <div class="arrow">↓</div>
+
+        <div class="phase-meta">CEO 실행 · Agent 안내</div>
+        <div class="phase phase-3 idle">
+          <div class="phase-title">Foundry 인계 — 보류</div>
+          <div class="phase-meta">Foundry → 창고(Template-repository) 이관 완료 후 재개 (<code>plan.md</code> Phase 2 보류 조건)</div>
+        </div>
+
+        <div class="arrow">↓</div>
+        <div class="branch-result hold">Hold 재검토 — 0건 · Hold가 생기면 사유와 함께 여기 보인다</div>
+
+        <div class="arrow">↓</div>
+
+        <div class="phase-meta">이력</div>
+        <div class="phase phase-3" data-phase="log">
+          <div class="phase-title">최근 결정 로그 — 6건 (전부 08-26)</div>
+          <div class="phase-hint">▸ 클릭 — 결정·근거 위치 전체</div>
+        </div>
+
+      </div>
     </div>
-    <div class="card">
-      <h4>사내 상품기획 시스템</h4>
-      <span class="badge pass">Stage 1 Pass 08-26</span><span class="badge wait">Stage 2 대기</span>
-      <div class="meta">대기 사유: CEO 순서 결정 — MyRosary 사이클 완주 후 두 번째 사이클로.<br>
-      제약: Kill Signal이 Depth 정량화 · 과잉 도구 금지<br>
-      근거: <code>stage-1/internal-planning-system/</code> · 설계 출발점 <code>architecture-review.md</code> §5</div>
+
+    <div class="right-pane" id="detail-pane">
+      <div class="right-empty">
+        <div class="arrow-hint">←</div>
+        <div>왼쪽 박스를 <strong>클릭</strong>하면<br/>판단 재료(판정 이력·권고안·근거 위치)가 여기에 표시됩니다.</div>
+      </div>
     </div>
+
   </div>
-  <div class="col">
-    <div class="ct">PRD Freeze <span class="cnt">0</span></div>
-    <div class="empty">—</div>
+
+  <div class="footer">
+    1단계(문서 운영)의 판단 표면 — <code>idea-funnel.md</code>·<code>decisions.md</code>·<code>stage-1/</code>을 원본으로 Agent가 세션마다 재생성 (이 화면만 고쳐 원본과 갈라지게 하지 않는다) · 실시간화(DB)는 2단계 시스템의 몫 · 화면 문법 정본: <code>workflows/type1-external-service.html</code>
   </div>
-  <div class="col">
-    <div class="ct">Foundry 인계 <span class="cnt">0</span></div>
-    <div class="empty">이관 완료 후 재개<br>(plan.md Phase 2 보류)</div>
-  </div>
-</div>
 
-<h2><span class="n">■</span> Hold 재검토 — 0건</h2>
-<div class="qempty">Hold 상태의 안건이 없다. Hold가 생기면 사유와 함께 여기 보이고, 비슷한 아이디어가 들어올 때 대조 근거가 된다.</div>
+  <script>
+    const details = {
+      d1: `
+        <div class="detail-card">
+          <div class="detail-header">
+            <span class="detail-tag" style="background:rgba(250,204,21,0.15);border:1px solid rgba(250,204,21,0.4);color:#fde68a">결정 대기 D1</span>
+            <h2 class="detail-h2">MyRosary Stage 2 — 도구 세트 확정</h2>
+            <div class="detail-sub">charter §5.2 Step 1 — Agent 권장 + CEO confirm. 정본 workflow(Phase 2A~2C)의 도구 구성을 기준으로 이 안건에 맞게 조정한 권고안.</div>
+          </div>
+          <div class="step-flow">
+            <div class="step-block">
+              <div class="step-row"><div class="step-num">권고</div><div class="step-name">7종 — 정본 Phase 2A~2C 구성 + 이 안건의 제약 반영</div></div>
+              <div class="step-info">
+                <div class="info-line"><div class="info-key">2A</div><div class="info-val">퍼소나(자투리 시간 기도자 구체화) · <strong>경쟁 분석표</strong>(Hallow·Laudate·매일미사·국내 소품 앱 — 외부 흔적 문서가 재료) · HMW(통증→wedge 변환) · As is/To be</div></div>
+                <div class="info-line"><div class="info-key">2C</div><div class="info-val">유저 스토리+AC(Given/When/Then) · Moat & Wall(수익화 경고 — 무료 대체재 강세·유료 기도 앱 반감 — 정면 대응) · Kill Signal(<strong>기간형 지표</strong> — 상시 사용률이 아니라 기도 기간 중 완주율. 근거: Stage 1의 기간형 Depth)</div></div>
+                <div class="info-line"><div class="info-key">생략</div><div class="info-val">골든 서클 — 방향이 Stage 1 wedge로 이미 명확</div></div>
+              </div>
+            </div>
+            <div class="branch-arrow">↓ 판단 재료</div>
+            <div class="step-block">
+              <div class="step-info">
+                <div class="info-line"><div class="info-key">판정</div><div class="info-val"><code>stage-1/myrosary/ideation.md</code> — Pain 3축 · cross-examine · wedge 4요소</div></div>
+                <div class="info-line"><div class="info-key">흔적</div><div class="info-val"><code>stage-1/myrosary/external-traces.md</code> — 기존 앱 지형 8건 · 불평 9건 · 우회 5건 · 한국 4건 · 반증 3건</div></div>
+              </div>
+            </div>
+            <div class="check">답변 방법 — 채팅으로 "D1 권고안으로" 또는 조정 내용(뺄 것/더할 것)</div>
+          </div>
+          <div class="sig-line">D1(tool_set) → confirm | adjust → Phase 2A 착수</div>
+        </div>
+      `,
+      myrosary: `
+        <div class="detail-card">
+          <div class="detail-header">
+            <span class="detail-tag" style="background:rgba(168,85,247,0.15);border:1px solid rgba(168,85,247,0.4);color:#d8b4fe">STAGE 2 진행 중</span>
+            <h2 class="detail-h2">묵주기도 앱 (MyRosary)</h2>
+            <div class="detail-sub">첫 실사이클 안건 (CEO 순서 결정 08-26). repo: GeonwooKim-fitogether/MyRosary — 실측 커밋 1개(설정 파일)로 사실상 시작 전이었던 것을 정식 깔때기로 진입.</div>
+          </div>
+          <div class="step-flow">
+            <div class="step-block">
+              <div class="step-row"><div class="step-num">판정</div><div class="step-name">Stage 1 Pass — 2026-08-26 · CEO 김건우</div></div>
+              <div class="step-info">
+                <div class="info-line"><div class="info-key">통증</div><div class="info-val">집에서 시간 내기 어려워 대중교통 등 자투리 시간에 기도 — 실물(묵주·기도문) 휴대 불편 + 기존 앱 사용성·발견성 나쁨</div></div>
+                <div class="info-line"><div class="info-key">Depth</div><div class="info-val">기간형 — 기도 기간(9일기도·성월 등)에는 매일, 평시에는 드묾</div></div>
+                <div class="info-line"><div class="info-key">Owner</div><div class="info-val">CEO 본인 + 자투리 시간 기도자</div></div>
+              </div>
+            </div>
+            <div class="branch-arrow">↓</div>
+            <div class="step-block">
+              <div class="step-row"><div class="step-num">wedge</div><div class="step-name">"내 페이스로 · 진행이 기억되고 · 준비가 필요 없는 이동 중 기도"</div></div>
+              <div class="step-info">
+                <div class="info-line"><div class="info-key">근거</div><div class="info-val">재리뷰 반문("유튜브 따라 기도로 왜 부족한가")에 CEO 4중 답 — 내 페이스 아님 · 진행 위치 모름 · 찾기/준비가 일 · 발견성</div></div>
+              </div>
+            </div>
+            <div class="branch-arrow">↓</div>
+            <div class="step-block">
+              <div class="step-row"><div class="step-num">제약</div><div class="step-name">Stage 2로 넘긴 세 가지</div></div>
+              <div class="step-info">
+                <div class="info-line"><div class="info-key">①</div><div class="info-val">Kill Signal은 기간형 지표(기도 기간 중 완주율 등)</div></div>
+                <div class="info-line"><div class="info-key">②</div><div class="info-val">수익화 경고(무료 대체재·유료 반감)를 Moat & Wall에서 정면 대응</div></div>
+                <div class="info-line"><div class="info-key">③</div><div class="info-val">이동 중 사용(한 손·저마찰·중단/재개)이 UX 수용 기준의 중심</div></div>
+              </div>
+            </div>
+            <div class="check">다음 걸음 — D1(도구 세트) 확정 → Phase 2A 방향성 도출</div>
+          </div>
+          <div class="sig-line">stage-1/myrosary/{ideation.md, external-traces.md}</div>
+        </div>
+      `,
+      ips: `
+        <div class="detail-card">
+          <div class="detail-header">
+            <span class="detail-tag" style="background:rgba(250,204,21,0.15);border:1px solid rgba(250,204,21,0.4);color:#fde68a">STAGE 2 대기</span>
+            <h2 class="detail-h2">사내 상품기획 시스템</h2>
+            <div class="detail-sub">Atelier 2단계 자신 — plan.md Phase 1에서 Stage 1을 통과했고, CEO 순서 결정으로 Stage 2는 MyRosary 사이클 뒤로. funnel 최초의 "Stage 2 대기" 실데이터.</div>
+          </div>
+          <div class="step-flow">
+            <div class="step-block">
+              <div class="step-row"><div class="step-num">판정</div><div class="step-name">Stage 1 Pass — 2026-08-26 · CEO 김건우</div></div>
+              <div class="step-info">
+                <div class="info-line"><div class="info-key">통증</div><div class="info-val">기획 판단·아이디어가 매주 발생하는데 받는 구조가 없음 (주 단위 · 실제 차질, CEO 증언)</div></div>
+                <div class="info-line"><div class="info-key">정직</div><div class="info-val">97일 공백은 CEO 확인으로 통증 증거에서 기각 (원인 = 우선순위, 도구 부재 아님)</div></div>
+              </div>
+            </div>
+            <div class="branch-arrow">↓</div>
+            <div class="step-block">
+              <div class="step-row"><div class="step-num">대기</div><div class="step-name">사유 — 순서 결정 (decisions.md 08-26)</div></div>
+              <div class="step-info">
+                <div class="info-line"><div class="info-key">why</div><div class="info-val">진짜 외부 안건(MyRosary)으로 방법론을 먼저 검증 → 자기참조 위험 해소 → 두 사이클 경험 위에서 시스템 PRD 작성</div></div>
+                <div class="info-line"><div class="info-key">제약</div><div class="info-val">Kill Signal이 Depth를 정량화 · 과잉 도구 금지</div></div>
+                <div class="info-line"><div class="info-key">설계</div><div class="info-val">출발점 <code>architecture-review.md</code> §5 (척추·데이터 모델·4겹)</div></div>
+              </div>
+            </div>
+            <div class="check">재개 조건 — MyRosary PRD freeze 후 두 번째 사이클로</div>
+          </div>
+          <div class="sig-line">stage-1/internal-planning-system/{ideation.md, external-traces.md}</div>
+        </div>
+      `,
+      log: `
+        <div class="detail-card">
+          <div class="detail-header">
+            <span class="detail-tag" style="background:rgba(148,163,184,0.15);border:1px solid rgba(148,163,184,0.4);color:#cbd5e1">결정 로그</span>
+            <h2 class="detail-h2">최근 결정 — 2026-08-26 (6건)</h2>
+            <div class="detail-sub">결정의 정본은 decisions.md·funnel·charter다. 이 목록은 그 요약이다.</div>
+          </div>
+          <div class="step-flow">
+            <div class="step-block"><div class="step-row"><div class="step-num">1</div><div class="step-name">판단의 표면 = 대시보드 (CEO 지시)</div></div><div class="step-info">최종 결정은 대시보드를 보고 내린다. 이 화면(v0)이 그 집행 — <code>decisions.md</code></div></div>
+            <div class="step-block"><div class="step-row"><div class="step-num">2</div><div class="step-name">MyRosary Stage 1 Pass</div></div><div class="step-info">이동 중 기도 통증 · wedge 4요소 — <code>stage-1/myrosary/ideation.md</code></div></div>
+            <div class="step-block"><div class="step-row"><div class="step-num">3</div><div class="step-name">첫 실사이클 안건 = MyRosary (순서 결정)</div></div><div class="step-info">사내 시스템 Stage 2는 대기 — <code>decisions.md</code></div></div>
+            <div class="step-block"><div class="step-row"><div class="step-num">4</div><div class="step-name">사내 상품기획 시스템 Stage 1 Pass</div></div><div class="step-info">97일 공백 기각 · 주 단위 통증 — <code>stage-1/internal-planning-system/ideation.md</code></div></div>
+            <div class="step-block"><div class="step-row"><div class="step-num">5</div><div class="step-name">charter v0.3 ACCEPT (PR #1 머지)</div></div><div class="step-info">단계적 개방 §1.4 · 척추 §3.4 신설. 창고 동기화 봇 첫 실행 성공(규칙 4종·훅 수신 실측) — <code>charter.md</code></div></div>
+            <div class="step-block"><div class="step-row"><div class="step-num">6</div><div class="step-name">진행 계획 승인 — Phase 1까지</div></div><div class="step-info">Phase 2는 Foundry→창고 이관 완료 후 재설계 — <code>plan.md</code></div></div>
+          </div>
+        </div>
+      `
+    };
 
-<h2><span class="n">■</span> 최근 결정 로그</h2>
-<table>
-  <tr><th>일자</th><th>결정</th><th>근거 위치</th></tr>
-  <tr><td class="d">08-26</td><td><b>판단의 표면 = 대시보드</b> — 최종 결정은 대시보드를 보고 내린다 (CEO 지시). 이 화면(v0)이 그 집행이다</td><td><code>decisions.md</code></td></tr>
-  <tr><td class="d">08-26</td><td>MyRosary Stage 1 <b>Pass</b> — 이동 중 기도 통증, wedge 4요소 확정</td><td><code>stage-1/myrosary/ideation.md</code></td></tr>
-  <tr><td class="d">08-26</td><td>첫 실사이클 안건 = <b>MyRosary</b>, 사내 시스템 Stage 2는 대기 (순서 결정)</td><td><code>decisions.md</code></td></tr>
-  <tr><td class="d">08-26</td><td>사내 상품기획 시스템 Stage 1 <b>Pass</b> — 97일 공백은 증거에서 기각, 통증은 주 단위 일상 기획 판단</td><td><code>stage-1/internal-planning-system/ideation.md</code></td></tr>
-  <tr><td class="d">08-26</td><td><b>charter v0.3 ACCEPT</b> (PR #1 머지) — 단계적 개방·척추 신설. 창고 동기화 봇 첫 실행 성공(규칙 4종·훅 수신)</td><td><code>charter.md</code> · PR #1</td></tr>
-  <tr><td class="d">08-26</td><td>진행 계획 승인 — <b>Phase 1까지</b>, Phase 2는 Foundry→창고 이관 완료 후 재설계</td><td><code>plan.md</code></td></tr>
-</table>
+    document.querySelectorAll('.phase[data-phase]').forEach(el => {
+      el.addEventListener('click', () => {
+        const key = el.dataset.phase;
+        document.getElementById('detail-pane').innerHTML = details[key];
+        document.querySelectorAll('.phase').forEach(p => p.classList.remove('active'));
+        el.classList.add('active');
+      });
+    });
+  </script>
 
-<footer>
-  이 대시보드는 1단계(문서 운영)의 판단 표면이다 — <code>idea-funnel.md</code>·<code>decisions.md</code>·<code>stage-1/</code>을 원본으로 Agent가 세션마다 재생성하며, 손으로 여기만 고쳐 원본과 갈라지게 하지 않는다(생성 시각이 위에 찍혀 있다). 실시간화(DB 기반)는 2단계 시스템의 몫이며, 그 요구사항은 <code>decisions.md</code>의 대시보드 절에 누적된다.
-</footer>
-
-</div>
 </body>
 </html>
