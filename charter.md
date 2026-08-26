@@ -1,9 +1,9 @@
-# Atelier Charter v0.3 (개정안)
+# Atelier Charter v0.3
 
 > *부트스트래핑 마지막 단계에서 작성됨. 이 문서는 Atelier의 헌법이다.*
 >
-> 작성 시점: 2026-05-21 · v0.3 개정안 작성: 2026-08-26
-> Status: **v0.3 개정안 — CEO ACCEPT(main 머지) 대기.** ACCEPT 전까지 유효본은 v0.2(main)다. v1 frozen은 §16 미해결 잔여 해소 + 사용자 ACCEPT 후.
+> 작성 시점: 2026-05-21 · v0.3 개정: 2026-08-26
+> Status: **v0.3 frozen** — CEO가 PR #1 머지로 공식 ACCEPT (2026-08-26). v1 frozen은 §16 미해결 잔여 해소 + 사용자 ACCEPT 후.
 >
 > **v0.3이 바꾸는 것 한 줄**: Atelier의 정체성을 "1인 공방 도구(영구)"에서 **"단계적으로 개방되는 상품기획 시스템 — 최종 형태는 SaaS 자회사 제품"** 으로 확장한다(§1.4 신설). 이에 맞춰 충돌하던 조항(§2·§4.2·§8·§9.3·§18)을 개정하고, 시스템의 척추(§3.4)를 신설한다. 각 개정의 근거는 [`architecture-review.md`](./architecture-review.md) §3.
 
@@ -487,6 +487,6 @@ v0.3 신설 (2단계 진입 전제):
 
 ---
 
-*— Atelier Charter v0.3 (개정안) 끝 —*
+*— Atelier Charter v0.3 끝 —*
 
 > 변경 history는 `git log charter.md`로 본다. 이 문서에 중복 박지 않음 (일원화).
