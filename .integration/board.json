@@ -1,0 +1,55 @@
+{
+  "today": "2026-08-27",
+  "updated": "2026-08-27 21:10",
+  "works": [
+    { "id": "W-01", "title": "헌장 v0.3 발효 — 단계적 개방(공방 → 사내 시스템 → SaaS)", "area": "charter", "team": "공방장", "status": "deployed",
+      "planStart": "2026-08-25", "planEnd": "2026-08-26", "completedAt": "2026-08-26", "progress": 100, "touches": ["charter-doc"] },
+    { "id": "W-02", "title": "헌장 §5·§7 을 9단계 정본에 맞춰 갱신", "area": "charter", "team": "Atelier Agent", "status": "todo",
+      "block": "waiting", "touches": ["charter-doc", "npi-canon"], "drift": true },
+
+    { "id": "W-03", "title": "실행 계획 수립 (Phase 0~6, 승인 범위 Phase 1)", "area": "pipeline", "team": "Atelier Agent", "status": "deployed",
+      "planStart": "2026-08-25", "planEnd": "2026-08-26", "completedAt": "2026-08-26", "progress": 100 },
+    { "id": "W-04", "title": "아키텍처 리뷰 — HTS 수준까지의 간극과 SaaS 대비", "area": "pipeline", "team": "Atelier Agent", "status": "deployed",
+      "planStart": "2026-08-25", "planEnd": "2026-08-26", "completedAt": "2026-08-26", "progress": 100 },
+    { "id": "W-05", "title": "9단계 정본 파이프라인 회수 (atelier-npi SKILL 38KB · 5 묶음 구조)", "area": "pipeline", "team": "Atelier Agent", "status": "workdone",
+      "planStart": "2026-08-27", "planEnd": "2026-08-27", "completedAt": "2026-08-27", "progress": 100, "touches": ["npi-canon"] },
+    { "id": "W-06", "title": "plan.md 국면 정의를 9단계 정본 어휘로 갱신", "area": "pipeline", "team": "Atelier Agent", "status": "todo",
+      "block": "waiting", "touches": ["npi-canon"], "drift": true },
+
+    { "id": "W-07", "title": "묶음 1 — 01 Intake (Pain 3축 · 5 Whys · 근본 원인)", "area": "cycle", "team": "공방장", "status": "workdone",
+      "planStart": "2026-05-29", "planEnd": "2026-05-29", "completedAt": "2026-05-29", "progress": 100 },
+    { "id": "W-08", "title": "묶음 2 — 02 Deep Research + 03 정리·분석 (판정: 진행)", "area": "cycle", "team": "Atelier Agent", "status": "workdone",
+      "planStart": "2026-05-30", "planEnd": "2026-05-31", "completedAt": "2026-05-31", "progress": 100, "deps": ["W-07"] },
+    { "id": "W-09", "title": "묶음 3 — 04 아이디어 펼치기 + 05 우선순위 정하기", "area": "cycle", "team": "Atelier Agent", "status": "workdone",
+      "planStart": "2026-08-27", "planEnd": "2026-08-27", "completedAt": "2026-08-27", "progress": 100, "block": "waiting", "deps": ["W-08"] },
+    { "id": "W-10", "title": "2차 판정 + 중단·재개 wedge 확인 (공방장 전속)", "area": "cycle", "team": "공방장", "status": "todo",
+      "block": "waiting", "deps": ["W-09"], "stalledDays": 0 },
+    { "id": "W-11", "title": "묶음 4 — 06 서비스 설계 · 07 시제품 · 08 검증", "area": "cycle", "team": "Atelier Agent", "status": "todo",
+      "block": "waiting", "deps": ["W-10"] },
+    { "id": "W-12", "title": "8월 Stage 1/2 산출물 대조·보관 · 프로토타입 07 이관", "area": "cycle", "team": "Atelier Agent", "status": "workdone",
+      "planStart": "2026-08-27", "planEnd": "2026-08-27", "completedAt": "2026-08-27", "progress": 100 },
+
+    { "id": "W-13", "title": "정본 현황판 회수 (175,330 B) — 폐기본 26KB 를 정본으로 오인하던 것 해소", "area": "board", "team": "Atelier Agent", "status": "workdone",
+      "planStart": "2026-08-27", "planEnd": "2026-08-27", "completedAt": "2026-08-27", "progress": 100, "touches": ["board-canon"] },
+    { "id": "W-14", "title": "현황판 04·05 카드 deep render + 아티팩트 게시", "area": "board", "team": "Atelier Agent", "status": "workdone",
+      "planStart": "2026-08-27", "planEnd": "2026-08-27", "completedAt": "2026-08-27", "progress": 100, "touches": ["board-canon"] },
+    { "id": "W-15", "title": "8월 progress-dashboard 체계 (meta/ · ai-npi/ · dashboard.config.json)", "area": "board", "team": "공방장", "status": "workdone",
+      "planStart": "2026-08-26", "planEnd": "2026-08-26", "completedAt": "2026-08-26", "progress": 100, "touches": ["board-canon"], "block": "conflict", "drift": true },
+
+    { "id": "W-16", "title": "로컬·클라우드 이원화 해소 (recover/june-2026 3방향 병합, 88 파일)", "area": "integrity", "team": "공방장", "status": "workdone",
+      "planStart": "2026-08-27", "planEnd": "2026-08-27", "completedAt": "2026-08-27", "progress": 100, "touches": ["charter-doc"] },
+    { "id": "W-17", "title": "운영 기준 문서 4개 회수 (Drive atelier-standard/ → 저장소)", "area": "integrity", "team": "공방장", "status": "todo",
+      "block": "waiting", "touches": ["warehouse-rules"], "stalledDays": 88 },
+    { "id": "W-18", "title": "base64 전사 회수 실패 격리 · 방법 자체를 금지로 기록", "area": "integrity", "team": "Atelier Agent", "status": "workdone",
+      "planStart": "2026-08-26", "planEnd": "2026-08-27", "completedAt": "2026-08-27", "progress": 100 },
+    { "id": "W-19", "title": "창고 동기화 봇 편입 (sync-skills.yml) — 1회 실행 확인", "area": "integrity", "team": "Atelier Agent", "status": "deployed",
+      "planStart": "2026-08-26", "planEnd": "2026-08-26", "completedAt": "2026-08-26", "progress": 100, "touches": ["warehouse-rules"] },
+    { "id": "W-20", "title": "PR 열기 → 리뷰 → main 머지", "area": "integrity", "team": "공방장", "status": "todo",
+      "block": "waiting", "deps": ["W-09"] }
+  ],
+  "checkRuns": {
+    "syncbot": "pass",
+    "prgate": "never"
+  },
+  "drift": { "gaps": 3, "pivots": 1 }
+}
