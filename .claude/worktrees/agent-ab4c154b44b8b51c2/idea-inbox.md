@@ -4,8 +4,4 @@
 
 세션 밖에서 떠오른 idea는 핸드폰 메모 등에 두었다가 다음 세션에서 말로 전달한다.
 
-정식 진입은 CEO가 **"Atelier 시작"** 발화 → `atelier-npi` Skill 자동 fire → Stage 01 Intake.
-
----
-
-- 2026-05-22 mobile-rosary: 대중교통에서 묵주·기도문 없이 스마트폰으로 묵주기도
+정식 진입 결정 시 `/atelier-npi` 호출 → Stage 1 Ideation.

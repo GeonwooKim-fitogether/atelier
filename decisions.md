@@ -6,15 +6,485 @@ charter 변경급 사항은 charter.md에 직접 박고 git log로 추적한다.
 
 ---
 
-## Atelier 대시보드 — 요구사항 누적 (시점 미정)
+## 메타 프로세스 — Phased Build-and-Test (2026-05-22)
 
-대시보드는 **HTML 실시간 산출물**. 작업 시작 시 자동 보여서 *방향 흩어짐 + idea 잊어버림* 방지. charter §16 미해결.
+atelier-npi workflow 자체를 만들 때도 *AI 시대 속도 원칙*을 적용한다.
+
+**거부한 방식**: 9 단계 정의를 모두 박은 후에 첫 idea 진입.
+**선택한 방식**: 한 단계 시스템 구축 → 같은 idea로 그 단계 cycle 1회 → 막힌 부분 반영 → 다음 단계 시스템 구축 → 같은 idea로 다음 단계 cycle → ...
+
+**왜**: 한 번에 잘 만들려고 하면 책의 논리만으로 9개를 채우는데, 실제 idea를 통과시켜보지 않으면 *진짜 막힘*이 안 보인다. 회귀가 잦을 것 — 그게 시스템 진화의 정상 신호.
+
+**effect**: 다음 단계 정의 입력 = 이전 단계의 *실측 출력*. 머릿속 가설이 아닌 실데이터 기반 설계.
+
+### 세부 게이트 — *정의 확정 → 예제 cycle* 순서 강제 (2026-05-22 추가)
+
+**원칙**: 매 Stage N 진입 시 **정의 → 사용자 명시적 확정 → 예제 cycle (검증용) → 진화** 순서. *모든 단계에 동일 적용*.
+
+**거부 패턴**: 사용자의 한 마디(frame·각도·force vector)를 받은 직후 Agent가 그 위에서 추론한 정의를 *확정인 양* 예제로 진입. → Agent 추론이 *제안* 단계인지 *합의* 단계인지 모호해짐.
+
+**Why**: Stage N 정의는 *Agent 1차 추론*과 *사용자 확정*이 다른 자리. Agent 추론은 frame 받은 후 1~N차 진화 가능. 확정 게이트 없이 예제 진입하면 *프로세스 진화*가 아닌 *예제 출력*에 끌려감 — 메인(프로세스)과 검증(예제)의 자리 뒤집힘.
+
+**How to apply**:
+- 매 Stage N 진입 시: Agent 정의 1차 박음 → 사용자 *명시적 확정* (객관식 confirm 또는 자유 추가 박음) → *그제서야* 예제 cycle.
+- 사용자가 frame만 박았을 뿐 *정의 자체*에 합의하지 않은 상태 = 확정 X. Agent가 그 위에 추론한 구조도 *제안 단계*.
+- 예제 cycle은 *정의의 작동 확인*용. 정의가 흐물흐물한 상태로 예제 돌리면 *예제 산출이 정의를 흡수*해버림.
+
+**기존 위반 사례 (2026-05-22)**: Stage 02 v3 박은 직후 사용자 확정 없이 mobile-rosary WebSearch 8회 + 02-research.md 박음 진행. 사용자 정정으로 흐름 회귀. 02-research.md는 *정의 미확정 상태의 1차 시도 산출*로 보존 (정의 확정 후 재실행 비교용).
+
+---
+
+## Stage 02~05 frame 확정 — (A) 4-stage 유지 + 발산/수렴 명시 (2026-05-23)
+
+근본 frame 재성찰 결과. 02·03·04·05 잠정 정의를 *통합 frame*으로 박음. *각 stage 안 mode 짬뽕 제거*가 핵심.
+
+### 박힌 구조
+
+| Stage | mode | 책임 | 산출 |
+|---|---|---|---|
+| **02 Research** | 발산 | 시장조사(2.1) → 사용자조사(2.2) — 시장 raw 위에서 UX | `02-research.md` raw |
+| **03 Analysis** | 수렴 + 판정 1 | 포지셔닝 맵 · 경쟁사 분석 · Persona 작성 + Pass/Hold/Kill | `03-analysis.md` |
+| **04 Ideation** | 발산 | HMW · 크레이지 8 등 도구로 솔루션 안 발산 | `04-ideation.md` |
+| **05 Prioritization** | 수렴 + 판정 2 + 완료 | 2x2 매트릭스 → 솔루션 방향 + As is-To Be + Pass/Hold/Kill | `05-prioritization.md` |
+
+### 박힌 frame 원칙
+
+- **발산/수렴은 stage 단위 분리** — 한 stage 안 mode 짬뽕 X. 02 발산만 / 03 수렴만 / 04 발산만 / 05 수렴+완료.
+- **02 → 03 순서 의존성** — 시장 raw가 UX 대상·맥락 frame 제공. UX는 시장 위에서만 정밀 작동. *논리적 자연 순서*.
+- **경쟁사의 포괄적 정의** — 경쟁 제품 있으면 그 제품 분석. *경쟁 제품 없으면 사용자의 현재 우회 행동(맨몸·종이·기존 도구)이 경쟁자*. UX 분석이 경쟁사 분석에 자연 포함됨.
+- **판정 위치 2회** — Stage 03 끝 Pass/Hold/Kill 1차 (Pain 검증·Owner), Stage 05 끝 Pass/Hold/Kill 2차 (솔루션 방향).
+- **Stage 05 = 완료 시그니처** — 방향성 한 줄 + As is-To Be. Foundry handoff 입력 시작점 (Stage 06~09까지 박음 후 09 Handoff에 최종 묶음).
+
+### 본질 정의 — 시장조사·UX 리서치
+
+- **시장조사** = *내 머릿속 가설을 외부 현실과 마주치게 해, 살아남은 가설만 다음 단계로 보내는 행위*.
+- **UX 리서치** = *시장 풍경 위에 자리잡은 실제 사용자의 행동·맥락·동기를 발견해, 내 머릿속 사용자상과 마주치게 하는 행위*.
+- *마주침* 표현 — 충돌(전투적·파괴적)이 아닌 *변형·검증·발견*의 만남.
+
+### 5 마주침 질문
+
+**시장 (Layer 1 발산)**:
+1. 시장 응답 강도 (시장이 이 Pain에 응답하는가?)
+2. 솔루션 풍경 (누가 어떻게 풀고 있나? gap?)
+3. 경쟁자·플레이어 (누구와 부딪치나? 자리 있나?)
+4. 시장 규모·트렌드 (사업 가치? 방향 정합?)
+5. 인접 도메인 (같은 Pain pattern 다른 곳? Stage 04 발산 input)
+
+**사용자 (Layer 1 발산, 시장 raw 위)**:
+1. 시장 안 위치 (어느 세그먼트? 얼마나 좁나?)
+2. 솔루션 환경 (기존 솔루션 채택·비채택·반쪽 사용?)
+3. 현재 행동 (시장 솔루션 사용 / 우회 / 포기?)
+4. 선택·기피·우회 동기 (왜 그렇게 다루나?)
+5. 시장 솔루션에 대한 표현 (후기·평점·비판·요청 어떻게 말하나?)
+
+### 거부한 옵션
+
+- **(B) 2-stage 통합 (Double Diamond)** — stage 단순화 장점 있으나 *한 stage 안 mode 짬뽕 위험*이 1차 cycle 경험과 같은 함정. 거부.
+- **(C) 3-stage 절충** — (B)와 같은 위험. 거부.
+- **(D) 질문·책임 재정의** — 사용자가 (A) 명시. 진행 X.
+
+### Phased Build-and-Test 적용
+
+- Stage 02만 1차 본격 구축. Stage 03·04·05는 *잠정 박음*만 (mobile-rosary cycle 진행하며 순차 구체화).
+- 짬뽕 fix lesson — *발산 중 분석 X, 수렴 중 raw 수집 X*. mode 경계 강제.
+
+---
+
+## 비즈니스 모델·가격 구조 추적 메타 원칙 (2026-05-23)
+
+**박힘**: 비즈니스 모델·가격 구조는 *Stage 02 시장 6번 마주침 질문*에서 raw로 박힌 후, **이후 모든 단계에 면밀히 녹아 나오도록 develop**. 사업 본질이므로 절대 누락 X.
+
+**Why**: 1차 Stage 02 시스템 박음에서 *놓칠 뻔한 영역*. CEO가 명시적으로 잡음. 상품기획에서 *Pain·솔루션*만큼 *수익 구조*가 본질. 빠지면 *돈 못 버는 제품* 함정.
+
+**How to apply — 단계별 develop 책임**:
+
+| Stage | 비즈니스 모델·가격 의무 영역 |
+|---|---|
+| **02 Research** | 시장 6번 마주침 질문 raw — 각 경쟁자 가격대·과금 방식·페이월·트라이얼·B2B/B2C·구독·일회성·광고 |
+| **03 Analysis** | 경쟁사 분석표에 *비즈니스 모델·가격* 컬럼 **필수** |
+| **04 Ideation** | 솔루션 발산 시 *수익 메커니즘 후보*도 함께 발산 |
+| **05 Prioritization** | 2x2 매트릭스 축 후보에 *시장 진입 비용·수익 가능성·LTV/CAC 가설* 박힘. As is-To Be에 *수익 모델 변화* 포함 |
+| **06 Service Planning** | 화면 흐름·기능에 *가격 정책·과금 화면·페이월·트라이얼 흐름* 명시 |
+| **07 Prototyping** | 가격·과금 화면을 프로토에 포함 (mock 데이터로) |
+| **08 Validation** | Kill Signal 후보에 *매출 관련 정량 기준*(LTV·전환율·페이월 통과율 등) 옵션 |
+| **09 Handoff Packaging** | PRD.md에 *비즈니스 모델 섹션 필수* — Foundry MVP가 수익 메커니즘 함께 박힘 |
+
+**거부 패턴**:
+- ❌ "기술적으로 흥미로우니 비즈니스는 나중에" — 옛 패러다임 (charter §3.1·§3.2). Pain·솔루션과 *동등한 핵심 layer*.
+- ❌ "무료부터 시작" — 박을 수 있으나 *왜 무료인가·언제 유료 전환·다른 수익 메커니즘* 명시 박혀야 함.
+- ❌ Stage 02·03에서만 다루고 후속 단계에서 사라짐 — 위 표가 *반드시 채워져야* 진행.
+
+**Stage 09 Handoff 자동 취합 정합**: Stage 02~08의 *비즈니스 모델·가격* 박음이 09에서 자동 취합되어 PRD.md 비즈니스 모델 섹션에 박힘. *살아남은 것만 글자가 된다* 원칙 정합.
+
+---
+
+## BMC (Business Model Canvas) 횡단 산출물 박음 (2026-05-24)
+
+**박힘**: BMC는 *Stage 03부터 시작해 09까지 점진 채워지는 횡단 산출물*. Foundry로 가기 전 *완성된 BMC*가 박혀야 함.
+
+**Why**: CEO 박은 통찰 — *기획 단계에서 BMC가 박히지 않으면 Foundry로 제품 만든 후 서비스하면서 BM 문제를 그제서야 발견*. 비즈니스 메타 원칙(가격·과금 추적)의 *상위 framework*. 9 블록이 *체계적으로 박혀야* 사업 본질이 누락 없이 박힘.
+
+**BMC 9 블록**:
+1. **Customer Segments** — 누구를 위한 가치
+2. **Value Propositions** — 어떤 가치
+3. **Channels** — 어떻게 전달
+4. **Customer Relationships** — 어떤 관계
+5. **Revenue Streams** — 어떻게 돈을 버나
+6. **Key Resources** — 무엇이 필요
+7. **Key Activities** — 무엇을 하는가
+8. **Key Partnerships** — 누구와 협력
+9. **Cost Structure** — 비용 구조
+
+**각 stage별 BMC 박는 책임**:
+
+| Stage | BMC 블록 박는 책임 | 형태 |
+|---|---|---|
+| **03 Analysis** | 1차 박음 — *Stage 02 raw로 박힐 수 있는 블록*: Customer Segments (Persona) · Value Propositions (Pain → 가치 가설) · Channels (시장 raw 위) · Revenue Streams (시장 가격 raw 위 후보) | **가설 박음** |
+| **04 Ideation** | Value Propositions 발산 + Revenue Streams 후보 발산 (수익 메커니즘 발산 — 비즈니스 메타 원칙 정합) | **발산 진화** |
+| **05 Prioritization** | **BMC 9 블록 모두 박음** — 솔루션 방향 결정과 함께 Key Resources·Key Activities·Key Partnerships·Cost Structure 박힘. As is-To Be의 자연 input. Pass/Hold/Kill 2차 판정 input. | **수렴 확정** |
+| **06 Service Planning** | Channels·Customer Relationships 구체화 (화면 흐름·과금 화면 등) | **구현 박음** |
+| **08 Validation** | BMC 가설 검증 (Kill Signal에 BMC 가설 정량 기준 포함) | **검증** |
+| **09 Handoff Packaging** | **완성된 BMC**가 PRD에 박힘 (Foundry 입력 핵심) | **확정 박힘** |
+
+**산출물 형태** (각 stage에서):
+- markdown 9 블록 표
+- 또는 ASCII canvas
+- 블록별 *근거 raw·source 인용*
+
+**거부 패턴**:
+- ❌ "BMC는 나중에" — Foundry 진입 후 박는 BM은 *늦은 시점*. 기획 단계에 박혀야 함.
+- ❌ "Revenue Streams만 박고 다른 블록 무시" — 9 블록이 *상호 의존*. 한 블록만 박으면 흐림.
+- ❌ Stage 03에서 *완성 BMC 박기* — *raw 가설*까지만. 완성은 Stage 05.
+
+**Stage 09 자동 취합 정합**: 03~08의 BMC 박음이 09에서 자연 취합 → 완성 BMC가 PRD에 박힘. *비즈니스 메타 원칙의 상위 framework*.
+
+---
+
+## 3 Layer 소통 채널 원칙 (2026-05-24)
+
+**박힘**: Atelier의 소통은 *3 layer로 분리*. 각 layer의 *채널·청중·형식*이 다름. 한 layer 자료를 다른 layer 청중에 직접 노출하지 않음.
+
+| Layer | 채널 | 청중 | 형식 |
+|---|---|---|---|
+| **L1 — CEO ↔ Atelier Agent** | 대화창 (판단·결정·feedback) + **Dashboard** (결과 검토) | CEO 1인 | 보고 자료 정제 형식 (단락·흐름·외부 사실 보존, 내부 jargon 풀이) |
+| **L2 — Agent ↔ 실무자/agent** | **md 파일** (`idea/<slug>/*.md`) | Agent·실무자 | 작업 raw·내부 jargon OK |
+| **L3 — Atelier → Foundry** | **최종 package** (PRD + 기획서 + 프로토 + 검증) | Foundry CTO·개발 fleet | 외부 인계 정제 형식 |
+
+**Why**: CEO가 md 파일을 직접 읽지 않음. CEO 결과 검토 = *Dashboard*. md = *agent·실무자 작업 자료*. Foundry 인계 = *별도 정제 package*. 세 청중·형식이 다름.
+
+**거부 패턴**:
+- ❌ md 파일을 *CEO 보고 자료처럼* 정제하려 함 — 과한 작업. md는 agent 자료라 raw·jargon OK.
+- ❌ Dashboard에 *md 내용 dump* — CEO 시각화 본질 위반 (이전 cycle에서 짬뽕 발견).
+- ❌ md 파일을 *Foundry 인계 그대로* — Foundry 청중은 별도 정제 필요 (Stage 09 책임).
+
+---
+
+## Dashboard 갱신 의무 원칙 (2026-05-24)
+
+**박힘**: 시스템 변경·산출물 변경 시 **Dashboard 갱신을 동반 의무**로 박음. CEO 시각 채널이 *Dashboard 유일*이므로 *Dashboard 갱신 없는 변경 = CEO에 보이지 않는 변경*.
+
+**Why**: L1 소통 채널 정합. Dashboard가 *CEO의 유일한 결과 검토 자리*. md만 박고 Dashboard 안 박으면 CEO 시야에서 사라짐.
+
+**적용 범위 — 의무 갱신**:
+- Stage 진입·종료 시 (sidebar dot, project card)
+- 시스템 정의 변경 (Skill 본문 정정) → Dashboard 중앙 *Process & Policy* 갱신
+- idea 산출물 큰 변경 (수렴 결과·판정) → Dashboard 우 *Project* card 갱신
+- 큰 frame 변경 (메타 원칙 박음) → Dashboard 전체 정합 점검
+
+**적용 범위 — 묶음 갱신**:
+- 작은 raw 보강 — Stage 종료 시 묶음
+- 정정 cycle 중간 변경 — 변경 묶음
+
+**How to apply**:
+- 매 변경 작업 시 *Skill·md·Dashboard 3 자리 동시 박음* default
+- Dashboard 박을 자리 — *어떤 시각 위계로 보여줄지*도 함께 고민
+- CEO 청중에 맞게 — 내용 dump 거부, 본질·흐름·시각 위계 박음
+
+**Skill 책임 명시**: atelier-npi Skill의 각 stage *종료 step*에 *Dashboard 갱신 의무*가 박힘. 별도 Skill 만들지 않음 (Dashboard 갱신은 모든 stage에 자연 동반되는 책임이지 독립 책임 X).
+
+**charter v0.3 정합**: 위 두 원칙은 charter v0.3에 흡수 예정 (장기). 현재는 decisions.md에 박힘.
+
+---
+
+## 시각화 표준 원칙 (2026-05-24)
+
+**박힘**: Persona·포지셔닝 맵·경쟁사 분석·BMC 등 *기획 도구는 책 표준 시각화 형식*으로 박음. 단순 텍스트·단락 형식 X.
+
+**Why**: 시각화가 *분석의 일부*. 그래프·표·canvas는 *내용을 한 눈에 박는 형식*이라 텍스트보다 정합. CEO 검토 시 빠르게 본질 잡힘. Foundry 인계 시에도 같은 형식 유지로 외부 청중 이해 정합.
+
+**책 표준 형식 박음**:
+
+| 도구 | 시각화 표준 |
+|---|---|
+| **Persona** | Persona profile card (이름·맥락·goals·frustrations·behaviors·인용) + Empathy Map 4분면 (Says·Thinks·Does·Feels) |
+| **포지셔닝 맵** | X-Y 평면 plot. 2축 + 경쟁자 점 + 들어갈 자리 가설 |
+| **경쟁사 분석** | markdown 표 — 강점·약점·타깃·기능·비즈니스 모델·차별점 |
+| **BMC** | 9 블록 canvas (Key Partners · Key Activities · Value Propositions · Customer Relationships · Customer Segments · Key Resources · Channels · Cost Structure · Revenue Streams) |
+| **As is - To Be** (Stage 05) | 2 컬럼 표 — 현재 vs 목표 (수익 모델 변화 포함) |
+| **2x2 매트릭스** (Stage 05) | 2x2 grid plot. Wedge 후보 매핑 |
+
+**L1·L2 박음 차이**:
+- **L2 (md, agent 자료)**: markdown 표·ASCII plot·ASCII canvas
+- **L1 (Dashboard, CEO 시각화)**: 정제 HTML·SVG·grid·card 형식
+
+**거부 패턴**:
+- ❌ Persona·BMC를 *단락 텍스트로만* 박음 — 시각화 본질 위반
+- ❌ Dashboard에 ASCII 그대로 노출 — L1 정제 의무 (Dashboard 갱신 의무 원칙 정합)
+- ❌ md에 *시각화 없이 본문만* — 책 표준 형식 위반
+
+---
+
+## 본질 우선순위 원칙 (2026-05-24, 최상위 메타 원칙)
+
+**박힘**: Atelier의 모든 작업에서 *시스템 정의 (메인) > 예시 cycle (부차)* 우선순위 강제. 예시 산출물 외관에 attention 집중 금지.
+
+**Why** (CEO 박은 분노 + 누적 lesson):
+- 지금 하는 일 = **NPI workflow 시스템(Skill·decisions·Dashboard) 정의**
+- mobile-rosary 같은 예시 = *시스템이 작동하는지 보는 TDD test case 역할*
+- 누차 Agent가 *예시 산출물 (`02-research.md`·`03-analysis.md`·card 등) 내용·시각화*에 집중하여 *시스템 본질*은 놓치는 함정 반복
+
+### TDD 비유 (Atelier 작동 원리)
+
+```
+TDD:         test 먼저 → 코드 → test 통과 확인
+Atelier NPI: 시스템 정의 → 예시 cycle → 시스템 검증·정정
+```
+
+- **시스템 정의 (Skill·decisions·Dashboard)** = test. 메인.
+- **예시 cycle (mobile-rosary 산출물)** = 코드 실행. 부차. 시스템 검증 input일 뿐.
+- **예시 산출물의 *완성도·풍부함*** ≠ 시스템 본질 완성도. 둘은 다른 차원.
+
+### 거부 패턴
+
+- ❌ 예시 산출물 내용·시각화에 attention 집중. 시스템 정의는 *대충*.
+- ❌ 예시 산출물이 *풍부·예쁘게 박힘* = 시스템 정의 완료라고 착각.
+- ❌ 시스템 정의 confirm 게이트 통과 전 예시 cycle 진입.
+- ❌ 예시 산출물에서 *문제 발견* 시 *예시만 정정* (시스템 정정 없이).
+
+### 매 작업 적용 원칙
+
+1. **작업 시작 전 질문 자가 박음**: *이 작업은 시스템 정의(메인)인가, 예시 cycle(부차)인가?* 명시.
+2. **시스템 정의 작업 중 예시 산출물 정정 끼어들면**: *예시는 미루고 시스템 먼저*. 또는 *명시 분리 박음*.
+3. **예시 cycle 작업 중 시스템 약점 발견 시**: *예시 멈춤 + 시스템 정정 먼저* (회귀).
+4. **결과물 검토 시**: *시스템 정의 완성도* 위주 검토. 예시 외관 검토는 부차.
+
+---
+
+## 작업 단위 원칙 (2026-05-24)
+
+**박힘**: 매 작업을 *명확한 시작·종료·산출이 박힌 한 덩어리*로 commit. 종료 전 다른 작업 끼어들지 않음.
+
+**Why**: 매 input을 즉시 흡수 → 모든 작업이 한 자리에 섞임 → CEO가 *지금 어디인지* 따로 물어야 알 정도로 흐름 잃어버림.
+
+### 작업 단위 정의
+
+매 작업 시작 시 명시:
+- **목적** — 이 작업이 무엇을 위해
+- **산출** — 종료 시 박힐 결과 (어디에 commit)
+- **종료 신호** — 무엇이 박히면 종료
+- **메타/실 layer** — 시스템 정의(메타) or 예시 cycle(실)
+
+### 매 응답 의무 상단 명시
+
+```
+**현재 작업 단위**: <목적·산출>
+**진행도**: <단계/총 단계>
+**Layer**: 시스템 정의 / 예시 cycle
+```
+
+CEO가 *묻기 전에* 보임.
+
+### 새 input handling 원칙
+
+새 input 들어오면 **즉시 흡수 X**. 분류 강제:
+
+| 분류 | 행동 |
+|---|---|
+| (a) 현재 작업 정정 | 명시 흡수 ("현재 작업 ___에 ___ 정정 흡수") |
+| (b) 별도 작업 (큐) | 큐에 박음 ("현재 작업 종료 후 ___ 처리"). 현재 작업 계속 |
+| (c) 작업 교체 | 명시 confirm ("현재 작업 중단하고 ___ 진입할까요?"). 사용자 명시 답변 후 교체 |
+
+→ 사용자 input 즉시 반응 default 금지. 분류 → 행동.
+
+### 작업 종료 박음
+
+- 완료 시 명시: *"작업 ___ 완료. 산출 ___에 commit."*
+- 중단 시 명시: *"작업 ___ 중단. 진행도 ___. 다음 ___에서 재진입."*
+- 종료 신호 없으면 다음 작업 시작 X
+
+---
+
+## 세션 인계 의무 원칙 (2026-05-24)
+
+**박힘**: Context window 제한으로 세션 단절 불가피. 단절 시 *학습된 lesson을 새 세션이 모름* → 같은 함정 반복 위험. **세션 인계 메커니즘**으로 단절 영향 최소화.
+
+### 메커니즘 — SESSION-HANDOFF.md + Dashboard 인계 패널
+
+**SESSION-HANDOFF.md** (atelier 루트, L2 agent 자료):
+- 매 세션 종료 전 의무 commit
+- 다음 세션 시작 시 의무 read
+
+**Dashboard 세션 인계 패널** (L1 CEO 시각):
+- 매 세션 종료 시 갱신
+- CEO·다음 세션 Agent 둘 다 의무 read
+
+### 세션 종료 의무 작업
+
+```
+1. 현재 작업 단위 — 완료 / 중단 / 진행 중 상태 명시
+2. 대기 input — 큐 박힌 자료 list
+3. 다음 세션 첫 행위 — 즉시 진입할 자리
+4. 핵심 lesson — 이번 세션에서 발견한 함정·통찰
+5. 변경된 시스템 자료 — Skill·decisions·Dashboard·md 갱신 list
+```
+
+### 세션 시작 의무 작업
+
+```
+1. charter.md read (자동)
+2. decisions.md read (자동)
+3. MEMORY.md read (자동)
+4. SESSION-HANDOFF.md 의무 read
+5. Dashboard 의무 view (현재 상태·인계 패널)
+6. _meta.md·idea-funnel.md 의무 read (진행 중 idea)
+→ 컨텍스트 회복 후 첫 행위 진입
+```
+
+### atelier-npi Skill 책임
+
+Skill fire 시 의무 read + Skill 종료 시 의무 commit step 박힘. (별도 Skill 만들지 않음 — atelier-npi 책임.)
+
+---
+
+## Render-First 소통 원칙 (2026-05-25)
+
+**박힘**: 시스템 정의·정정·신규 박음 시 **Dashboard render 먼저**. CEO는 *render된 결과물 보고* 판단·정정. 추상 텍스트 list·점검 frame은 *Agent 내부 자가 점검*만. 사용자 노출 X.
+
+**Why**: CEO 박음 — *"이런 대화는 전혀 생산적이지 않다. 결과물 예시로 보여주면서 작업하는 게 낫다. Dashboard에서 보면서 소통"*. 텍스트로 본질·점검 axis·정정 후보 list 박음 = *비효율·추상·와닿지 않음*. Dashboard render = *구체·즉시 판단 가능*.
+
+**거부 패턴**:
+- ❌ 텍스트로 점검 frame (7 axis 등) 사용자 노출
+- ❌ 정정 후보 list 박은 후 AskUserQuestion 객관식으로 합의 받기
+- ❌ 정정 박기 전 *추상 합의 과정 텍스트* 길게 박음
+
+**How to apply**:
+- 시스템 정정 → *Skill 본문 정정 + Dashboard render 먼저*
+- 사용자에 *render된 결과물 view 요청* → 정정·승인 받음 (대화 minimal)
+- AskUserQuestion 객관식 = *결정 critical (방향·근본 frame·layer 선택)* 에만. 자잘한 정정은 render에서 직접
+- Agent 내부 자가 점검은 유지 — *invisible*. 결과 = 정정안 *즉시 render*
+
+**Layer 정합**:
+- L1 (CEO ↔ Agent) = 대화 + **Dashboard render** (render가 메인 채널)
+- L2 (Agent 자료) = md (자가 점검·작업 backbone)
+- L3 (Foundry 인계) = 별도 정제
+
+→ CEO 청중에 추상 박음 X. **render → 대화는 render 보조**.
+
+---
+
+## Project Card 포맷 원칙 — 통합 트리 (2026-05-27)
+
+**박힘**: Dashboard Project card 안 글은 **통합 트리 포맷**으로 commit. 목차/본문 분리 X.
+
+### Format (CSS class `.o-tree`)
+
+```
+H1 제목 (bold · fg · monospace)
+└ H2 sub (tier 색상 · indent 18px)
+  H1 본문 (muted · indent 18px)
+  └ H2 본문 (muted · indent 36px)
+```
+
+- **font**: `Consolas`, `Monaco`, monospace (제목·본문 모두 동일)
+- 글자 크기: H1 11.5px, H2·body 11px
+- H1 = bold · fg color
+- H2 = `└ ` prefix + indent 18px + **tier 색상** (`tier-strong` 녹색 · `tier-warn` 노란 · `tier-info` 파란)
+- 본문 = muted · indent (H1 아래 18px, H2 아래 36px)
+- line-height 1.7
+
+### 거부 패턴
+
+- ❌ *"목차"·"본문"* 분리 표현·박스 (개념 자체 거부)
+- ❌ 같은 H1·H2를 *목차 박스 + 본문 박스* 2번 박음
+- ❌ 본문에 색상·`<strong>`·`<em>` 강조 박음 (강조는 H1·H2 tier 색상에만)
+- ❌ font 혼용 (sans-serif·monospace 섞음)
+- ❌ collapsible·복잡 위계 추가 (간결 심플)
+
+### Why
+
+- CEO 추적 패턴 = *제목 옆/아래 바로 그 항목 내용 보임*. 한 흐름.
+- *목차 + 본문 분리* = *2번 읽기 부담 + 중복*. UX 저해.
+- *통합 트리* = *한 시각 트리에서 추적·이해*.
+- 본문 강조 X = *내용에 noise 박지 마. 강조는 위계 색상에만*.
+
+### 적용 범위
+
+- Project card 안 *모든 stage 산출* (01~09)
+- Persona profile card · BMC canvas · 포지셔닝 plot · 경쟁사 표 등 *시각화 form*은 별도 (form 표준 정합)
+- 단 *설명·요약·관찰 텍스트*는 통합 트리 포맷.
+
+### Skill 정합
+
+Skill v0.3 각 stage 산출 명시에 *통합 트리 포맷*으로 박힘 (별도 명시 안 박은 stage도 *default 통합 트리*).
+
+---
+
+## Atelier 대시보드 — HTML 실시간 산출물 (시점 미정)
+
+대시보드는 작업 시작 시 자동 보여서 *방향 흩어짐 + idea 잊어버림* 방지. charter §16 미해결.
+
+**현재 상태**: `workflows/type1-external-service.html`이 Dashboard의 *첫 prototype*. workflow 시각화로 시작했지만 *궁극적으로 Atelier 프로젝트 진행 시 dashboard*로 발전 예정. 즉 idea 상태가 실시간으로 박혀들 곳.
+
+**Layout 패턴 (v0.8 확정)**: 좌측 = workflow nav sidebar (worktree처럼 방향성 잡는 곳), 우측 = main detail (선택한 단계의 정의 + 그 idea의 그 단계 산출물). Foundry 대시보드 grayscale 톤(shadcn) 통일.
 
 수집된 요구사항 (누적):
-- workflow 시각 디테일 — `meta/workflows/type1-external-service.html`이 첫 prototype 패턴
-- **Phase 2 대기 상태 idea 가시화** — Stage 1 Pass했지만 Phase 2 미진행. CEO가 잊지 않게.
-- **Hold idea 재검토 trigger** — Hold 사유와 함께 보임. 비슷한 idea 떠오를 때 reference.
-- 각 idea의 현재 단계 한 눈 — Stage 1 / Stage 2 / Foundry 인계 후
-- 진행 중 idea 작업 시작 시 자동 표시
+- 단계 대기 상태 idea 가시화 — Pass했지만 다음 단계 미진행. CEO가 잊지 않게.
+- Hold idea 재검토 trigger — Hold 사유와 함께 보임. 비슷한 idea 떠오를 때 reference.
+- 각 idea의 현재 단계 한 눈 — 01 Intake ~ 09 Handoff Packaging, 그리고 Foundry 인계 후.
+- 진행 중 idea 작업 시작 시 자동 표시.
 
-박을 시점: 첫 실작업에서 idea가 *복수*가 되거나 *Phase 2 대기 idea가 누적*되어 *실제 잊어버림 마찰* 발생할 때.
+박을 시점: 첫 idea 진행하면서 자연스럽게 *실 마찰*이 드러날 때.
+
+---
+
+## Stage 09 Handoff Packaging = 누적 자료 자동 취합 (2026-05-22)
+
+**발견**: Dashboard 우측 main에 각 단계 산출물이 *살아있는 상태로 누적*되면, Stage 09 Handoff Packaging은 *새로 만드는 작업*이 아니라 *이미 박힌 자료들을 잘 취합*하는 것이 된다.
+
+**왜 중요**: 직전 합의 "PRD 사후 박제" 원칙이 *더 강한 형태*로 완성됨. PRD뿐 아니라 *Handoff 패키지 전체*가 사후 박제 — 즉 Stage 09는 별도 작업이 아니라 *01~08 산출물 자동 묶음*. "살아남은 것만 글자가 된다"가 시스템 구조로 구현됨.
+
+**Dashboard 구현 방향**:
+- 우측 main이 idea의 *누적 데이터 store* 역할
+- 각 stage 클릭 시: 그 stage의 정의(workflow) + 그 idea의 그 stage 산출물 함께 표시
+- Stage 09 클릭 시: 다른 stage 산출물들이 자동 취합되어 PRD + 기획서 + 프로토 + 검증 결과로 묶임
+
+**charter v0.3 반영 예정**: §5 Stage 09 정의에 *"작업이 아닌 자동 취합"* 명시.
+
+---
+
+## 폴더 구조 — idea 단위 + stage 한 파일 원칙 (2026-05-22)
+
+**거부한 방식**: stage별 폴더 + 안에 여러 파일 (`01-intake/pain-raw.md` + `pain-5axes.md` + ...). 9 폴더 × 평균 3 파일 = 25+ 파일. 1인 CEO에게 부담.
+
+**선택한 방식**:
+```
+idea/<name>/
+  _meta.md                 ← 현재 stage·판정·상태 (dashboard 입력 핵심)
+  01-intake.md             ← 1.1~1.7 결과 (pain raw, 5축, funnel entry)
+  02-research.md
+  03-analysis.md
+  04-ideation.md
+  05-prioritization.md
+  06-service-planning.md
+  07-prototype/            ← HTML 폴더 (유일하게 폴더)
+  08-validation.md
+  09-handoff.md            ← PRD 박제 + 다른 파일 인덱스 (자동 취합)
+```
+
+**왜**: 가볍고(9~10 항목), stage 한 파일이 *클릭 한 번에 그 stage 다 보임* 패턴이라 dashboard 우측 project pane과 직결. 09-handoff.md가 글 + 링크 형태로 *자동 취합* 통찰과 정확히 맞물림.
+
+**예외**: 07-prototype/만 폴더 — HTML 다수 파일 가능성.
+
+**정리한 잔재**: `stage-1/`, `stage-2/` (이전 2-stage 구조 잔재, 빈 폴더) 삭제.
+
+**charter v0.3 반영 예정**: §7 폴더 구조 새로 박음.

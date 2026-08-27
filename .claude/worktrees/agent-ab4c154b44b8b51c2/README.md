@@ -4,21 +4,17 @@
 
 헌법은 [`charter.md`](./charter.md)에 있다.
 
-새 idea가 떠올랐다면 [`idea-inbox.md`](./idea-inbox.md)에 한 줄 메모. 정식 진입은 CEO가 **"Atelier 시작"** 한 마디 → `atelier-npi` Skill 자동 fire → 9-stage workflow를 대화로 리드한다.
+새 idea가 떠올랐다면 [`idea-inbox.md`](./idea-inbox.md)에 한 줄 메모하고, 정식 진입 결정 시 Claude Code에서 `/atelier-npi`를 호출한다. Skill이 Stage 1 Ideation → Stage 2 PRD 패키지 확정까지 대화로 리드한다.
 
 폴더 (모든 md/HTML은 *세션 안 Agent가 작성*. CEO는 대화만):
 
 - `idea-inbox.md` 떠오른 idea 한 줄 누적 — CEO가 말로 던지면 Agent가 박음
-- `idea-funnel.md` 9 단계 진행 history + 대기 상태 — Agent 자동 갱신
+- `idea-funnel.md` Stage 1/2 history + Phase 2 대기 상태 — Agent 자동 갱신
 - `decisions.md` Atelier 운영 결정 박제 — Agent가 대화 발견에서 박음
 - `lessons-learned.md` cycle 종료 후 정제 교훈 — Agent가 정제, CEO 확인
-- `idea/<name>/` idea 단위 산출물 — Skill 자동 생성. stage = 한 파일 원칙
-  - `_meta.md` 현재 단계·판정·상태 (dashboard 입력)
-  - `01-intake.md` ~ `06-service-planning.md` 각 단계 산출
-  - `07-prototype/` HTML 프로토 (유일하게 폴더)
-  - `08-validation.md` 검증 결과
-  - `09-handoff.md` PRD 박제 + 자동 취합 인덱스
-- `workflows/` workflow 시각화 HTML (Dashboard prototype) — Agent 작성
+- `stage-1/<idea>/` Stage 1 산출물 — Skill 자동 생성
+- `stage-2/<idea>/` Stage 2 PRD 패키지 — Skill 자동 생성
+- `workflows/` workflow 시각화 HTML — Agent 작성
 - `Reference/` 외부 자료 — Agent 자율 참고
 - `.claude/skills/atelier-npi/SKILL.md` Skill 본체
 

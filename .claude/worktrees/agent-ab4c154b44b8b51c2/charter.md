@@ -55,7 +55,7 @@ Handshake = **PRD 패키지**. 구성:
 - **이름**: 김건우 (Director / CEO / 공방장 / Factory Owner)
 - **배경**: LG전자 기구 개발 출신. 산업공학 비전공.
 - **상황**: 회사 다님. 업무 시간엔 개발 못함. 평일 저녁 / 주말 작업.
-- **목표**: 필드 Pain Point 발견 → 사업화 → *실제로 돈을 벌어주는 제품*.
+- **목표**: 필드 통증 발견 → 사업화 → *실제로 돈을 벌어주는 제품*.
 - **운영 원칙**: User = 판단 / AI = 조작. *Minimal first → Kaizen 진화*.
 - **위험 패턴**: 과거 7-agent over-engineering 경험. 재발 방지 박혀 있음.
 
@@ -71,7 +71,7 @@ Handshake = **PRD 패키지**. 구성:
 
 ### 3.2 Kill의 정의
 
-Kill = *Pain Point이 가짜일 때만*. *시간/자원 부족*은 Hold 사유지 Kill 사유가 아니다.
+Kill = *통증이 가짜일 때만*. *시간/자원 부족*은 Hold 사유지 Kill 사유가 아니다.
 
 ### 3.3 AI 시대 속도 원칙 *(신설 v0.2)*
 
@@ -104,7 +104,7 @@ Atelier는 이 패러다임 위에서 작동한다:
 
 ## 5. 핵심 프로세스 — Stage 1/2 *(원칙)*
 
-> **실제 진행은 `atelier-npi` Skill로 외부화**. CEO가 **"Atelier 시작"** 한 마디 → atelier-npi Skill 자동 fire → Skill이 대화로 리드. CEO는 질문 답변·확인만. 매번 문서 기억하지 않는다. (charter v0.3에서 9-stage로 갱신 예정)
+> **실제 진행은 `atelier-npi` Skill로 외부화**. CEO는 `/atelier-npi` 한 줄 호출 + 질문 답변·확인만. 매번 문서 기억하지 않는다.
 
 ### 5.1 Stage 1 — Ideation (가벼움)
 
@@ -118,7 +118,7 @@ Atelier는 이 패러다임 위에서 작동한다:
 3. CEO 재리뷰 → **Pass / Hold / Kill** 판정
 
 **Pain 3축**:
-- **Pain Reality**: 진짜 사람의 진짜 행동에 흔적이 있는가? (검색량·카페 글·우회 행동·불평·포기 패턴) 흔적 0 = 상상의 Pain Point.
+- **Pain Reality**: 진짜 사람의 진짜 행동에 흔적이 있는가? (검색량·카페 글·우회 행동·불평·포기 패턴) 흔적 0 = 상상의 통증.
 - **Pain Depth**: 얼마나 자주 / 얼마나 아프게? (매일 vs 가끔 / 짜증 vs 차질 / 시간·감정·돈 손실)
 - **Pain Owner**: 누가 가장 강하게 느끼는가? *1명을 머릿속에 그릴 수 있을 만큼* 좁혀야 진짜.
 
@@ -152,7 +152,7 @@ Pass → Stage 2 즉시 진입 (시간 유예 없음 — §3.3).
 ```
 stage-2/<idea>/
   PRD.md                  (글자)
-    - 방향성 한 문장: "사용자[퍼소나]가 [맥락]에서 [Pain Point]을 겪기에 [기능]이 필요"
+    - 방향성 한 문장: "사용자[퍼소나]가 [맥락]에서 [통증]을 겪기에 [기능]이 필요"
     - As is / To be 표
     - 피처별 유저 스토리 (AS / I WANT / SO THAT) + Acceptance Criteria 핵심 (Given/When/Then)
     - Moat & Wall (시간 양면 검증)
@@ -184,9 +184,9 @@ stage-2/<idea>/
   ↓
 [idea-inbox.md 1줄 메모]
   ↓
-[CEO "Atelier 시작" 발화]
+[CEO 수동 트리거]
   ↓
-[atelier-npi Skill 자동 fire]
+[/atelier-npi 호출]
   ↓
 [Stage 1 Ideation: CEO 초안 → Agent cross-examine → CEO 재리뷰]
   ↓
@@ -202,7 +202,7 @@ stage-2/<idea>/
   ↓
 [Foundry 개발 사이클 — 실 코드 MVP 제작 (Foundry 영역)]
   ↓
-[MVP 시장 배포 → 실제 Pain Point 검증]
+[MVP 시장 배포 → 실제 통증 검증]
   ↓
 [프로젝트 진행 (사업화) 또는 Hold·Kill]
   ↓ 종료 후
@@ -302,7 +302,7 @@ atelier/                          ← 별도 GitHub repo (private)
 
 - **Local Claude Code (메인 컴퓨터)** = Atelier·Foundry 모두 주요 작업 환경
 - **`atelier/` repo (private GitHub)** = 산출물 영구 저장 + 백업
-- 작업 흐름: 세션 시작 → `cd atelier` → CEO "Atelier 시작" 발화 → atelier-npi Skill 자동 fire → 대화 → 산출물 git commit/push
+- 작업 흐름: 세션 시작 → `cd atelier` → `/atelier-npi` 호출 → Skill 대화 → 산출물 git commit/push
 - charter / idea-funnel 등 문서는 *파일로 컨텍스트에 자동 진입* — sync 마찰 0
 - Repo가 *유일한 source of truth*
 

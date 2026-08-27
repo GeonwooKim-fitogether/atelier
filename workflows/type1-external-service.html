@@ -272,6 +272,60 @@
       color: var(--muted);
       font-size: 10.5px;
     }
+
+    /* === 필터 네비 === */
+    .bundle, .stage-row {
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .bundle:hover {
+      background: rgba(255,255,255,0.05);
+    }
+    .bundle.active:hover {
+      background: rgba(147,197,253,0.12);
+    }
+    .bundle.done:hover {
+      opacity: 0.7;
+    }
+    .stage-row:hover {
+      background: rgba(255,255,255,0.05);
+    }
+    .stage-row.doing:hover {
+      background: rgba(147,197,253,0.15);
+    }
+    .bundle.nav-selected {
+      outline: 1px solid rgba(255,255,255,0.30);
+    }
+    .stage-row.nav-selected {
+      outline: 1px solid rgba(255,255,255,0.25);
+      border-radius: 3px;
+    }
+
+    /* 필터 활성 배너 */
+    .filter-bar {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 14px;
+      background: rgba(147,197,253,0.07);
+      border-bottom: 1px solid rgba(147,197,253,0.20);
+      font-size: 11px;
+      color: var(--doing);
+    }
+    .filter-bar.visible { display: flex; }
+    .filter-bar-label { flex: 1; }
+    .filter-reset {
+      cursor: pointer;
+      font-size: 10.5px;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 2px 8px;
+      background: none;
+    }
+    .filter-reset:hover { color: var(--fg); border-color: rgba(255,255,255,0.3); }
+
+    .stage-card.hidden { display: none; }
   </style>
 </head>
 <body>
@@ -287,11 +341,11 @@
   <div class="sidebar">
     <div class="sb-title">진행 흐름</div>
 
-    <div class="bundle done">
+    <div class="bundle done" data-filter="bundle-1">
       <div class="bundle-num">묶음 1 ✓ 완료</div>
       <div class="bundle-name">문제·고민 인터뷰</div>
       <div class="bundle-stages">
-        <div class="stage-row done">
+        <div class="stage-row done" data-filter="stage-01">
           <span class="stage-num">01</span>
           <span class="stage-name">시작 (문제 수집)</span>
           <span class="stage-mark">✓</span>
@@ -299,16 +353,16 @@
       </div>
     </div>
 
-    <div class="bundle done">
+    <div class="bundle done" data-filter="bundle-2">
       <div class="bundle-num">묶음 2 ✓ 완료</div>
       <div class="bundle-name">외부 정보 모으고 정리</div>
       <div class="bundle-stages">
-        <div class="stage-row done">
+        <div class="stage-row done" data-filter="stage-02">
           <span class="stage-num">02</span>
           <span class="stage-name">정보 수집 ✓</span>
           <span class="stage-mark">✓</span>
         </div>
-        <div class="stage-row done">
+        <div class="stage-row done" data-filter="stage-03">
           <span class="stage-num">03</span>
           <span class="stage-name">정리·분석 ✓ (진행 결정)</span>
           <span class="stage-mark">✓</span>
@@ -316,16 +370,16 @@
       </div>
     </div>
 
-    <div class="bundle active">
+    <div class="bundle active" data-filter="bundle-3">
       <div class="bundle-num">묶음 3 ▸ 진행 중</div>
       <div class="bundle-name">해결책 찾기</div>
       <div class="bundle-stages">
-        <div class="stage-row doing">
+        <div class="stage-row doing" data-filter="stage-04">
           <span class="stage-num">04</span>
           <span class="stage-name">아이디어 펼치기 ▸</span>
           <span class="stage-mark">▸</span>
         </div>
-        <div class="stage-row wait">
+        <div class="stage-row wait" data-filter="stage-05">
           <span class="stage-num">05</span>
           <span class="stage-name">우선순위 정하기</span>
           <span class="stage-mark">·</span>
@@ -333,21 +387,21 @@
       </div>
     </div>
 
-    <div class="bundle">
+    <div class="bundle" data-filter="bundle-4">
       <div class="bundle-num">묶음 4 · 대기</div>
       <div class="bundle-name">완성본 만들기</div>
       <div class="bundle-stages">
-        <div class="stage-row wait">
+        <div class="stage-row wait" data-filter="stage-06">
           <span class="stage-num">06</span>
           <span class="stage-name">서비스 설계</span>
           <span class="stage-mark">·</span>
         </div>
-        <div class="stage-row wait">
+        <div class="stage-row wait" data-filter="stage-07">
           <span class="stage-num">07</span>
           <span class="stage-name">시제품 만들기</span>
           <span class="stage-mark">·</span>
         </div>
-        <div class="stage-row wait">
+        <div class="stage-row wait" data-filter="stage-08">
           <span class="stage-num">08</span>
           <span class="stage-name">검증</span>
           <span class="stage-mark">·</span>
@@ -355,11 +409,11 @@
       </div>
     </div>
 
-    <div class="bundle">
+    <div class="bundle" data-filter="bundle-5">
       <div class="bundle-num">묶음 5 · 대기</div>
       <div class="bundle-name">다음 단계 팀에 넘기기</div>
       <div class="bundle-stages">
-        <div class="stage-row wait">
+        <div class="stage-row wait" data-filter="stage-09">
           <span class="stage-num">09</span>
           <span class="stage-name">인계 자료 묶기</span>
           <span class="stage-mark">·</span>
@@ -371,6 +425,11 @@
   <!-- 우측: 자료 -->
   <div class="main">
 
+    <div class="filter-bar" id="filterBar">
+      <span class="filter-bar-label" id="filterLabel"></span>
+      <button class="filter-reset" id="filterReset">전체 보기</button>
+    </div>
+
     <div class="idea-header">
       <div class="idea-name">mobile-rosary (모바일 묵주기도)</div>
       <div class="idea-tagline">대중교통·잠자기 전에 묵주·기도문 없이 스마트폰으로 묵주기도</div>
@@ -381,7 +440,7 @@
       <div class="matrix-section-title">9단계 × 3 영역 (사업·상품·서비스)</div>
 
       <!-- 01단계 — 문제·고민 인터뷰 (완료) -->
-      <div class="stage-card">
+      <div class="stage-card" data-bundle="bundle-1" data-stage="stage-01">
         <div class="stage-card-header">
           <span class="stage-card-num">01</span>
           <span class="stage-card-name">시작 — 문제·고민 인터뷰</span>
@@ -461,7 +520,7 @@
       </div>
 
       <!-- 02단계 — Deep Research 완료 -->
-      <div class="stage-card">
+      <div class="stage-card" data-bundle="bundle-2" data-stage="stage-02">
         <div class="stage-card-header">
           <span class="stage-card-num">02</span>
           <span class="stage-card-name">외부 정보 수집 — Deep Research</span>
@@ -704,7 +763,7 @@
       </div>
 
       <!-- 03단계 — 정리·분석 deep 자료 (25 page 통째 표·시각화) -->
-      <div class="stage-card">
+      <div class="stage-card" data-bundle="bundle-2" data-stage="stage-03">
         <div class="stage-card-header">
           <span class="stage-card-num">03</span>
           <span class="stage-card-name">정리·분석 — 빵빵·풍성·깊이 (25 page deep)</span>
@@ -1682,7 +1741,7 @@
         </div>
       </div>
 
-      <div class="stage-card">
+      <div class="stage-card" data-bundle="bundle-3" data-stage="stage-04">
         <div class="stage-card-header">
           <span class="stage-card-num">04</span>
           <span class="stage-card-name">아이디어 펼치기 (해결책 발산)</span>
@@ -1691,7 +1750,7 @@
         <div class="placeholder-row">묶음 3 진입 후</div>
       </div>
 
-      <div class="stage-card">
+      <div class="stage-card" data-bundle="bundle-3" data-stage="stage-05">
         <div class="stage-card-header">
           <span class="stage-card-num">05</span>
           <span class="stage-card-name">우선순위 정하기</span>
@@ -1700,7 +1759,7 @@
         <div class="placeholder-row">묶음 3 진입 후</div>
       </div>
 
-      <div class="stage-card">
+      <div class="stage-card" data-bundle="bundle-4" data-stage="stage-06">
         <div class="stage-card-header">
           <span class="stage-card-num">06</span>
           <span class="stage-card-name">서비스 설계</span>
@@ -1709,7 +1768,7 @@
         <div class="placeholder-row">묶음 4 진입 후</div>
       </div>
 
-      <div class="stage-card">
+      <div class="stage-card" data-bundle="bundle-4" data-stage="stage-07">
         <div class="stage-card-header">
           <span class="stage-card-num">07</span>
           <span class="stage-card-name">시제품 만들기</span>
@@ -1718,7 +1777,7 @@
         <div class="placeholder-row">묶음 4 진입 후</div>
       </div>
 
-      <div class="stage-card">
+      <div class="stage-card" data-bundle="bundle-4" data-stage="stage-08">
         <div class="stage-card-header">
           <span class="stage-card-num">08</span>
           <span class="stage-card-name">검증</span>
@@ -1727,7 +1786,7 @@
         <div class="placeholder-row">묶음 4 진입 후</div>
       </div>
 
-      <div class="stage-card">
+      <div class="stage-card" data-bundle="bundle-5" data-stage="stage-09">
         <div class="stage-card-header">
           <span class="stage-card-num">09</span>
           <span class="stage-card-name">인계 자료 묶기 — 다음 단계 팀에 넘기기</span>
@@ -1746,5 +1805,97 @@
   자료: <code>idea/mobile-rosary/01-intake.md</code> · 백업: <code>idea/mobile-rosary-v1/</code> · 옛 대시보드: <code>archive/dashboard-v1/</code>
 </div>
 
+<script>
+  // 묶음 → 포함 stage 맵
+  const BUNDLE_STAGES = {
+    'bundle-1': ['stage-01'],
+    'bundle-2': ['stage-02', 'stage-03'],
+    'bundle-3': ['stage-04', 'stage-05'],
+    'bundle-4': ['stage-06', 'stage-07', 'stage-08'],
+    'bundle-5': ['stage-09']
+  };
+
+  const BUNDLE_LABELS = {
+    'bundle-1': '묶음 1 — 문제·고민 인터뷰',
+    'bundle-2': '묶음 2 — 외부 정보 모으고 정리',
+    'bundle-3': '묶음 3 — 해결책 찾기',
+    'bundle-4': '묶음 4 — 완성본 만들기',
+    'bundle-5': '묶음 5 — 다음 단계 팀에 넘기기'
+  };
+
+  const STAGE_LABELS = {
+    'stage-01': '01 시작 (문제 수집)',
+    'stage-02': '02 정보 수집',
+    'stage-03': '03 정리·분석',
+    'stage-04': '04 아이디어 펼치기',
+    'stage-05': '05 우선순위 정하기',
+    'stage-06': '06 서비스 설계',
+    'stage-07': '07 시제품 만들기',
+    'stage-08': '08 검증',
+    'stage-09': '09 인계 자료 묶기'
+  };
+
+  let activeFilter = null; // null = 전체
+
+  const cards = document.querySelectorAll('.stage-card[data-stage]');
+  const filterBar = document.getElementById('filterBar');
+  const filterLabel = document.getElementById('filterLabel');
+  const filterReset = document.getElementById('filterReset');
+
+  function applyFilter(type, key) {
+    // 이전 선택 해제
+    document.querySelectorAll('.nav-selected').forEach(el => el.classList.remove('nav-selected'));
+
+    if (activeFilter && activeFilter.key === key) {
+      // 같은 항목 다시 클릭 → 전체 보기
+      showAll();
+      return;
+    }
+
+    activeFilter = { type, key };
+
+    // 대상 stage 목록 결정
+    let targetStages;
+    if (type === 'bundle') {
+      targetStages = new Set(BUNDLE_STAGES[key] || []);
+    } else {
+      targetStages = new Set([key]);
+    }
+
+    // 카드 표시/숨김
+    cards.forEach(card => {
+      const stage = card.getAttribute('data-stage');
+      card.classList.toggle('hidden', !targetStages.has(stage));
+    });
+
+    // 배너 표시
+    const label = type === 'bundle' ? BUNDLE_LABELS[key] : STAGE_LABELS[key];
+    filterLabel.textContent = '보는 중: ' + label;
+    filterBar.classList.add('visible');
+
+    // 선택 강조
+    const sel = document.querySelector('[data-filter="' + key + '"]');
+    if (sel) sel.classList.add('nav-selected');
+  }
+
+  function showAll() {
+    activeFilter = null;
+    cards.forEach(card => card.classList.remove('hidden'));
+    filterBar.classList.remove('visible');
+    document.querySelectorAll('.nav-selected').forEach(el => el.classList.remove('nav-selected'));
+  }
+
+  // 사이드바 클릭 이벤트
+  document.querySelectorAll('[data-filter]').forEach(el => {
+    el.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const key = this.getAttribute('data-filter');
+      const type = key.startsWith('bundle') ? 'bundle' : 'stage';
+      applyFilter(type, key);
+    });
+  });
+
+  filterReset.addEventListener('click', showAll);
+</script>
 </body>
 </html>
