@@ -5,6 +5,8 @@
 - 헌법: [`charter.md`](./charter.md) — 정체성·프로세스·척추·거부 목록. v0.3부터 단계적 개방(§1.4)과 척추(§3.4)가 명시돼 있다.
 - 진행 계획: [`plan.md`](./plan.md) — 헌장 발효부터 SaaS 게이트까지 6개 국면. **현재 승인 범위는 Phase 1까지**다.
 - 발전 리뷰: [`architecture-review.md`](./architecture-review.md) — Hardware Team System과의 격차 실측과 2단계 시스템의 설계 출발점.
+- **단계별 도구의 정본**: [`docs/book-tool-map.md`](./docs/book-tool-map.md) — 9단계 각각에서 무엇을 어떤 서식으로 만드는지는 Agent가 정하지 않는다. 『프로덕트 기획』(`Reference/`)의 어느 절이 정본인지를 이 표가 못 박는다. **새 단계에 들어가기 전에 그 단계의 행을 읽는다.**
+- 작업 중 발견한 체계의 결함: [`docs/lessons.md`](./docs/lessons.md) — 창고로 올릴 후보 누적소.
 
 새 idea가 떠올랐다면 [`idea-inbox.md`](./idea-inbox.md)에 한 줄 메모. 정식 진입은 CEO가 **"Atelier 시작"** 한 마디 → `atelier-npi` Skill 자동 fire → 9-stage workflow를 대화로 리드한다.
 
@@ -21,7 +23,8 @@
   - `08-validation.md` 검증 결과
   - `09-handoff.md` PRD 박제 + 자동 취합 인덱스
 - `workflows/` workflow 시각화 HTML (Dashboard prototype) — Agent 작성
-- `Reference/` 외부 자료 — Agent 자율 참고
+- `Reference/` 『프로덕트 기획』 5개 장 PDF와 페이지 이미지 — **단계별 도구의 정본**. 대응은 `docs/book-tool-map.md`
+- `docs/` 이 저장소의 절차·기록 문서 (도구 대응표·교훈)
 - `.claude/skills/atelier-npi/SKILL.md` Skill 본체 (이 저장소 고유)
 - `.claude/` 아래 공용 규칙·스킬·훅 — 창고(Template-repository)에서 동기화 봇(`.github/workflows/sync-skills.yml`)이 내려 줌. 공용 파일은 여기서 고치지 않고 창고에서 고친다(원본 우선 규칙)
 
