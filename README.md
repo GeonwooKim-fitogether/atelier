@@ -22,9 +22,14 @@
   - `07-prototype/` HTML 프로토 (유일하게 폴더)
   - `08-validation.md` 검증 결과
   - `09-handoff.md` PRD 박제 + 자동 취합 인덱스
-- `workflows/` workflow 시각화 HTML (Dashboard prototype) — Agent 작성
+- `workflows/` 대시보드 등 시각화 HTML — Agent 작성. **`type1-external-service.html` 이 정본 현황판이고, 판단은 이 화면에서 내린다**
+- `.integration/` 통합 현황판의 사실 (config + data). 화면은 엔진이 매번 만든다
+- `archive/` 폐기 보관 — 되짚을 때만 연다
 - `Reference/` 『프로덕트 기획』 5개 장 PDF와 페이지 이미지 — **단계별 도구의 정본**. 대응은 `docs/book-tool-map.md`
-- `docs/` 이 저장소의 절차·기록 문서 (도구 대응표·교훈)
+- `docs/` 이 저장소의 절차·기준 문서
+  - `book-tool-map.md` 책 ↔ 9단계 도구 대응표 — **새 단계 전에 그 행을 읽는다**
+  - `standards/` 아틀리에 운영 기준 (시각화 의무·포지셔닝 맵 정본·3 카테고리 시간축 분리)
+  - `lessons.md` 체계의 결함 기록 — 창고 승격 후보 누적소
 - `.claude/skills/atelier-npi/SKILL.md` Skill 본체 (이 저장소 고유)
 - `.claude/` 아래 공용 규칙·스킬·훅 — 창고(Template-repository)에서 동기화 봇(`.github/workflows/sync-skills.yml`)이 내려 줌. 공용 파일은 여기서 고치지 않고 창고에서 고친다(원본 우선 규칙)
 

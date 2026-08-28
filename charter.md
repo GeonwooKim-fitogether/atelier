@@ -3,7 +3,7 @@
 > *부트스트래핑 마지막 단계에서 작성됨. 이 문서는 Atelier의 헌법이다.*
 >
 > 작성 시점: 2026-05-21 · v0.3 개정: 2026-08-26
-> Status: **v0.3 frozen** — CEO가 PR #1 머지로 공식 ACCEPT (2026-08-26). v1 frozen은 §16 미해결 잔여 해소 + 사용자 ACCEPT 후.
+> Status: **v0.4 frozen** — CEO가 PR #1 머지로 공식 ACCEPT (2026-08-26). v1 frozen은 §16 미해결 잔여 해소 + 사용자 ACCEPT 후.
 >
 > **v0.3이 바꾸는 것 한 줄**: Atelier의 정체성을 "1인 공방 도구(영구)"에서 **"단계적으로 개방되는 상품기획 시스템 — 최종 형태는 SaaS 자회사 제품"** 으로 확장한다(§1.4 신설). 이에 맞춰 충돌하던 조항(§2·§4.2·§8·§9.3·§18)을 개정하고, 시스템의 척추(§3.4)를 신설한다. 각 개정의 근거는 [`architecture-review.md`](./architecture-review.md) §3.
 
@@ -48,7 +48,7 @@ Handshake = **PRD 패키지**. 구성:
 - `mockups/` (정적 시각 — 와이어·디자인 stills)
 - `prototype/` (HTML 클릭 가능 사용 시뮬레이션)
 
-이 패키지는 §5 Stage 2에서 확정. 첫 실작업에서 형식 정밀화 진화 (§16).
+이 패키지는 §5 의 09단계(인계 자료 묶기)에서 확정. 첫 실작업에서 형식 정밀화 진화 (§16).
 
 ### 1.4 단계적 개방 — Atelier의 세 단계 *(신설 v0.3)*
 
@@ -66,7 +66,7 @@ Atelier는 하나의 정체성이 세 단계로 개방된다. 앞 단계의 본�
 2. **대화가 본질** — Atelier의 가치는 양식(form)을 채우는 것이 아니라 cross-examine 대화가 사람의 사고를 깊게 만드는 데 있다. 제품화 과정에서 대화가 선택 메뉴나 입력 폼으로 대체되면 이 제품은 존재 이유를 잃는다 (§18).
 3. **척추** — §3.4의 불변식. 2단계부터는 데이터베이스가 강제한다.
 
-단계 전환 자체도 근거가 딸린 판정으로 한다. 특히 2단계 → 3단계(분사) 판정은 "상품기획 SaaS" 아이디어가 자기 깔때기의 Stage 1 / Kill Signal을 통과했다는 실측이 근거여야 한다 (§16).
+단계 전환 자체도 근거가 딸린 판정으로 한다. 특히 2단계 → 3단계(분사) 판정은 "상품기획 SaaS" 아이디어가 자기 깔때기의 묶음 2 판정 / Kill Signal을 통과했다는 실측이 근거여야 한다 (§16).
 
 ---
 
@@ -145,75 +145,66 @@ v0.2의 "100% 동기적 대화, CEO 부재 시 작업 진행 0"은 1인 도구(1
 
 ---
 
-## 5. 핵심 프로세스 — Stage 1/2 *(원칙)*
+## 5. 핵심 프로세스 — 9단계 × 3영역, 5 묶음 *(개정 v0.4 — 2026-08-27)*
 
-> **실제 진행은 `atelier-npi` Skill로 외부화**. CEO가 **"Atelier 시작"** 한 마디 → atelier-npi Skill 자동 fire → Skill이 대화로 리드. CEO는 질문 답변·확인만. 매번 문서 기억하지 않는다. (charter v0.3에서 9-stage로 갱신 예정)
+> **실제 진행은 `atelier-npi` Skill로 외부화한다.** 공방장이 **"Atelier 시작"** 한 마디를 하면 Skill이 자동으로 걸리고 대화로 리드한다. 공방장은 질문에 답하고 판정만 한다. 매번 문서를 기억할 필요가 없다.
 
-### 5.1 Stage 1 — Ideation (가벼움)
+### 5.0 개정 이유 — 2단계 서술을 9단계로 바꾼 것
 
-**목적**: 상세 상품기획(=Stage 2)을 진행할지 여부 판정.
+v0.3까지 이 절은 프로세스를 **Stage 1 Ideation / Stage 2 PRD** 두 단계로 서술했고, 그 자리에 "charter v0.3에서 9-stage로 갱신 예정"이라는 메모가 붙어 있었다. 2026-08-27에 2026-06 로컬 작업이 회수되면서 실제 파이프라인이 **9단계 × 3영역, 5 묶음**으로 이미 확정돼 있었음이 드러났고, 그 사이 세 문서(이 헌장 §5·§7, `plan.md`, 8월 대시보드 설정)가 옛 2단계 어휘로 남아 서로 다른 순서를 가리키고 있었다. 공방장 승인(2026-08-27)으로 세 곳을 모두 9단계 어휘로 통일한다.
 
-**작성 권한**: **CEO 작성** + Agent 리뷰.
+### 5.1 구조 — 9단계는 시간이 아니라 영역이다
 
-**흐름**:
-1. CEO 초안 작성 (Pain 3축 — Reality / Depth / Owner)
-2. Agent의 **구조·논리·본질** cross-examine + 외부 흔적 자동 수집 보조
-3. CEO 재리뷰 → **Pass / Hold / Kill** 판정
+9단계는 **순서대로 밟는 계단이 아니라 채워야 할 영역의 분류**다(01단계만 시간적 시작점이다). 그 영역들을 자주 왔다갔다하는 작업 단위로 묶은 것이 **5 묶음**이고, 묶음과 묶음 사이에만 수렴 게이트가 선다.
 
-**Pain 3축**:
-- **Pain Reality**: 진짜 사람의 진짜 행동에 흔적이 있는가? (검색량·카페 글·우회 행동·불평·포기 패턴) 흔적 0 = 상상의 Pain Point.
-- **Pain Depth**: 얼마나 자주 / 얼마나 아프게? (매일 vs 가끔 / 짜증 vs 차질 / 시간·감정·돈 손실)
-- **Pain Owner**: 누가 가장 강하게 느끼는가? *1명을 머릿속에 그릴 수 있을 만큼* 좁혀야 진짜.
+| 묶음 | 단계 | 하는 일 |
+|---|---|---|
+| **1** | 01 Intake | 통증을 clue로 받아 적는다 (공방장 발화 + Agent 인터뷰 + 3축 정리) |
+| **2** | 02 Research · 03 Analysis | 밖의 정보를 모으고 정리해 빈 영역을 찾는다 |
+| **3** | 04 Ideation · 05 Prioritization | 해결책을 펼치고 좁힌다 |
+| **4** | 06 Planning · 07 Prototyping · 08 Validation | 완성본을 만든다 |
+| **5** | 09 Handoff Packaging | 인계 자료로 묶는다 |
 
-**Kill 안전장치**: *"내가 이 niche의 흔적을 진짜로 찾아봤나, 아니면 모른다는 이유로 단정했나?"*
+각 단계에는 **3 영역**(사업·상품·서비스)의 칸이 있어 전체 27칸이 된다. 칸은 미리 정해 두되 **내용의 틀은 미리 박지 않는다** — 답이 없는 자리에 답을 강제하지 않고, 비어 있을 권리를 보장한다.
 
-Pass → Stage 2 즉시 진입 (시간 유예 없음 — §3.3).
+| 영역 | 핵심 질문 | 시간축 |
+|---|---|---|
+| **사업** | 어느 시장에 진입하나, 어떻게 돈 버나 | 사용 *전* (도달·수익) |
+| **상품** | 어떤 결과물인가, 어떻게 다른가 | 사용하는 것 (기능·콘텐츠) |
+| **서비스** | 어떻게 사용자에게 전달되나 | 사용 *중* (경험) |
 
-### 5.2 Stage 2 — PRD 확정 (무거움)
+세 영역을 시간축으로 가르는 이유는 "전달"이라는 한 단어가 *사업의 도달*과 *서비스의 경험* 두 자리에 쓰여 혼동을 낳았기 때문이다. 상세는 [`docs/standards/category-role-time-separation.md`](./docs/standards/category-role-time-separation.md).
 
-**목적**: MVP 1사이클을 돌릴 수 있을 만큼 명확한 PRD 패키지 freeze.
+### 5.2 판정은 두 번, 그리고 사람 전속이다
 
-**작성 권한**: **Agent 작성** + CEO 확인·논의.
+| 자리 | 무엇을 판정하나 | 누가 |
+|---|---|---|
+| **묶음 2 끝 (03단계)** | 진행 여부 1차 — 진짜 문제인가, 우리 자리가 있는가 | 공방장 |
+| **묶음 3 끝 (05단계)** | 진행 여부 2차 — 첫 판 조합과 값 받는 방식이 성립하는가 | 공방장 |
+| **묶음 4 끝 (08단계)** | 시장 노출 검증 통과 여부 | 공방장 |
 
-**흐름**:
-1. Agent가 이번 프로젝트 도구 권장 → CEO confirm
-2. 데이터 모델링 (어피니티 등) — 인사이트 정리
-3. Mockup 생성 (와이어 + 디자인 stills)
-4. **HTML Prototype 생성** ⭐ — 디테일 살리는 핵심
-5. PRD.md draft 작성
-6. CEO 프로토 직접 사용 + 논의 → PRD 디테일 보완 (반복)
-7. **양쪽 OK** (프로토 사용 시 이상한 흐름·디테일 누락 없음 + PRD.md 디테일 완비) → freeze
+Agent는 근거를 모아 **권고**까지 하고, 확정은 하지 않는다(§4.2). 묶음 사이 수렴 게이트의 진입 조건은 `atelier-npi` Skill이 정본으로 갖고 있다.
 
-**Freeze 조건**:
-- HTML 프로토를 직접 사용해도 이상한 흐름·디테일 누락 없음
-- PRD.md가 그 모든 디테일을 글자로 담고 있음
+### 5.3 통증 3축 — 01단계가 반드시 채우는 것
 
-이 조건이 *Foundry CEO 개입 최소화*의 전제. 사용자 dashboard 경험에서 학습 — *프로토가 명확하지 않으면 개발도 결국 이상하게 된다*.
+- **Pain Reality**: 진짜 사람의 진짜 행동에 흔적이 있는가? (검색량·카페 글·우회 행동·불평·포기 패턴) 흔적이 0이면 상상의 통증이다.
+- **Pain Depth**: 얼마나 자주, 얼마나 아프게? (매일 vs 가끔 / 짜증 vs 실제 차질 / 시간·감정·돈 손실)
+- **Pain Owner**: 누가 가장 강하게 느끼는가? **한 사람을 머릿속에 그릴 수 있을 만큼** 좁혀야 진짜다.
 
-**PRD 패키지 구성** (잠정, 첫 실작업에서 검증):
+**Kill 안전장치**: *"내가 이 자리의 흔적을 진짜로 찾아봤나, 아니면 모른다는 이유로 단정했나?"*
 
-```
-stage-2/<idea>/
-  PRD.md                  (글자)
-    - 방향성 한 문장: "사용자[퍼소나]가 [맥락]에서 [Pain Point]을 겪기에 [기능]이 필요"
-    - As is / To be 표
-    - 피처별 유저 스토리 (AS / I WANT / SO THAT) + Acceptance Criteria 핵심 (Given/When/Then)
-    - Moat & Wall (시간 양면 검증)
-    - Kill Signal (정량 1개)
-  mockups/                (정적 시각)
-    01-wireframe-*.png
-    02-design-*.png
-  prototype/              (HTML 인터랙티브)
-    index.html, style.css, script.js
-    (or v0/Lovable 등 외부 도구 링크 + 코드)
-```
+여기에 더해 01단계는 **5축**(맥락·행동·니즈·태도·동기)으로 관찰을 정리한다. 이 다섯은 『프로덕트 기획』 1장의 사용자 관찰 5요소를 그대로 쓴 것이다.
 
-### 5.3 용어 정의 (프로젝트 표준)
+### 5.4 단계별 도구는 책이 정한다
+
+각 단계에서 무엇을 어떤 서식으로 만드는지는 Agent가 정하지 않는다. **『프로덕트 기획』(`Reference/`)의 어느 절이 정본인지를 [`docs/book-tool-map.md`](./docs/book-tool-map.md)가 못 박는다.** 새 단계에 들어가기 전에 그 단계의 행을 읽는다.
+
+### 5.5 용어 정의 (프로젝트 표준)
 
 | 용어 | 본질 | 코드 | 청중 | 자리 |
 |---|---|---|---|---|
-| **Mockup** | 정적 시각 디자인 | 없음 | CEO 자기 검토 | Stage 2 |
-| **Prototype** | HTML 클릭 가능 사용 시뮬레이션 | HTML/CSS/JS 프론트만 (백엔드·DB·인증·결제 없음) | CEO + 소수 테스터 | Stage 2 |
+| **Mockup** | 정적 시각 디자인 | 없음 | 공방장 자기 검토 | 07단계 (묶음 4) |
+| **Prototype** | HTML 클릭 가능 사용 시뮬레이션 | HTML/CSS/JS 프론트만 (백엔드·DB·인증·결제 없음) | 공방장 + 소수 테스터 | 07단계 (묶음 4) |
 | **MVP** | 진짜 작동 제품 | 백엔드+DB+인증+배포 | 실 시장 사용자 | Foundry |
 
 경계 = **시장 노출 여부**. 노출 전 = Atelier. 노출 = Foundry.
@@ -231,11 +222,11 @@ stage-2/<idea>/
   ↓
 [atelier-npi Skill 자동 fire]
   ↓
-[Stage 1 Ideation: CEO 초안 → Agent cross-examine → CEO 재리뷰]
+[묶음 1~2 (01 Intake · 02 Research · 03 Analysis): 공방장 발화 → Agent 인터뷰·조사·정리 → 공방장 1차 판정]
   ↓
 [Pass / Hold / Kill]
   ↓ Pass
-[Stage 2 PRD 확정: Agent 도구 활용 작성 → CEO 확인·논의·프로토 사용 → freeze]
+[묶음 3~5 (04~09): Agent 발산·수렴·설계·시제품 → 공방장 2차 판정·검증 → 인계 패키지 freeze]
   ↓
 [PRD 패키지 (PRD.md + mockups/ + prototype/) freeze]
   ↓
@@ -260,20 +251,29 @@ stage-2/<idea>/
 
 ```
 atelier/                          ← 별도 GitHub repo (private)
-├── charter.md                    ← 이 문서 (CEO 검토 + Agent 정정 — 헌법 변경)
+├── charter.md                    ← 이 문서 (공방장 검토 + Agent 정정 — 헌법 변경)
 ├── README.md                     ← 사용법 한 화면 (Agent 작성)
-├── idea-inbox.md                 ← 떠오른 idea 한 줄 누적 (Agent가 CEO 발화에서 박음)
-├── idea-funnel.md                ← Stage 1/2 history + Phase 2 대기 상태 (Agent 자동 갱신)
+├── idea-inbox.md                 ← 떠오른 idea 한 줄 누적 (Agent가 공방장 발화에서 박음)
+├── idea-funnel.md                ← 9단계 진행 history + 대기 상태 (Agent 자동 갱신)
 ├── decisions.md                  ← Atelier 운영 결정 박제 (Agent가 대화 발견에서 박음)
-├── lessons-learned.md            ← cycle 종료 후 정제 교훈 (Agent가 정제, CEO 확인)
-├── stage-1/                      ← Stage 1 산출물 (Skill이 자동 생성)
-├── stage-2/                      ← Stage 2 PRD 패키지 (Skill이 자동 생성)
-├── workflows/                    ← workflow 시각화 산출물 (Agent 작성 HTML)
-├── Reference/                    ← 책 PDF 등 외부 자료 (Agent 자율 참고)
+├── lessons-learned.md            ← cycle 종료 후 정제 교훈
+├── idea/<slug>/                  ← idea 단위 산출물. stage = 한 파일 원칙
+│   ├── _meta.md                  ← 현재 단계·판정·상태 (대시보드 입력)
+│   ├── 01-intake.md ~ 06-service-planning.md
+│   ├── 07-prototype/             ← HTML 프로토 (유일하게 폴더)
+│   ├── 08-validation.md
+│   └── 09-handoff.md             ← 인계 자료 자동 취합
+├── docs/                         ← 이 저장소의 절차·기준 문서
+│   ├── book-tool-map.md          ← 책 ↔ 9단계 도구 대응표 (단계별 도구의 정본)
+│   ├── standards/                ← 아틀리에 운영 기준 (시각화·포지셔닝 맵·카테고리 분리)
+│   └── lessons.md                ← 체계의 결함 기록 (창고 승격 후보)
+├── workflows/                    ← 대시보드 등 시각화 산출물 (Agent 작성 HTML)
+│   └── type1-external-service.html   ← 정본 현황판. 판단은 이 화면에서 내린다
+├── .integration/                 ← 통합 현황판의 사실 (config + data)
+├── archive/                      ← 폐기 보관. 되짚을 때만 연다
+├── Reference/                    ← 『프로덕트 기획』 PDF 등 (단계별 도구의 정본)
 └── .claude/
-    └── skills/
-        └── atelier-npi/
-            └── SKILL.md          ← Stage 1/2 자동 진행 Skill
+    └── skills/atelier-npi/SKILL.md   ← 9단계 자동 진행 Skill
 ```
 
 **작성 주체 원칙** — *모든 md/HTML 파일은 세션 안에서 Agent가 작성*. CEO는 말·답변·판정·확인만. 출퇴근길 등 세션 밖 메모는 *Atelier에 직접 박지 않고* 핸드폰 메모 등에 두었다가, 다음 세션에서 *말로 전달* → Agent가 idea-inbox.md 등에 박음. 일원화 원칙 + §2 "User=판단 / AI=조작" 정합.
@@ -286,7 +286,7 @@ atelier/                          ← 별도 GitHub repo (private)
 
 v0.2의 "유일한 agent, 대화 모드만"은 시스템화(2단계)와 충돌하므로, 지키려던 본질을 정확한 문장으로 좁힌다.
 
-- **판정에 개입하는 agent는 하나다** — 상품기획 Agent. 사용자와 *깊은 대화*로 Stage 1/2를 함께 진행하고, *cross-examine*(구조·논리·본질 검증)을 수행한다. 판정 자체는 내리지 않는다(§1.4).
+- **판정에 개입하는 agent는 하나다** — 상품기획 Agent. 사용자와 *깊은 대화*로 9단계를 함께 진행하고, *cross-examine*(구조·논리·본질 검증)을 수행한다. 판정 자체는 내리지 않는다(§1.4).
 - 시스템화 이후 판정 밖의 조작 — 외부 흔적 수집, 산출물 렌더링, 알림 — 을 담당하는 보조 장치는 둘 수 있다. 단 그것들은 사용자와 대화하지 않고 판정에 관여하지 않는다.
 - *기술 도메인 agent 아님* — Foundry 영역.
 - 1단계에서 실제 작동은 `atelier-npi` Skill 안에서 호출됨. 2단계부터 이 역할은 애플리케이션 안의 대화 세션으로 옮겨간다(LLM은 교체 가능한 어댑터 뒤에 둔다 — `architecture-review.md` §5).
@@ -329,11 +329,11 @@ v0.2의 "복제 0"이 지키려던 본질은 **경험 축적의 단일성**이�
 ### 9.5 새 프로젝트 시작 워크플로우 *(확정 v0.2, 순서 정정)*
 
 ```
-1. Atelier에서 Stage 1 + Stage 2 진행 → PRD 패키지 freeze
+1. Atelier에서 묶음 1~5 진행 → 09단계 인계 패키지 freeze
 2. GitHub.com → foundry repo → "Use this template" 1클릭
 3. 새 repo 생성 (예: GeonwooKim-fitogether/13.next-project)
 4. Local: cd C:\Users\rlaaj\Dev\ && git clone <new-repo>
-5. PRD 패키지 복사: atelier/stage-2/<idea>/* → <new-repo>/01-product/
+5. 인계 패키지 복사: atelier/idea/<slug>/09-handoff.md 와 그것이 가리키는 산출물 → <new-repo>/01-product/
 6. 새 프로젝트 안에서 Foundry 개발 사이클 시작
 ```
 
@@ -462,9 +462,9 @@ GPT 답 → *시간 강제 묵힘 없음* (§4.3 제거) → 사용자 판단 �
 
 v0.3 신설 (2단계 진입 전제):
 
-- **"상품기획 SaaS" 아이디어를 자기 깔때기에 투입** — `/atelier-npi` Stage 1로 Pain 3축(Reality / Depth / Owner)을 평가하고 Kill Signal(정량 1개)을 정한다. 3단계(분사) 판정의 근거가 이것이다 (§1.4).
+- **"상품기획 SaaS" 아이디어를 자기 깔때기에 투입** — `/atelier-npi` 의 묶음 1~2 로 Pain 3축(Reality / Depth / Owner)을 평가하고 Kill Signal(정량 1개)을 정한다. 3단계(분사) 판정의 근거가 이것이다 (§1.4).
 - **창고(Template-repository) 동기화 편입** — `.claude/rules/` 4종과 훅이 내려오도록 동기화 봇 대상에 atelier를 추가한다. 원본 우선 규칙에 따라 수정은 창고 쪽에서 한다.
-- **Atelier 시스템(2단계)의 PRD 패키지** — Atelier 시스템 자체를 Atelier 방식(Stage 2)으로 기획해 Foundry 사이클로 개발한다. 설계 출발점은 `architecture-review.md` §5(척추·데이터 모델·4겹).
+- **Atelier 시스템(2단계)의 PRD 패키지** — Atelier 시스템 자체를 Atelier 방식(9단계 완주)으로 기획해 Foundry 사이클로 개발한다. 설계 출발점은 `architecture-review.md` §5(척추·데이터 모델·4겹).
 
 ---
 
