@@ -36,3 +36,5 @@
 세션 밖 떠오른 idea는 *Atelier에 직접 박지 않고* 핸드폰 메모 등에 두었다가, 다음 세션에서 말로 전달.
 
 용어는 charter §5.3에 박혀 있다. 한 줄로 — Mockup은 정적 시각, Prototype은 HTML 클릭 가능 사용 시뮬레이션, MVP는 실 코드 + 시장 배포. 경계는 시장 노출 여부.
+
+- [`docs/prototype-vocabulary.md`](./docs/prototype-vocabulary.md) — 목업·프로토타입·시제품이 각각 무엇에 답하는 도구인지. 07단계 산출물 정의의 정본
