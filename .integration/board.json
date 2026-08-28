@@ -1,0 +1,87 @@
+{
+  "today": "2026-08-28",
+  "works": [
+    {
+      "id": "A-1",
+      "title": "헌장 v0.3 개정안 ACCEPT (단계적 개방 · 척추 신설)",
+      "area": "charter",
+      "team": "CEO",
+      "status": "shipped",
+      "touches": ["charter"],
+      "planStart": "2026-08-26",
+      "planEnd": "2026-08-26",
+      "progress": 100,
+      "completedAt": "2026-08-26"
+    },
+    {
+      "id": "A-2",
+      "title": "창고 동기화 편입 (공용 규칙·스킬 수령 시작)",
+      "area": "infra",
+      "team": "Agent",
+      "status": "shipped",
+      "touches": ["warehouse"],
+      "planStart": "2026-08-26",
+      "planEnd": "2026-08-26",
+      "progress": 100,
+      "completedAt": "2026-08-26"
+    },
+    {
+      "id": "A-3",
+      "title": "동기화 봇 자기 버전 드리프트 경고 (창고 판과 대조)",
+      "area": "infra",
+      "team": "Agent",
+      "status": "shipped",
+      "touches": ["warehouse"],
+      "fixes": ["sync"],
+      "planStart": "2026-08-26",
+      "planEnd": "2026-08-27",
+      "progress": 100,
+      "completedAt": "2026-08-27"
+    },
+    {
+      "id": "A-4",
+      "title": "첫 안건 Stage 1 — 외부 흔적 수집 (통증 근거 재료)",
+      "area": "funnel",
+      "team": "Agent",
+      "status": "shipped",
+      "planStart": "2026-08-26",
+      "planEnd": "2026-08-26",
+      "progress": 100,
+      "completedAt": "2026-08-26"
+    },
+    {
+      "id": "A-5",
+      "title": "첫 안건 Stage 1 — CEO 판정 (Pass / Hold / Kill)",
+      "area": "funnel",
+      "team": "CEO",
+      "status": "review",
+      "block": "waiting",
+      "planStart": "2026-08-26",
+      "planEnd": "2026-08-27",
+      "progress": 0
+    },
+    {
+      "id": "A-6",
+      "title": "Phase 2 대기 idea 가시화 장치 (누적 마찰 시 착수)",
+      "area": "funnel",
+      "team": "Agent",
+      "status": "doing",
+      "progress": 0
+    },
+    {
+      "id": "A-7",
+      "title": "현황판 설정을 저장소에 커밋 (재현 가능하게)",
+      "area": "infra",
+      "team": "Agent",
+      "status": "done",
+      "touches": ["warehouse"],
+      "planStart": "2026-08-28",
+      "planEnd": "2026-08-28",
+      "progress": 90
+    }
+  ],
+  "violations": [],
+  "checkRuns": {
+    "sync": "pass"
+  }
+}
