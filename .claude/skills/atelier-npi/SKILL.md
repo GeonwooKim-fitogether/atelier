@@ -1,9 +1,9 @@
 ---
 name: atelier-npi
-description: Atelier NPI 9-stage workflow. Pain Point raw → Foundry 인계 패키지까지. CEO와 대화로 진행. trigger - CEO가 "Atelier 시작" 발화 시 atelier-npi Skill 자동 fire (단일 trigger). 현재 Stage 01·02 1차 구축, 03~09 미구축 (Phased Build-and-Test로 순차 진화).
+description: Atelier NPI 9-stage workflow. Pain Point raw → Foundry 인계 패키지까지. CEO와 대화로 진행. trigger - CEO가 "Atelier 시작" 발화 시 atelier-npi Skill 자동 fire (단일 trigger). 현재 Stage 01~07 1차 구축 — 06·07은 설계→제작 사슬 v2 (docs/prototype-vocabulary.md §7). 08~09 미구축 (Phased Build-and-Test).
 ---
 
-# atelier-npi Skill v0.3
+# atelier-npi Skill v0.4
 
 Atelier 9-stage workflow의 *실행 가이드*. Skill fire 시 Agent가 Stage 01부터 step-by-step 진행. CEO는 말·답변·판정만.
 
@@ -128,7 +128,7 @@ trigger 발화 "Atelier 시작" → Skill fire → **즉시 다음 read·view �
 | **1** | 01 Intake | Pain Point clue 인터뷰 (CEO 발화 + 3 축 정리) | **v2 (2026-05-29 재정의)** |
 | **2** | 02 Research / 03 Analysis | 발산 + 정제 — 빈 영역 발견·정의 | v0.3 (정비 필요) |
 | **3** | 04 Ideation / 05 Prioritization | 해결책 발산 + 수렴 | 잠정 |
-| **4** | 06 Planning / 07 Prototyping / 08 Validation | 완성본 만들기 | 미구축 |
+| **4** | 06 설계 / 07 제작 / 08 Validation | 완성본 만들기 | 06·07 1차 구축 (사슬 v2) · 08 미구축 |
 | **5** | 09 Handoff Packaging | 3 완료 문서 → Foundry | 미구축 |
 
 각 stage 시각 reference: `workflows/type1-external-service.html` · `workflows/node-graph.html` (Dashboard).
@@ -662,10 +662,37 @@ Hold → 04 Ideation 회귀. Kill → funnel.
 
 ---
 
-## Stage 06~09 (미구축)
+## Stage 06 설계 · Stage 07 제작 — 설계→제작 사슬 (v2, 2026-08-29 구축)
 
-각 stage 잠정 구조는 `workflows/type1-external-service.html` 참고.
-시스템은 *그 stage 시점에 구체화*. Phased Build-and-Test.
+**정본은 [`docs/prototype-vocabulary.md`](../../../docs/prototype-vocabulary.md) §7이다. 여기는 실행 순서만 적는다.** 이 사슬이 생긴 이유 — 사이클 1(mobile-rosary)에서 PRD 없이 곧바로 제작으로 갔더니, 동작만 진짜이고 화면은 임시인 물건이 나와 **제품의 핵심 가설(단순·세련 UX)을 검증할 수 없었다.** 설령 프로토타입일지라도 제품을 만드는 수준의 기획이 앞에 없으면 품질이 낮을 수밖에 없다는 것이 공방장 판정이며, 그래서 이 사슬은 권고가 아니라 **묶음 4의 구조**다.
+
+### Stage 06 — 설계 네 산출물 (그리기 전에 끝나야 하는 것)
+
+| 순서 | 산출물 | 파일 | 무엇을 정하나 |
+|---|---|---|---|
+| 06-a | **PRD** | `06-prd.md` | 기능 단위 경쟁 대조(과업마다 경쟁자 해법→차이→**USP인가 판정**) · FR-## 요구사항 · 오류 표 · 비기능 · 범위 밖 |
+| 06-b | **디자인 시스템** | `06-design-system.md` | 그 제품의 세계에서 가져온 토큰 · 서체 · 컴포넌트 상태 · 모션 · 접근성 · 톤 · **수용 기준(경쟁 기준선 포함)** |
+| 06-c | **서비스 설계** | `06-service-design.md` | 걸킨 유저 스토리(네 부분 전부) · 정보 구조 · 백오피스 판단 |
+| 06-d | **화면 명세** | `06-screen-spec.md` | 화면마다 여섯 칸(목적·진입이탈·요소 표·문구 표·빈오류·명세 밖). **비화면 채널(소리·진동)이 있으면 그 명세 필수** |
+
+**06 게이트: 모든 FR이 어느 화면(채널)의 어느 요소에 속하는지 대응된다. 무소속 FR = 0.**
+
+### Stage 07 — 제작 네 산출물
+
+| 순서 | 산출물 | 조건 |
+|---|---|---|
+| 07-a | 유저 플로 + 와이어프레임 | 화면 5개 이하이고 06-d가 목록을 닫았으면 생략 가능 — **생략을 명시** |
+| 07-b | 페이지별 목업 → 통합 목업 | 06-b·06-d 적용. kimdesigner 시각 루프(렌더→보고→고침). **게이트: 수용 기준 + "경쟁 기준선보다 낫다" — 사람 판정** |
+| 07-c | 기능 프로토타입 | 동작 가설을 실제로 겪는다. 07-b와 병렬 가능 |
+| 07-d | **통합 시제품** = 07-b 화면 + 07-c 동작 | **07-d 없이 08로 가지 않는다.** 08 검증에 넘기는 유일한 것 |
+
+첫 실행 예시(서식의 실물): `idea/mobile-rosary/06-*.md` 와 `07-prototype/`. 판돈 조절(내부 도구는 축약 경로)은 정본 §7-4.
+
+---
+
+## Stage 08~09 (미구축)
+
+08 검증(테스트 케이스는 book-tool-map의 5-6, 소규모는 탐색적 테스팅) · 09 인계(01~08 누적 취합)는 사이클 1이 그 단계에 닿을 때 구체화한다.
 
 ---
 
@@ -678,7 +705,7 @@ _meta.md                  ← 현재 stage·판정·상태 (Dashboard 입력)
 03-analysis.md
 04-ideation.md
 05-prioritization.md
-06-service-planning.md
+06-prd.md · 06-design-system.md · 06-service-design.md · 06-screen-spec.md
 07-prototype/             ← HTML 폴더 (유일하게 폴더)
 08-validation.md
 09-handoff.md             ← PRD 박제 + 자동 취합 인덱스
@@ -702,12 +729,11 @@ stage = 한 파일 원칙. 07-prototype/만 폴더 (HTML 다수 파일).
 
 ## 진화 계획 (v0.3 → v0.x)
 
-- **v0.3 (현재)** — Stage 02 Research 1차 구축 (발산 only) + Stage 03·04·05 잠정 박음
-- v0.3.1 — mobile-rosary cycle 검증 결과 반영 (Stage 02 정정)
-- v0.4 — Stage 03 Analysis 본격 구축 (mobile-rosary cycle 진행하며)
-- v0.5 — Stage 04 Ideation 본격 구축
-- v0.6 — Stage 05 Prioritization 본격 구축
-- v0.7 ~ v0.9 — Stage 06~09 순차 구축
+- v0.3 — Stage 02 1차 구축 + 03·04·05 잠정
+- **v0.4 (현재, 2026-08-29)** — Stage 06·07을 설계→제작 사슬로 구축 (사이클 1 실측 사고에서. 정본 = prototype-vocabulary §7). 04·05는 사이클 1 완주로 1차 검증됨 (닷 보팅·2×2 AI 재산정 포함)
+- v0.5 — Stage 08 검증 구축 (사이클 1이 08에 닿을 때)
+- v0.6 — Stage 09 인계 구축 + 사이클 1 회고 반영
+- v0.7 — 안건 2호에서 사슬 재현성 검증
 - charter v0.3 박힘 후 reference 갱신
 
 charter §16 미해결 — Phased Build-and-Test로 진화.
