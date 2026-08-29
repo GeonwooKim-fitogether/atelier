@@ -38,3 +38,4 @@
 용어는 charter §5.3에 박혀 있다. 한 줄로 — Mockup은 정적 시각, Prototype은 HTML 클릭 가능 사용 시뮬레이션, MVP는 실 코드 + 시장 배포. 경계는 시장 노출 여부.
 
 - [`docs/prototype-vocabulary.md`](./docs/prototype-vocabulary.md) — 목업·프로토타입·시제품이 각각 무엇에 답하는 도구인지. 07단계 산출물 정의의 정본
+- [`docs/roadmap.md`](./docs/roadmap.md) — 정체성(두 생산 라인) · 실측 장부 · 네 지평 로드맵. plan.md 위에 실행 순서와 게이트 질문을 얹는 문서
