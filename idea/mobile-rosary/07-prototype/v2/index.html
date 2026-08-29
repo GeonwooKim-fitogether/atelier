@@ -373,7 +373,7 @@ function renderHome(){
   b.onclick=()=>{S.active=it.id;save();renderHome()};list.appendChild(b)});
  const it=activeIntent(),r=$('resumeCard');
  if(it.progress){r.classList.add('on');
-  $('resumeText').textContent=pLabel(it.progress)+' 부터 이어서';
+  $('resumeText').textContent=pLabel(it.progress)+'부터 이어서';
   $('resumeSub').textContent=esc(it.name)+' · '+ago(it.progress.at)+' 멈춤'}
  else r.classList.remove('on');
  $('tgSilent').setAttribute('aria-pressed',String(!!S.silent));
@@ -434,6 +434,7 @@ function pause(keep){running=false;clearTimeout(timer);
  renderHome();show('home')}
 function finish(){running=false;clearTimeout(timer);
  if('speechSynthesis'in window)speechSynthesis.cancel();unwake();
+ buzz(200); // 완주 — 눈 감은 사용자에게 끝을 알린다 (06-screen-spec 진동 사전)
  const it=activeIntent();
  $('doneIntent').textContent=it.name+'\uc744 \uc704\ud558\uc5ec';
  $('statMin').textContent=Math.max(1,Math.round((Date.now()-startedAt)/60000));
