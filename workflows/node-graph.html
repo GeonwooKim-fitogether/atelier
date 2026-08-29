@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Atelier Node Graph — Stage 간 흐름·연결</title>
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --card: #171717;
+      --card-deep: #0f0f0f;
+      --border: rgba(255,255,255,0.10);
+      --border-strong: rgba(255,255,255,0.22);
+      --fg: #fafafa;
+      --muted: #a3a3a3;
+      --subtle: #6b6b6b;
+      --faint: #404040;
+      --node: #737373;
+      --node-out: #86efac;
+      --node-judge: #fde68a;
+      --line: rgba(115, 115, 115, 0.30);
+      --line-out: rgba(134, 239, 172, 0.40);
+      --line-judge: rgba(253, 230, 138, 0.40);
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; height: 100vh; overflow: hidden; }
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+      display: flex;
+      flex-direction: column;
+      font-size: 12px;
+    }
+
+    .top-header {
+      padding: 10px 20px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .top-header h1 {
+      font-size: 14px;
+      color: var(--fg);
+      margin: 0;
+      font-weight: 600;
+    }
+    .top-header .meta {
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .header-nav {
+      display: flex;
+      gap: 6px;
+    }
+    .nav-tab {
+      padding: 5px 12px;
+      font-size: 11px;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      text-decoration: none;
+      transition: all 0.12s;
+    }
+    .nav-tab:hover { color: var(--fg); border-color: var(--border-strong); }
+    .nav-tab.active {
+      background: var(--card);
+      color: var(--fg);
+      border-color: var(--border-strong);
+    }
+
+    .legend {
+      display: flex;
+      gap: 16px;
+      font-size: 10.5px;
+      color: var(--muted);
+      align-items: center;
+    }
+    .lg-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .lg-node { width: 8px; height: 8px; border-radius: 50%; background: var(--node); }
+    .lg-node.out { background: var(--node-out); box-shadow: 0 0 0 2px rgba(134, 239, 172, 0.15); }
+    .lg-node.judge { background: var(--node-judge); box-shadow: 0 0 0 2px rgba(253, 230, 138, 0.15); }
+    .lg-card {
+      width: 14px; height: 10px;
+      background: var(--card); border: 1px solid var(--border-strong);
+      border-radius: 2px;
+    }
+    .lg-line {
+      width: 18px; height: 1px;
+      background: var(--line);
+    }
+    .lg-line.out { background: var(--line-out); }
+
+    .graph-wrap {
+      flex: 1;
+      min-height: 0;
+      overflow: auto;
+      position: relative;
+    }
+    .graph {
+      position: relative;
+      min-width: 100%;
+      min-height: 100%;
+      padding: 20px 20px 30px;
+      display: flex;
+      gap: 0;
+    }
+
+    /* SVG overlay — line이 column 뒤 (card 반투명으로 비침). 글씨는 card 안 label background로 line 가림 */
+    #lines-svg {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .col {
+      flex: 0 0 200px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 0 14px;
+      position: relative;
+      z-index: 10;
+    }
+    .col-header {
+      text-align: center;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 4px;
+    }
+    .col-num {
+      font-size: 10px;
+      color: var(--subtle);
+      letter-spacing: 0.6px;
+      font-weight: 600;
+    }
+    .col-name {
+      font-size: 12.5px;
+      color: var(--fg);
+      font-weight: 600;
+      margin-top: 2px;
+    }
+    .col-mode {
+      font-size: 9.5px;
+      color: var(--muted);
+      margin-top: 2px;
+      letter-spacing: 0.3px;
+    }
+    .col-mode.diverge { color: #93c5fd; }
+    .col-mode.converge { color: #fde68a; }
+
+    .card {
+      background: rgba(23, 23, 23, 0.65);
+      backdrop-filter: blur(2px);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 9px 0;
+      position: relative;
+    }
+    .card-title {
+      font-size: 10.5px;
+      color: var(--fg);
+      font-weight: 600;
+      margin: 0 10px 7px;
+      letter-spacing: -0.1px;
+    }
+    .card-title .sn {
+      font-size: 9.5px;
+      color: var(--subtle);
+      margin-right: 4px;
+      font-family: "Consolas", "Monaco", monospace;
+    }
+
+    .nodes {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .node {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 7px;
+      font-size: 10px;
+      color: var(--muted);
+      line-height: 1.3;
+      padding: 0 8px;
+    }
+    .node-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--node);
+      flex-shrink: 0;
+      transition: transform 0.15s, box-shadow 0.15s;
+      position: relative;
+      z-index: 10;
+    }
+    /* in/out dot — 카드 안쪽 padding 자리. card border와 떨어져서 line이 card 통과해도 가시 */
+    /* output node — out dot만 녹색 */
+    .node.output .node-dot.out {
+      background: var(--node-out);
+      box-shadow: 0 0 0 2px rgba(134, 239, 172, 0.15);
+    }
+    /* 판정 node — out dot 노란 */
+    .node.judge .node-dot.out {
+      background: var(--node-judge);
+      box-shadow: 0 0 0 2px rgba(253, 230, 138, 0.15);
+    }
+    .node-label {
+      color: var(--fg);
+      padding: 3px 5px;
+      background: #171717;
+      position: relative;
+      z-index: 8;
+      border-radius: 2px;
+      display: block;
+      width: 100%;
+    }
+    /* card-title — block + card 전체 가로폭. line이 title row 통과 시 완전 가림 */
+    .card-title {
+      position: relative;
+      z-index: 8;
+      background: #171717;
+      padding: 3px 6px;
+      margin: 0 6px 7px;
+      border-radius: 2px;
+      display: block;
+    }
+    /* node hover — 연결 line 강조 (JS와 연동) */
+    .node:hover .node-dot {
+      transform: scale(1.4);
+    }
+
+    /* === Stage 완료 시각 동기 === */
+    /* col 완료 — Stage 헤더에 done badge */
+    .col-header .stage-status {
+      font-size: 9px;
+      letter-spacing: 0.4px;
+      padding: 2px 6px;
+      border-radius: 3px;
+      margin-top: 4px;
+      display: inline-block;
+    }
+    .col-header .stage-status.done {
+      color: #6ee7b7;
+      background: rgba(110, 231, 183, 0.10);
+      border: 1px solid rgba(110, 231, 183, 0.30);
+    }
+    .col-header .stage-status.in-progress {
+      color: #93c5fd;
+      background: rgba(147, 197, 253, 0.10);
+      border: 1px solid rgba(147, 197, 253, 0.30);
+    }
+    /* 완료된 col — 모든 node-dot 청록 */
+    .col.done .node-dot {
+      background: var(--node-out);
+      box-shadow: 0 0 0 1.5px rgba(134, 239, 172, 0.20);
+    }
+    .col.done .node.judge .node-dot {
+      background: var(--node-judge);
+      box-shadow: 0 0 0 1.5px rgba(253, 230, 138, 0.20);
+    }
+    .col.done .card-title { color: #6ee7b7; }
+    .col.done .card { border-color: rgba(110, 231, 183, 0.20); }
+
+    .col.handoff {
+      flex: 0 0 220px;
+    }
+    .col.handoff .card {
+      border-color: rgba(253, 230, 138, 0.30);
+      background: rgba(253, 230, 138, 0.04);
+    }
+    .col.handoff .card-title { color: #fde68a; }
+
+    .footer {
+      padding: 8px 20px;
+      text-align: center;
+      font-size: 10.5px;
+      color: var(--subtle);
+      border-top: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .footer code {
+      background: rgba(255,255,255,0.06);
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-size: 10px;
+      color: var(--fg);
+      font-family: "Consolas", "Monaco", monospace;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="top-header">
+    <div style="display:flex; align-items:baseline; gap:12px;">
+      <h1>Atelier Node Graph</h1>
+      <div class="meta">Stage 간 흐름·연결 (MVP)</div>
+    </div>
+
+    <div class="header-nav">
+      <a class="nav-tab" href="type1-external-service.html">← Workflow Dashboard</a>
+      <a class="nav-tab active" href="node-graph.html">Node Graph</a>
+    </div>
+
+    <div class="legend">
+      <div class="lg-item"><span class="lg-card"></span><span>Card · step 묶음</span></div>
+      <div class="lg-item"><span class="lg-node"></span><span>Node · input/중간</span></div>
+      <div class="lg-item"><span class="lg-node out"></span><span>Output · 결정적 산출</span></div>
+      <div class="lg-item"><span class="lg-node judge"></span><span>판정 · Pass/Hold/Kill</span></div>
+      <div class="lg-item"><span class="lg-line"></span><span>흐름</span></div>
+      <div class="lg-item"><span class="lg-line out"></span><span>09 수렴</span></div>
+    </div>
+  </div>
+
+  <div class="graph-wrap">
+    <div class="graph" id="graph">
+
+      <svg id="lines-svg"></svg>
+
+      <!-- 01 Intake — 완료 ✓ (묶음 1) -->
+      <div class="col done">
+        <div class="col-header">
+          <div class="col-num">01</div>
+          <div class="col-name">Intake</div>
+          <div class="col-mode">Pain Point clue</div>
+          <div class="stage-status done">완료 ✓ (v2)</div>
+        </div>
+        <div class="card">
+          <div class="card-title"><span class="sn">1.3</span>Pain Point 정체성</div>
+          <div class="nodes">
+            <div class="node"><span class="node-dot" id="n-01-pain"></span><span class="node-label">Pain 1문장</span></div>
+            <div class="node"><span class="node-dot" id="n-01-whys"></span><span class="node-label">5 Whys · 근본 원인</span></div>
+            <div class="node"><span class="node-dot" id="n-01-5축"></span><span class="node-label">5축 (backend)</span></div>
+            <div class="node"><span class="node-dot" id="n-01-bg"></span><span class="node-label">배경 지식</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 02 정보 수집 — 완료 ✓ (묶음 2) -->
+      <div class="col done">
+        <div class="col-header">
+          <div class="col-num">02</div>
+          <div class="col-name">정보 수집</div>
+          <div class="col-mode diverge">넓게 펼치기</div>
+          <div class="stage-status done">완료 ✓</div>
+        </div>
+        <div class="card">
+          <div class="card-title"><span class="sn">2.1</span>시장 (6 마주침)</div>
+          <div class="nodes">
+            <div class="node"><span class="node-dot" id="n-02m1"></span><span class="node-label">1 응답 강도</span></div>
+            <div class="node"><span class="node-dot" id="n-02m2"></span><span class="node-label">2 솔루션 풍경</span></div>
+            <div class="node"><span class="node-dot" id="n-02m3"></span><span class="node-label">3 경쟁자</span></div>
+            <div class="node"><span class="node-dot" id="n-02m4"></span><span class="node-label">4 규모·트렌드</span></div>
+            <div class="node"><span class="node-dot" id="n-02m5"></span><span class="node-label">5 인접 도메인</span></div>
+            <div class="node"><span class="node-dot" id="n-02m6"></span><span class="node-label">6 BM·가격</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title"><span class="sn">2.2</span>사용자 (5 마주침)</div>
+          <div class="nodes">
+            <div class="node"><span class="node-dot" id="n-02u1"></span><span class="node-label">1 시장 안 위치</span></div>
+            <div class="node"><span class="node-dot" id="n-02u2"></span><span class="node-label">2 솔루션 환경</span></div>
+            <div class="node"><span class="node-dot" id="n-02u3"></span><span class="node-label">3 현재 행동</span></div>
+            <div class="node"><span class="node-dot" id="n-02u4"></span><span class="node-label">4 동기</span></div>
+            <div class="node"><span class="node-dot" id="n-02u5"></span><span class="node-label">5 표현 (3대상)</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 03 정리·분석 — 완료 ✓ (Deep + Persona 그룹 5명) -->
+      <div class="col done">
+        <div class="col-header">
+          <div class="col-num">03</div>
+          <div class="col-name">정리·분석</div>
+          <div class="col-mode converge">빵빵·풍성·깊이</div>
+          <div class="stage-status done">완료 ✓ · Persona 5 · 진행</div>
+        </div>
+        <div class="card">
+          <div class="card-title"><span class="sn">3.1</span>진짜 문제인가?</div>
+          <div class="nodes">
+            <div class="node"><span class="node-dot" id="n-03-reality"></span><span class="node-label">현실 흔적</span></div>
+            <div class="node"><span class="node-dot" id="n-03-depth"></span><span class="node-label">자주·아프게</span></div>
+            <div class="node"><span class="node-dot" id="n-03-owner"></span><span class="node-label">주인</span></div>
+            <div class="node output"><span class="node-dot" id="n-03-vpain"></span><span class="node-label">진짜 문제 1문장</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title"><span class="sn">3.2</span>누가 강하게 느끼나?</div>
+          <div class="nodes">
+            <div class="node"><span class="node-dot" id="n-03-pbio"></span><span class="node-label">인물 소개</span></div>
+            <div class="node"><span class="node-dot" id="n-03-ptraits"></span><span class="node-label">성향·행동·불편</span></div>
+            <div class="node"><span class="node-dot" id="n-03-pgoals"></span><span class="node-label">목표·필요 기능</span></div>
+            <div class="node output"><span class="node-dot" id="n-03-persona"></span><span class="node-label">주인 1명</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title"><span class="sn">3.3</span>어디에 자리잡나?</div>
+          <div class="nodes">
+            <div class="node"><span class="node-dot" id="n-03-pos-axes"></span><span class="node-label">2축 (CEO lock-in)</span></div>
+            <div class="node"><span class="node-dot" id="n-03-pos-dots"></span><span class="node-label">경쟁자 9 dot</span></div>
+            <div class="node output"><span class="node-dot" id="n-03-pos"></span><span class="node-label">우리 자리 가설</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title"><span class="sn">3.4</span>경쟁자 풍경</div>
+          <div class="nodes">
+            <div class="node"><span class="node-dot" id="n-03-comp"></span><span class="node-label">핵심 5 풍경 표</span></div>
+            <div class="node"><span class="node-dot" id="n-03-comp-bypass"></span><span class="node-label">우회 행동 (포괄)</span></div>
+            <div class="node output"><span class="node-dot" id="n-03-comp-pick"></span><span class="node-label">핵심 경쟁자 선정</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title"><span class="sn">3.5</span>우리만 다른 기능?</div>
+          <div class="nodes">
+            <div class="node"><span class="node-dot" id="n-03-feat"></span><span class="node-label">피처 ●○ 매트릭스</span></div>
+            <div class="node output"><span class="node-dot" id="n-03-gap"></span><span class="node-label">빈자리 3축</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title"><span class="sn">3.6</span>지금 어떻게 시도하나?</div>
+          <div class="nodes">
+            <div class="node"><span class="node-dot" id="n-03-bypass"></span><span class="node-label">우회 4유형</span></div>
+            <div class="node output"><span class="node-dot" id="n-03-tone"></span><span class="node-label">솔루션 톤 lock-in</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title"><span class="sn">3.7</span>사업화 가능한가? (BMC)</div>
+          <div class="nodes">
+            <div class="node"><span class="node-dot" id="n-03-cs"></span><span class="node-label">Customer Segments</span></div>
+            <div class="node"><span class="node-dot" id="n-03-vp"></span><span class="node-label">Value Propositions</span></div>
+            <div class="node"><span class="node-dot" id="n-03-ch"></span><span class="node-label">Channels</span></div>
+            <div class="node"><span class="node-dot" id="n-03-rev"></span><span class="node-label">Revenue Streams</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title"><span class="sn">3.8</span>진행 여부 결정</div>
+          <div class="nodes">
+            <div class="node"><span class="node-dot" id="n-03-check"></span><span class="node-label">반증 5건 · 기준 6건</span></div>
+            <div class="node judge"><span class="node-dot" id="n-03-judge"></span><span class="node-label">진행 / 보류 / 포기</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 04 Ideation -->
+      <div class="col">
+        <div class="col-header">
+          <div class="col-num">04</div>
+          <div class="col-name">Ideation</div>
+          <div class="col-mode diverge">발산</div>
+        </div>
+        <div class="card">
+          <div class="card-title"><span class="sn">4.1~4.4</span>솔루션 발산</div>
+          <div class="nodes">
+            <div class="node"><span class="node-dot" id="n-04-hmw"></span><span class="node-label">HMW</span></div>
+            <div class="node"><span class="node-dot" id="n-04-crazy"></span><span class="node-label">Crazy 8s</span></div>
+            <div class="node"><span class="node-dot" id="n-04-rev"></span><span class="node-label">수익 메커니즘</span></div>
+            <div class="node output"><span class="node-dot" id="n-04-wedge"></span><span class="node-label">Wedge 후보[]</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 05 Prioritization -->
+      <div class="col">
+        <div class="col-header">
+          <div class="col-num">05</div>
+          <div class="col-name">Prioritization</div>
+          <div class="col-mode converge">수렴 + 판정 2</div>
+        </div>
+        <div class="card">
+          <div class="card-title"><span class="sn">5.1~5.4</span>방향 결정 + BMC 완성</div>
+          <div class="nodes">
+            <div class="node"><span class="node-dot" id="n-05-2x2"></span><span class="node-label">2x2 매트릭스</span></div>
+            <div class="node output"><span class="node-dot" id="n-05-dir"></span><span class="node-label">방향성 한 줄</span></div>
+            <div class="node output"><span class="node-dot" id="n-05-asis"></span><span class="node-label">As is - To Be</span></div>
+            <div class="node output"><span class="node-dot" id="n-05-bmc"></span><span class="node-label">BMC 9블록 완성</span></div>
+            <div class="node judge"><span class="node-dot" id="n-05-judge"></span><span class="node-label">판정 2</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 06 Service Planning -->
+      <div class="col">
+        <div class="col-header">
+          <div class="col-num">06</div>
+          <div class="col-name">Service Planning</div>
+          <div class="col-mode">박음</div>
+        </div>
+        <div class="card">
+          <div class="card-title">화면·기능·스토리·AC</div>
+          <div class="nodes">
+            <div class="node"><span class="node-dot" id="n-06-flow"></span><span class="node-label">화면 흐름</span></div>
+            <div class="node"><span class="node-dot" id="n-06-feat"></span><span class="node-label">기능 정의</span></div>
+            <div class="node"><span class="node-dot" id="n-06-story"></span><span class="node-label">User Story</span></div>
+            <div class="node output"><span class="node-dot" id="n-06-ac"></span><span class="node-label">Acceptance Criteria</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 07 Prototyping -->
+      <div class="col">
+        <div class="col-header">
+          <div class="col-num">07</div>
+          <div class="col-name">Prototyping</div>
+          <div class="col-mode">박음</div>
+        </div>
+        <div class="card">
+          <div class="card-title">HTML Prototype</div>
+          <div class="nodes">
+            <div class="node"><span class="node-dot" id="n-07-html"></span><span class="node-label">HTML/CSS/JS</span></div>
+            <div class="node output"><span class="node-dot" id="n-07-proto"></span><span class="node-label">Clickable Proto</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 08 Validation -->
+      <div class="col">
+        <div class="col-header">
+          <div class="col-num">08</div>
+          <div class="col-name">Validation</div>
+          <div class="col-mode converge">검증 + 판정 3</div>
+        </div>
+        <div class="card">
+          <div class="card-title">사용 시뮬 + Kill Signal</div>
+          <div class="nodes">
+            <div class="node"><span class="node-dot" id="n-08-sim"></span><span class="node-label">사용 시뮬</span></div>
+            <div class="node"><span class="node-dot" id="n-08-kill"></span><span class="node-label">Kill Signal 측정</span></div>
+            <div class="node"><span class="node-dot" id="n-08-moat"></span><span class="node-label">Moat & Wall</span></div>
+            <div class="node judge"><span class="node-dot" id="n-08-judge"></span><span class="node-label">판정 3</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 09 Handoff Packaging -->
+      <div class="col handoff">
+        <div class="col-header">
+          <div class="col-num">09</div>
+          <div class="col-name">Handoff Packaging</div>
+          <div class="col-mode">자동 취합 → Foundry</div>
+        </div>
+        <div class="card">
+          <div class="card-title">PRD.md (Foundry 입력)</div>
+          <div class="nodes">
+            <div class="node output"><span class="node-dot" id="n-09-dir"></span><span class="node-label">방향성</span></div>
+            <div class="node output"><span class="node-dot" id="n-09-asis"></span><span class="node-label">As is · To be</span></div>
+            <div class="node output"><span class="node-dot" id="n-09-pain"></span><span class="node-label">검증 Pain</span></div>
+            <div class="node output"><span class="node-dot" id="n-09-persona"></span><span class="node-label">Owner / Persona</span></div>
+            <div class="node output"><span class="node-dot" id="n-09-bypass"></span><span class="node-label">우회 행동</span></div>
+            <div class="node output"><span class="node-dot" id="n-09-bmc"></span><span class="node-label">BMC 9블록</span></div>
+            <div class="node output"><span class="node-dot" id="n-09-moat"></span><span class="node-label">Moat & Wall</span></div>
+            <div class="node output"><span class="node-dot" id="n-09-kill"></span><span class="node-label">Kill Signal</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">+ 기획서 · Prototype · 검증 결과</div>
+          <div class="nodes">
+            <div class="node output"><span class="node-dot" id="n-09-planning"></span><span class="node-label">Service Planning 묶음</span></div>
+            <div class="node output"><span class="node-dot" id="n-09-proto"></span><span class="node-label">Prototype 묶음</span></div>
+            <div class="node output"><span class="node-dot" id="n-09-validation"></span><span class="node-label">Validation 묶음</span></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="footer">
+    Atelier Node Graph v0.1 (MVP) · <code>workflows/node-graph.html</code> · Stage 간 흐름·연결 시각화
+  </div>
+
+  <script>
+    // node 간 connection — [from, to] pairs
+    const connections = [
+      // Stage 01 → 02
+      ['n-01-5축', 'n-02m1'], ['n-01-5축', 'n-02m2'], ['n-01-5축', 'n-02m5'],
+      ['n-01-5축', 'n-02u1'], ['n-01-5축', 'n-02u3'], ['n-01-5축', 'n-02u4'],
+      ['n-01-pain', 'n-02u5'],
+      ['n-01-bg', 'n-02m2'],
+
+      // Stage 02 → 03
+      // 3.1 진짜 문제인가? (현실 흔적·자주아프게·주인)
+      ['n-02u3', 'n-03-reality'], ['n-02m1', 'n-03-reality'],
+      ['n-02u3', 'n-03-depth'], ['n-02u4', 'n-03-depth'], ['n-02m2', 'n-03-depth'],
+      ['n-02u1', 'n-03-owner'], ['n-02u5', 'n-03-owner'],
+      // 3.2 누가 강하게 느끼나? (책 6 block)
+      ['n-02u1', 'n-03-pbio'], ['n-02u5', 'n-03-pbio'],
+      ['n-02u3', 'n-03-ptraits'], ['n-02u4', 'n-03-ptraits'],
+      ['n-02u4', 'n-03-pgoals'], ['n-02u5', 'n-03-pgoals'],
+      ['n-03-vpain', 'n-03-persona'],
+      // 3.3 어디에 자리잡나? (포지셔닝 맵)
+      ['n-02m3', 'n-03-pos-axes'], ['n-02m2', 'n-03-pos-axes'],
+      ['n-02m3', 'n-03-pos-dots'], ['n-02m6', 'n-03-pos-dots'],
+      ['n-03-pos-axes', 'n-03-pos'], ['n-03-pos-dots', 'n-03-pos'],
+      // 3.4 경쟁자 풍경
+      ['n-02m3', 'n-03-comp'], ['n-02m6', 'n-03-comp'],
+      ['n-02u3', 'n-03-comp-bypass'],
+      ['n-03-pos', 'n-03-comp-pick'],
+      // 3.5 우리만 다른 기능? (Feature Matrix)
+      ['n-03-comp-pick', 'n-03-feat'],
+      ['n-03-feat', 'n-03-gap'],
+      // 3.6 지금 어떻게 시도하나? (우회 4유형)
+      ['n-02u3', 'n-03-bypass'], ['n-02u4', 'n-03-bypass'],
+      ['n-03-gap', 'n-03-bypass'],
+      ['n-03-bypass', 'n-03-tone'],
+      // 3.7 사업화 가능한가? (BMC)
+      ['n-03-persona', 'n-03-cs'],
+      ['n-03-vpain', 'n-03-vp'], ['n-03-gap', 'n-03-vp'], ['n-03-tone', 'n-03-vp'],
+      ['n-02m2', 'n-03-ch'],
+      ['n-02m6', 'n-03-rev'],
+      // 3.8 진행 여부 결정
+      ['n-03-vpain', 'n-03-check'], ['n-03-persona', 'n-03-check'], ['n-03-gap', 'n-03-check'], ['n-03-tone', 'n-03-check'], ['n-03-vp', 'n-03-check'],
+      ['n-03-check', 'n-03-judge'],
+
+      // Stage 03 → 04
+      ['n-03-vpain', 'n-04-hmw'],
+      ['n-03-gap', 'n-04-crazy'], ['n-03-tone', 'n-04-crazy'],
+      ['n-03-rev', 'n-04-rev'], ['n-02m5', 'n-04-crazy'],
+
+      // Stage 04 → 05
+      ['n-04-wedge', 'n-05-2x2'],
+      ['n-03-cs', 'n-05-bmc'], ['n-03-vp', 'n-05-bmc'], ['n-03-ch', 'n-05-bmc'], ['n-03-rev', 'n-05-bmc'],
+      ['n-02m4', 'n-05-2x2'],
+
+      // Stage 05 → 06
+      ['n-05-dir', 'n-06-flow'], ['n-05-dir', 'n-06-feat'],
+      ['n-03-persona', 'n-06-story'],
+
+      // Stage 06 → 07
+      ['n-06-flow', 'n-07-html'], ['n-06-feat', 'n-07-html'], ['n-06-ac', 'n-07-proto'],
+
+      // Stage 07 → 08
+      ['n-07-proto', 'n-08-sim'],
+      ['n-05-judge', 'n-08-kill'],
+
+      // 0X → 09 자동 취합
+      ['n-05-dir', 'n-09-dir'],
+      ['n-05-asis', 'n-09-asis'],
+      ['n-03-vpain', 'n-09-pain'],
+      ['n-03-persona', 'n-09-persona'],
+      ['n-03-bypass', 'n-09-bypass'],
+      ['n-05-bmc', 'n-09-bmc'],
+      ['n-08-moat', 'n-09-moat'],
+      ['n-08-kill', 'n-09-kill'],
+      ['n-06-ac', 'n-09-planning'],
+      ['n-07-proto', 'n-09-proto'],
+      ['n-08-judge', 'n-09-validation']
+    ];
+
+    // Step 1: 각 .node 안 단일 dot을 in/out 두 dot으로 변환
+    function setupNodeDots() {
+      document.querySelectorAll('.node').forEach(node => {
+        const existingDot = node.querySelector('.node-dot');
+        if (!existingDot) return;
+        const dotId = existingDot.id;
+        const label = node.querySelector('.node-label');
+        // 기존 dot 제거
+        existingDot.remove();
+        // in dot (좌측)
+        const inDot = document.createElement('span');
+        inDot.className = 'node-dot in';
+        inDot.id = dotId + '-in';
+        // out dot (우측)
+        const outDot = document.createElement('span');
+        outDot.className = 'node-dot out';
+        outDot.id = dotId + '-out';
+        // 순서: in | label | out
+        node.innerHTML = '';
+        node.appendChild(inDot);
+        node.appendChild(label);
+        node.appendChild(outDot);
+        // node group 식별을 위해 data-node-id 박음 (hover 시 사용)
+        node.dataset.nodeId = dotId;
+      });
+    }
+
+    // Step 2: line 박음 — orthogonal path (수평→수직→수평). gutter 통로만 사용
+    function drawLines() {
+      const svg = document.getElementById('lines-svg');
+      const graph = document.getElementById('graph');
+      const graphRect = graph.getBoundingClientRect();
+      svg.setAttribute('width', graphRect.width);
+      svg.setAttribute('height', graphRect.height);
+      svg.innerHTML = '';
+
+      // 카운터 — 같은 from·to column 쌍의 line 개수 추적 (gutter channel offset)
+      const channelCounter = {};
+
+      connections.forEach(([fromId, toId]) => {
+        const from = document.getElementById(fromId + '-out');
+        const to = document.getElementById(toId + '-in');
+        if (!from || !to) return;
+
+        const fromRect = from.getBoundingClientRect();
+        const toRect = to.getBoundingClientRect();
+        // from·to의 card column (각 col은 .col 부모)
+        const fromCol = from.closest('.col');
+        const toCol = to.closest('.col');
+        if (!fromCol || !toCol) return;
+        const fromColRect = fromCol.getBoundingClientRect();
+        const toColRect = toCol.getBoundingClientRect();
+
+        const x1 = fromRect.right - graphRect.left;
+        const y1 = fromRect.top - graphRect.top + fromRect.height / 2;
+        const x2 = toRect.left - graphRect.left;
+        const y2 = toRect.top - graphRect.top + toRect.height / 2;
+
+        // from column 우측 가장자리 (out dot에서 column 밖으로 나가는 자리)
+        const fromColRight = fromColRect.right - graphRect.left;
+        // to column 좌측 가장자리 (in dot으로 들어가는 자리)
+        const toColLeft = toColRect.left - graphRect.left;
+
+        // gutter 중간 x — channel offset 박음 (같은 column pair 내 line 분산)
+        const colKey = `${fromCol.dataset.colIdx || fromColRect.left}_${toColLeft}`;
+        channelCounter[colKey] = (channelCounter[colKey] || 0) + 1;
+        const channelIdx = channelCounter[colKey];
+        const gutterMid = (fromColRight + toColLeft) / 2;
+        const offset = ((channelIdx % 7) - 3) * 4; // -12 ~ +12 분산
+        const midX = gutterMid + offset;
+
+        // Bezier curve — control point를 gutter midX에 박음 (다른 row 글씨 우회)
+        // out·in row 안에서 자연 곡선으로 휘어 gutter로 진입·이탈
+        const path = `M ${x1} ${y1} C ${midX} ${y1}, ${midX} ${y2}, ${x2} ${y2}`;
+
+        const isHandoff = toId.startsWith('n-09');
+        // 평소 line 매우 dim — 글씨 가독성 최우선. node hover 시만 강조.
+        const stroke = isHandoff ? 'rgba(134, 239, 172, 0.10)' : 'rgba(115, 115, 115, 0.10)';
+
+        const pathEl = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        pathEl.setAttribute('d', path);
+        pathEl.setAttribute('stroke', stroke);
+        pathEl.setAttribute('stroke-width', '1');
+        pathEl.setAttribute('fill', 'none');
+        pathEl.setAttribute('data-from', fromId);
+        pathEl.setAttribute('data-to', toId);
+        svg.appendChild(pathEl);
+      });
+    }
+
+    // Step 3: node hover 시 연결 line 강조
+    function setupHover() {
+      document.querySelectorAll('.node').forEach(node => {
+        const nodeId = node.dataset.nodeId;
+        if (!nodeId) return;
+        node.addEventListener('mouseenter', () => {
+          document.querySelectorAll('#lines-svg path').forEach(p => {
+            const isConnected = p.dataset.from === nodeId || p.dataset.to === nodeId;
+            if (isConnected) {
+              p.setAttribute('stroke-width', '2');
+              p.setAttribute('stroke', '#fafafa');
+              p.setAttribute('opacity', '1');
+            } else {
+              p.setAttribute('opacity', '0.15');
+            }
+          });
+        });
+        node.addEventListener('mouseleave', () => {
+          document.querySelectorAll('#lines-svg path').forEach(p => {
+            const toId = p.dataset.to;
+            const isHandoff = toId && toId.startsWith('n-09');
+            p.setAttribute('stroke-width', '1');
+            p.setAttribute('stroke', isHandoff ? 'rgba(134, 239, 172, 0.10)' : 'rgba(115, 115, 115, 0.10)');
+            p.setAttribute('opacity', '1');
+          });
+        });
+      });
+    }
+
+    window.addEventListener('load', () => {
+      setupNodeDots();
+      drawLines();
+      setupHover();
+    });
+    window.addEventListener('resize', drawLines);
+    document.querySelector('.graph-wrap').addEventListener('scroll', drawLines);
+  </script>
+
+</body>
+</html>

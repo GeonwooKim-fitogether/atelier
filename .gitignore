@@ -4,3 +4,13 @@ Thumbs.db
 
 # OS
 .DS_Store
+
+# 대시보드 엔진 산출물 — 소스(meta/·ai-npi/·dashboard.config.json)에서 매번 재생성되므로 커밋하지 않는다
+.claude/progress-dashboard.html
+.claude/progress-dashboard.body.html
+
+# git worktree 잔재 (동일 자산 중복 유입 방지)
+.claude/worktrees/
+
+# 통합 현황판은 .integration/ 의 사실에서 매번 재생성된다 (수기 이중장부 방지)
+integration-board.html

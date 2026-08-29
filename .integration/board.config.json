@@ -1,78 +1,130 @@
 {
   "board": {
-    "eyebrow": "Atelier · 공방 현황판",
     "title": "Atelier 통합 현황판",
-    "subtitle": "상품기획 깔때기가 막힘 없이 흐르고 있는지 보는 한 장 — 이 판은 결정 브리프의 근거 부록이다",
-    "docTitle": "Atelier 현황판"
+    "eyebrow": "상품기획 공방 · Integration Board",
+    "subtitle": "헌장·방법론·첫 사이클·현황판·저장소 정합이 하나의 시스템으로 맞물리는지 보는 한 장 — 이 판은 결정 브리프의 근거 부록이다",
+    "docTitle": "Atelier 통합 현황판"
   },
-  "teams": ["CEO", "Agent"],
   "lanes": [
-    { "key": "delivery", "label": "진척", "en": "Delivery" },
+    { "key": "decision", "label": "결정 필요", "en": "Decisions" },
     { "key": "cohesion", "label": "정합", "en": "Cohesion" },
-    { "key": "discipline", "label": "기준", "en": "Guardrails" }
+    { "key": "delivery", "label": "진척", "en": "Delivery" },
+    { "key": "quality", "label": "검증", "en": "Quality" }
   ],
   "statuses": [
-    { "key": "doing", "label": "진행 중", "tone": "blue", "mean": "Agent가 만들고 있는 중 — 아직 CEO 판단을 요청하지 않았다" },
-    { "key": "done", "label": "작업완료", "tone": "dim", "mean": "산출물을 만들고 검증해 브랜치에 올렸다 — 요청 직전" },
-    { "key": "review", "label": "검토대기", "tone": "amber", "mean": "CEO의 판정이나 승인을 기다리는 중" },
-    { "key": "shipped", "label": "배포완료", "tone": "green", "mean": "main에 합쳐져 실제로 효력이 있다" }
+    { "key": "todo", "label": "미착수", "tone": "dim", "mean": "아직 손대지 않았다" },
+    { "key": "doing", "label": "진행 중", "tone": "blue", "mean": "만들고 있다" },
+    { "key": "workdone", "label": "작업완료", "tone": "teal", "mean": "작업 브랜치에 커밋·푸시까지 마쳤다. main 에는 아직 없다" },
+    { "key": "review", "label": "검토대기", "tone": "amber", "mean": "PR 이 열려 사람의 승인을 기다린다" },
+    { "key": "deployed", "label": "배포완료", "tone": "green", "mean": "main 에 머지돼 실제로 반영됐다" }
   ],
   "areas": [
-    { "key": "charter", "label": "헌장·계획", "en": "Charter" },
-    { "key": "funnel", "label": "깔때기", "en": "Funnel" },
-    { "key": "infra", "label": "기반", "en": "Infra" }
+    { "key": "charter", "label": "헌장", "en": "Charter" },
+    { "key": "pipeline", "label": "방법론", "en": "Pipeline" },
+    { "key": "cycle", "label": "첫 사이클 (묵주기도 앱)", "en": "First Cycle" },
+    { "key": "board", "label": "현황판", "en": "Board" },
+    { "key": "integrity", "label": "저장소 정합", "en": "Integrity" }
   ],
+  "teams": ["공방장", "Atelier Agent"],
   "assets": [
-    { "key": "charter", "label": "헌장 (charter.md)", "plain": "Atelier가 무엇이고 무엇을 하지 않는지 정한 최상위 문서", "why": "여기가 흔들리면 깔때기의 모든 판정 기준이 함께 흔들린다" },
-    { "key": "warehouse", "label": "창고 공용 자산", "plain": "여러 저장소가 함께 쓰는 규칙·스킬·커맨드 (동기화 봇이 내려보낸다)", "why": "여기서 갈라지면 저장소마다 다른 규칙으로 일하게 된다" }
+    { "key": "charter-doc", "label": "헌장 (charter.md)",
+      "plain": "이 공방이 무엇을 하고 무엇을 하지 않는지 정한 최상위 문서",
+      "why": "여기 적힌 절차와 실제 진행이 어긋나면 다음 세션이 틀린 절차를 따른다" },
+    { "key": "npi-canon", "label": "9단계 정본 파이프라인",
+      "plain": "아이디어를 제품 기획으로 만드는 9단계 × 3영역 절차 (5 묶음으로 묶임)",
+      "why": "이것과 다른 단계 어휘가 문서에 남아 있으면 세션마다 다른 순서로 일한다" },
+    { "key": "board-canon", "label": "정본 현황판 (대시보드)",
+      "plain": "판단이 실제로 이뤄지는 화면. 공방장은 이것만 보고 결정한다",
+      "why": "같은 목적의 화면이 둘이면 어느 쪽이 사실인지 알 수 없다" },
+    { "key": "warehouse-rules", "label": "창고 공용 규칙·운영 기준",
+      "plain": "Template-repository 에서 내려오는 공용 규칙과, 이 공방만의 운영 기준 문서",
+      "why": "저장소 밖에 있으면 아무도 그것이 있다는 것을 모르고, 세션이 바뀌면 사라진다" }
   ],
   "checks": [
-    { "key": "sync", "label": "창고 동기화 봇", "plain": "공용 규칙·스킬을 창고에서 주기적으로 내려받고, 봇 자신이 창고 판과 다르면 경고한다", "why": "봇이 멈추면 규칙이 갈라져도 아무 오류가 나지 않는다" },
-    { "key": "human_verdict", "label": "판정의 인간 전속", "plain": "Pass·Hold·Kill·Freeze 판정은 사람만 내린다는 헌장 §1.4의 불변식", "why": "Agent가 판정을 대신하면 Atelier가 존재할 이유가 사라진다" }
+    { "key": "syncbot", "name": "창고 동기화 봇",
+      "plain": "Template-repository 의 공용 규칙·스킬·훅을 이 저장소로 주기적으로 내려받아 커밋한다",
+      "why": "봇이 돌지 않으면 공용 규칙이 갈라져도 아무 오류 없이 조용히 어긋난다" },
+    { "key": "prgate", "name": "PR 크로스컷 게이트",
+      "plain": "PR 마다 문서 갱신 매트릭스·척추·타 영역 영향을 자동 검토한다",
+      "why": "사람이 기억으로 지키던 규칙은 바쁠 때 가장 먼저 빠진다" }
   ],
   "cards": [
-    {
-      "key": "c-stage1",
-      "lane": "delivery",
-      "title": "깔때기 — 첫 안건",
-      "plain": "Stage 1(Ideation)에 들어간 안건이 판정까지 얼마나 왔나",
-      "why": "여기서 멈추면 Atelier가 만들어진 목적 자체가 멈춘 것이다",
-      "metric": { "kind": "area_stalled", "area": "funnel" },
-      "decide": true
-    },
-    {
-      "key": "c-verdict",
-      "lane": "discipline",
-      "title": "판정의 인간 전속",
-      "plain": "판정은 사람만 내린다 — 헌장이 못 박은 불변식",
-      "why": "이 선이 무너지면 Agent가 사람 대신 결론을 내린 것이 된다",
-      "metric": { "kind": "check", "check": "human_verdict" },
-      "decide": true
-    },
-    {
-      "key": "c-charter",
-      "lane": "cohesion",
-      "title": "헌장 정합",
-      "plain": "최상위 문서가 한 벌로 유지되고 있나",
-      "why": "두 벌로 갈라지면 다음 세션이 어느 쪽을 읽느냐에 따라 다르게 일한다",
-      "metric": { "kind": "asset", "asset": "charter" }
-    },
-    {
-      "key": "c-sync",
-      "lane": "discipline",
-      "title": "창고 동기화",
-      "plain": "공용 규칙이 창고에서 제때 내려오고 있나",
-      "why": "봇이 조용히 멈추면 규칙 갈라짐을 아무도 모른다",
-      "metric": { "kind": "check", "check": "sync" }
-    },
-    {
-      "key": "c-undated",
-      "lane": "delivery",
-      "title": "일정이 없는 일",
-      "plain": "언제 할지 정해지지 않은 채 남아 있는 작업",
-      "why": "날짜가 없으면 늦었는지 알 수 없고, 모르면 관리되지 않는다",
-      "metric": { "kind": "undated" }
-    }
+    { "key": "c-verdict", "lane": "decision", "title": "묵주기도 사이클 — 판정 대기",
+      "plain": "묶음 3 수렴이 끝났고, 2차 판정과 그보다 앞선 확인 하나가 공방장에게 걸려 있다",
+      "why": "판정은 사람 전속이라(헌장 §4.2) 이것이 풀리기 전에는 묶음 4 로 갈 수 없다",
+      "metric": { "kind": "count", "match": { "area": "cycle", "block": "waiting" }, "warnAt": 1, "riskAt": 4 },
+      "decide": true },
+    { "key": "c-vocab", "lane": "decision", "title": "단계 어휘가 두 가지로 남아 있다",
+      "plain": "헌장 §5·§7 과 plan.md 와 8월 대시보드 설정은 옛 2단계(Stage 1 / Stage 2) 어휘로 쓰여 있는데, 회수된 정본은 9단계 × 5묶음이다",
+      "why": "다음 세션이 어느 쪽을 읽느냐에 따라 다른 순서로 일한다. 폐기본 대시보드를 정본으로 오인했던 것과 같은 종류의 사고다",
+      "metric": { "kind": "count", "match": { "drift": true }, "warnAt": 1, "riskAt": 3 },
+      "decide": true },
+    { "key": "c-handwork", "lane": "decision", "title": "저장소 정합 — 사람 손이 필요한 것",
+      "plain": "운영 기준 문서 4개 회수와 main 머지는 공방장이 직접 해야 진행된다",
+      "why": "클라우드 세션은 로컬 디스크에 닿을 수 없고, main 직접 푸시는 금지돼 있다",
+      "metric": { "kind": "count", "match": { "area": "integrity", "block": "waiting" }, "warnAt": 1, "riskAt": 3 },
+      "decide": true },
+    { "key": "c-board", "lane": "cohesion", "title": "정본 현황판",
+      "plain": "판단이 실제로 이뤄지는 화면. 공방장은 이것만 보고 결정한다",
+      "why": "6월 정본(175KB)이 회수되면서, 8월에 따로 만든 두 번째 현황판 체계가 같은 자리에 겹쳤다",
+      "metric": { "kind": "asset", "asset": "board-canon" },
+      "decide": true },
+    { "key": "c-npi", "lane": "cohesion", "title": "9단계 정본 파이프라인",
+      "plain": "아이디어를 제품 기획으로 만드는 절차 자체",
+      "why": "절차가 갈라지면 산출물의 형식과 깊이가 세션마다 달라진다",
+      "metric": { "kind": "asset", "asset": "npi-canon" } },
+    { "key": "c-charter", "lane": "cohesion", "title": "헌장",
+      "plain": "이 공방의 최상위 문서",
+      "why": "6월판과 8월판이 이번 병합으로 합쳐졌다. 남은 것은 단계 어휘 정합뿐이다",
+      "metric": { "kind": "asset", "asset": "charter-doc" } },
+    { "key": "c-rules", "lane": "cohesion", "title": "창고 규칙·운영 기준",
+      "plain": "공용 규칙과 이 공방만의 운영 기준 문서",
+      "why": "운영 기준 4개가 아직 저장소 밖에 있어 버전 관리를 받지 못한다",
+      "metric": { "kind": "asset", "asset": "warehouse-rules" },
+      "decide": true },
+    { "key": "c-drift", "lane": "cohesion", "title": "기획 정합성",
+      "plain": "만들다 보니 원래 기획과 어긋난 곳",
+      "why": "어긋난 것을 세어 두지 않으면 어느 쪽이 정본인지 다투게 된다",
+      "metric": { "kind": "drift" } },
+    { "key": "c-stall-integrity", "lane": "delivery", "title": "저장소 정합 — 멈춘 기간",
+      "plain": "이 구획에서 가장 오래 움직이지 않은 일",
+      "why": "운영 기준 문서가 저장소 밖에 있던 기간이 그대로 위험의 크기다",
+      "metric": { "kind": "area_stalled", "area": "integrity" } },
+    { "key": "c-stall-cycle", "lane": "delivery", "title": "첫 사이클 — 멈춘 기간",
+      "plain": "묵주기도 사이클에서 가장 오래 움직이지 않은 일",
+      "why": "판정 대기가 길어지면 맥락이 식어 다시 읽는 비용이 든다",
+      "metric": { "kind": "area_stalled", "area": "cycle" } },
+    { "key": "c-recent", "lane": "delivery", "title": "최근 배포완료",
+      "plain": "최근 7일 안에 main 에 반영된 일",
+      "why": "무엇이 실제로 실려 나갔는지 세어 둔다",
+      "metric": { "kind": "status_recent", "status": "deployed" } },
+    { "key": "c-undated", "lane": "delivery", "title": "일정이 없는 일",
+      "plain": "계획 날짜가 없어 시간 축에 올라가지 못한 일",
+      "why": "날짜가 없으면 늦었는지 알 수 없고, 늦었는지 모르면 관리되지 않는다",
+      "metric": { "kind": "undated" } },
+    { "key": "c-syncbot", "lane": "quality", "title": "창고 동기화 봇",
+      "plain": "공용 규칙·스킬·훅을 창고에서 주기적으로 내려받는다",
+      "why": "봇이 멈추면 규칙이 갈라져도 아무 오류가 나지 않는다",
+      "metric": { "kind": "check", "check": "syncbot" },
+      "traceChecks": ["syncbot"] },
+    { "key": "c-prgate", "lane": "quality", "title": "PR 크로스컷 게이트",
+      "plain": "PR 마다 문서 갱신·척추·타 영역 영향을 자동 검토한다",
+      "why": "이 저장소에는 아직 설치되지 않았다. 사람의 기억이 유일한 방어선이다",
+      "metric": { "kind": "check", "check": "prgate" },
+      "traceChecks": ["prgate"] }
   ],
-  "honesty": "이 판이 보지 못하는 것: Stage 1 판정의 내용적 타당성(외부 흔적이 통증을 충분히 지지하는가)은 사람만 판단한다. 또 이 판은 저장소에 기록된 것만 본다 — 세션 대화에서만 오간 합의는 여기 없다."
+  "verdicts": {
+    "risk": { "word": "위험", "why": "공용 자산이 갈라져 있거나 버전 관리 밖에 있다 — 다음 세션이 틀린 정본을 읽을 수 있다" },
+    "warn": { "word": "주의", "why": "사람의 판정을 기다리는 일이 쌓여 있다" },
+    "ok":   { "word": "정상", "why": "정합이 지켜지고 있고 막힌 것이 없다" }
+  },
+  "drift": {
+    "gapLabel": "기획 이탈",
+    "pivotLabel": "기획 전환 후보",
+    "note": "회수된 9단계 정본과, 그 이전에 쓰인 문서들의 2단계 어휘가 어긋난 곳",
+    "linkLabel": "정본 파이프라인",
+    "href": "#"
+  },
+  "thresholds": { "stallRiskDays": 14, "delayRiskDays": 30, "recentDays": 7, "laneMaxCards": 3 },
+  "honesty": "이 보드는 저장소에 커밋된 사실과 사람이 적어 넣은 상태만 본다. 기획의 옳고 그름, 묵주기도 앱이 실제로 팔릴지, 회수되지 않은 Drive 문서 안에 무엇이 더 있는지는 보지 못한다. 초록불은 '정합이 지켜지고 있다'는 뜻이지 '좋은 제품'이라는 뜻이 아니다."
 }

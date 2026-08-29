@@ -1,0 +1,643 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>묵주기도 — V1 프로토타입</title>
+<style>
+:root{
+  --bg:#0b0b0d; --surface:#141418; --surface-2:#1c1c22;
+  --line:rgba(255,255,255,.09); --line-2:rgba(255,255,255,.18);
+  --ink:#f4f2ee; --muted:#8e8e99; --faint:#5a5a64;
+  --candle:#d9c08a; --marian:#a99bd6; --alive:#7fd1a8;
+  --r:14px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{
+  background:var(--bg); color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  font-size:16px; line-height:1.6; overscroll-behavior:none;
+}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+.app{max-width:480px;margin:0 auto;min-height:100%;display:flex;flex-direction:column;position:relative}
+.screen{display:none;flex:1;flex-direction:column;padding:22px 20px 28px}
+.screen.on{display:flex}
+
+/* ---------- 홈 ---------- */
+.brand{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:26px}
+.brand h1{font-size:17px;font-weight:600;letter-spacing:-.2px}
+.brand .sub{font-size:11.5px;color:var(--faint)}
+.mystery-today{
+  background:linear-gradient(160deg,rgba(169,155,214,.14),rgba(169,155,214,.04));
+  border:1px solid rgba(169,155,214,.28); border-radius:var(--r);
+  padding:16px 18px; margin-bottom:16px;
+}
+.mystery-today .k{font-size:11px;letter-spacing:.6px;color:var(--marian);font-weight:600;margin-bottom:5px}
+.mystery-today .v{font-size:19px;font-weight:600;letter-spacing:-.3px}
+.mystery-today .d{font-size:12px;color:var(--muted);margin-top:4px}
+
+.resume{
+  background:linear-gradient(160deg,rgba(127,209,168,.16),rgba(127,209,168,.05));
+  border:1px solid rgba(127,209,168,.38); border-radius:var(--r);
+  padding:15px 17px; margin-bottom:16px; display:none; width:100%; text-align:left;
+}
+.resume.on{display:block}
+.resume .k{font-size:11px;letter-spacing:.6px;color:var(--alive);font-weight:600;margin-bottom:5px}
+.resume .v{font-size:15.5px;font-weight:600;line-height:1.45}
+.resume .d{font-size:12px;color:var(--muted);margin-top:6px}
+
+.sec-label{font-size:11px;letter-spacing:.8px;color:var(--faint);font-weight:600;margin:22px 0 9px;text-transform:uppercase}
+.intent{
+  width:100%;text-align:left;display:flex;align-items:center;gap:12px;
+  background:var(--surface);border:1px solid var(--line);border-radius:11px;
+  padding:13px 15px;margin-bottom:8px;min-height:58px;transition:border-color .2s,background .2s;
+}
+.intent[aria-checked="true"]{border-color:var(--candle);background:var(--surface-2)}
+.intent .dot{width:9px;height:9px;border-radius:50%;background:var(--faint);flex:0 0 auto;transition:background .2s}
+.intent[aria-checked="true"] .dot{background:var(--candle);box-shadow:0 0 10px rgba(217,192,138,.6)}
+.intent .body{flex:1;min-width:0}
+.intent .body{display:flex;flex-direction:column}
+.intent .nm{display:block;font-size:15px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.intent .pg{display:block;font-size:11.5px;color:var(--muted);margin-top:2px}
+.intent .pg b{color:var(--alive);font-weight:600}
+.intent-add{
+  width:100%;border:1px dashed var(--line-2);border-radius:11px;padding:12px;
+  font-size:13.5px;color:var(--muted);margin-top:2px;
+}
+.start{
+  margin-top:auto;padding-top:26px;
+}
+.btn-primary{
+  width:100%;min-height:64px;border-radius:16px;
+  background:var(--candle);color:#1a1508;font-size:18px;font-weight:700;letter-spacing:-.2px;
+  box-shadow:0 6px 26px rgba(217,192,138,.22);transition:transform .15s,filter .15s;
+}
+.btn-primary:active{transform:scale(.985);filter:brightness(.94)}
+.toggles{display:flex;gap:9px;margin-top:12px}
+.tg{
+  flex:1;min-height:50px;border:1px solid var(--line);border-radius:12px;background:var(--surface);
+  font-size:13px;color:var(--muted);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  transition:border-color .2s,color .2s,background .2s;
+}
+.tg .t{font-size:12.5px;font-weight:600}
+.tg .s{font-size:10.5px;color:var(--faint)}
+.tg[aria-pressed="true"]{border-color:var(--marian);color:var(--ink);background:var(--surface-2)}
+.tg[aria-pressed="true"] .s{color:var(--marian)}
+.note{font-size:11.5px;color:var(--faint);line-height:1.6;margin-top:14px;text-align:center}
+.note b{color:var(--muted);font-weight:500}
+
+/* ---------- 기도 중 ---------- */
+#pray{padding:16px 20px 22px;justify-content:space-between}
+.pr-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.pr-stage{font-size:12px;color:var(--marian);font-weight:600;letter-spacing:.4px}
+.pr-intent{font-size:11.5px;color:var(--faint);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:46%}
+.beads{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin:16px 0 4px;min-height:12px}
+.bead{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.13);transition:background .35s,transform .35s}
+.bead.done{background:var(--candle);opacity:.55}
+.bead.now{background:var(--candle);transform:scale(1.7);box-shadow:0 0 14px rgba(217,192,138,.75)}
+.decades{display:flex;gap:5px;justify-content:center;margin-top:12px}
+.dec{width:26px;height:3px;border-radius:2px;background:rgba(255,255,255,.12);transition:background .3s}
+.dec.done{background:var(--marian);opacity:.6}
+.dec.now{background:var(--marian)}
+
+.pr-body{flex:1;display:flex;flex-direction:column;justify-content:center;padding:20px 0;text-align:center}
+.pr-kind{font-size:11.5px;letter-spacing:1px;color:var(--faint);font-weight:600;margin-bottom:14px}
+.pr-a{font-size:23px;line-height:1.62;font-weight:500;letter-spacing:-.4px;transition:opacity .45s}
+.pr-a.speaking{color:var(--ink)}
+.pr-b{
+  font-size:19px;line-height:1.62;color:var(--faint);margin-top:20px;letter-spacing:-.3px;
+  transition:color .5s,opacity .5s;
+}
+.pr-b.turn{color:var(--candle)}
+.turn-hint{
+  font-size:11.5px;color:var(--faint);margin-top:16px;height:16px;letter-spacing:.4px;
+  transition:opacity .3s;opacity:0
+}
+.turn-hint.on{opacity:1}
+.wait{
+  height:2px;background:rgba(255,255,255,.08);border-radius:2px;margin-top:18px;overflow:hidden
+}
+.wait i{display:block;height:100%;width:0;background:var(--candle);opacity:.75}
+
+.pr-foot{display:flex;gap:10px}
+.pr-foot button{
+  flex:1;min-height:56px;border:1px solid var(--line);border-radius:14px;background:var(--surface);
+  font-size:14.5px;font-weight:600;color:var(--muted);transition:border-color .2s,color .2s
+}
+.pr-foot button:active{border-color:var(--line-2);color:var(--ink)}
+#btnPause{flex:1.55;color:var(--ink);border-color:rgba(127,209,168,.4)}
+.pr-foot #btnPause{font-size:13.5px}
+.pr-foot #btnStop{font-size:13.5px}
+
+/* ---------- 완주 ---------- */
+#done{align-items:center;justify-content:center;text-align:center;gap:6px}
+#done .big{font-size:44px;margin-bottom:6px}
+#done h2{font-size:22px;font-weight:600;letter-spacing:-.3px}
+#done p{font-size:14px;color:var(--muted);max-width:280px;margin-top:4px}
+#done .stat{display:flex;gap:22px;margin:22px 0 26px}
+#done .stat div{text-align:center}
+#done .stat b{display:block;font-size:24px;font-weight:600;color:var(--candle)}
+#done .stat span{font-size:11px;color:var(--faint)}
+
+/* ---------- 시트 ---------- */
+.sheet-bg{position:fixed;inset:0;background:rgba(0,0,0,.62);display:none;z-index:40}
+.sheet-bg.on{display:block}
+.sheet{
+  position:fixed;left:0;right:0;bottom:0;max-width:480px;margin:0 auto;z-index:41;
+  background:var(--surface);border-radius:20px 20px 0 0;border-top:1px solid var(--line-2);
+  padding:22px 20px calc(26px + env(safe-area-inset-bottom));display:none;max-height:82vh;overflow-y:auto
+}
+.sheet.on{display:block}
+.sheet h3{font-size:16px;font-weight:600;margin-bottom:4px}
+.sheet .sub{font-size:12.5px;color:var(--muted);margin-bottom:16px;line-height:1.65}
+.sheet input{
+  width:100%;background:var(--bg);border:1px solid var(--line-2);border-radius:11px;
+  padding:14px;font-size:16px;color:var(--ink);margin-bottom:10px
+}
+.sheet .row{display:flex;gap:9px}
+.sheet .row button{flex:1;min-height:52px;border-radius:12px;font-size:14.5px;font-weight:600;border:1px solid var(--line)}
+.sheet .row .go{background:var(--candle);color:#1a1508;border-color:transparent}
+.speed{display:flex;gap:8px;margin:6px 0 18px}
+.speed button{
+  flex:1;min-height:52px;border:1px solid var(--line);border-radius:12px;background:var(--bg);
+  font-size:13px;color:var(--muted);display:flex;flex-direction:column;gap:2px;align-items:center;justify-content:center
+}
+.speed button[aria-pressed="true"]{border-color:var(--candle);color:var(--ink);background:var(--surface-2)}
+.speed b{font-size:13.5px;font-weight:600}
+.speed span{font-size:10.5px;color:var(--faint)}
+.about{font-size:12.5px;color:var(--muted);line-height:1.75}
+.about h4{font-size:12.5px;color:var(--candle);font-weight:600;margin:14px 0 5px}
+.about code{font-size:11.5px;color:var(--marian);background:rgba(169,155,214,.1);padding:1px 5px;border-radius:4px}
+.about ul{margin:0 0 0 17px}
+.about li{margin-bottom:5px}
+.iconbtn{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);color:var(--faint);font-size:13px;display:flex;align-items:center;justify-content:center}
+.warn{
+  background:rgba(217,192,138,.09);border:1px solid rgba(217,192,138,.3);border-radius:10px;
+  padding:11px 13px;font-size:12px;color:var(--ink);line-height:1.6;margin-bottom:14px;display:none
+}
+.warn.on{display:block}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- ================= 홈 ================= -->
+<section class="screen on" id="home">
+  <div class="brand">
+    <h1>묵주기도</h1>
+    <button class="iconbtn" id="btnAbout" title="이 프로토타입에 대하여">i</button>
+  </div>
+
+  <div class="warn" id="ttsWarn"></div>
+
+  <button class="resume" id="resumeCard">
+    <div class="k">이어서 바치기</div>
+    <div class="v" id="resumeText"></div>
+    <div class="d" id="resumeSub"></div>
+  </button>
+
+  <div class="mystery-today">
+    <div class="k" id="mysteryDay"></div>
+    <div class="v" id="mysteryName"></div>
+    <div class="d">요일에 따라 오늘의 신비가 정해집니다</div>
+  </div>
+
+  <div class="sec-label">지향</div>
+  <div id="intentList"></div>
+  <button class="intent-add" id="btnAddIntent">+ 지향 추가</button>
+
+  <div class="start">
+    <button class="btn-primary" id="btnStart">처음부터 시작</button>
+    <div class="toggles">
+      <button class="tg" id="tgSilent" aria-pressed="false">
+        <span class="t">침묵 진행</span><span class="s">소리 없이 진동만</span>
+      </button>
+      <button class="tg" id="tgSpeed" aria-pressed="false">
+        <span class="t">받는 사이</span><span class="s" id="speedLabel">보통</span>
+      </button>
+    </div>
+    <div class="note">앱이 <b>앞 절</b>을 읽고 멈춥니다. <b>뒷 절은 직접</b> 바치세요.<br>중간에 끊겨도 그 자리가 저장됩니다.</div>
+  </div>
+</section>
+
+<!-- ================= 기도 중 ================= -->
+<section class="screen" id="pray">
+  <div>
+    <div class="pr-top">
+      <div class="pr-stage" id="prStage"></div>
+      <div class="pr-intent" id="prIntent"></div>
+    </div>
+    <div class="beads" id="beads"></div>
+    <div class="decades" id="decades"></div>
+  </div>
+
+  <div class="pr-body">
+    <div class="pr-kind" id="prKind"></div>
+    <div class="pr-a" id="prA"></div>
+    <div class="pr-b" id="prB"></div>
+    <div class="turn-hint" id="turnHint">받아 바치세요</div>
+    <div class="wait"><i id="waitBar"></i></div>
+  </div>
+
+  <div class="pr-foot">
+    <button id="btnPause">잠시 멈춤 · 자리 저장</button>
+    <button id="btnStop">여기서 끝내기</button>
+  </div>
+</section>
+
+<!-- ================= 완주 ================= -->
+<section class="screen" id="done">
+  <div class="big">✦</div>
+  <h2>5단을 다 바쳤습니다</h2>
+  <p id="doneIntent"></p>
+  <div class="stat">
+    <div><b id="statBeads">50</b><span>성모송</span></div>
+    <div><b id="statMin">—</b><span>분</span></div>
+    <div><b id="statResume">0</b><span>번 이어감</span></div>
+  </div>
+  <button class="btn-primary" id="btnHome" style="max-width:260px">돌아가기</button>
+</section>
+
+</div>
+
+<!-- ================= 시트 ================= -->
+<div class="sheet-bg" id="sheetBg"></div>
+
+<div class="sheet" id="sheetIntent">
+  <h3>지향 추가</h3>
+  <div class="sub">누구를, 무엇을 위해 바치는지 적습니다. 지향마다 진행이 따로 기억됩니다.</div>
+  <input id="intentInput" placeholder="예: 어머니 건강" maxlength="24">
+  <div class="row">
+    <button id="intentCancel">취소</button>
+    <button class="go" id="intentSave">추가</button>
+  </div>
+</div>
+
+<div class="sheet" id="sheetSpeed">
+  <h3>받는 사이</h3>
+  <div class="sub">앱이 앞 절을 읽고 나서, 뒷 절을 바칠 수 있도록 기다리는 시간입니다.</div>
+  <div class="speed" id="speedPicker">
+    <button data-sp="0.75" aria-pressed="false"><b>느리게</b><span>천천히 바침</span></button>
+    <button data-sp="1" aria-pressed="true"><b>보통</b><span>기본</span></button>
+    <button data-sp="1.35" aria-pressed="false"><b>빠르게</b><span>익숙한 분</span></button>
+  </div>
+  <div class="row"><button class="go" id="speedClose">닫기</button></div>
+</div>
+
+<div class="sheet" id="sheetAbout">
+  <h3>이 프로토타입이 확인하려는 것</h3>
+  <div class="sub">Atelier · mobile-rosary V1 · 07단계 시제품</div>
+  <div class="about">
+    <p>2026-08-28 판정으로 확정된 V1 세 기능이 <strong>실제로 한 흐름이 되는지</strong>를 봅니다. 목업이 아니라 브라우저에서 실제로 도는 코드입니다.</p>
+    <h4>③ 교대 낭송 (구현 <code>가</code>)</h4>
+    <ul>
+      <li>앱이 앞 절을 읽고, 정해진 사이만큼 기다린 뒤 다음 알로 넘어갑니다.</li>
+      <li>음성 인식을 쓰지 않습니다 — 사이의 길이는 뒷 절의 글자 수로 계산하고, 세 단계로 조절합니다.</li>
+      <li>여기서 확인할 것: <strong>고정된 사이가 실제 기도의 호흡에 맞는가.</strong></li>
+    </ul>
+    <h4>② 침묵 진행</h4>
+    <ul>
+      <li>소리를 끄고 진동만으로 알을 넘깁니다. 알마다 짧게, 단이 바뀔 때 세 번.</li>
+      <li>여기서 확인할 것: <strong>주머니 안에서 화면을 보지 않고 5단이 가는가.</strong></li>
+    </ul>
+    <h4>④′ 끊기면 이어 준다</h4>
+    <ul>
+      <li>알을 넘길 때마다 그 자리가 저장됩니다. 앱을 닫거나 새로고침해도 남습니다.</li>
+      <li>지향마다 자리가 따로 기억됩니다(⑤′ 지향별 진행 분리).</li>
+      <li>여기서 확인할 것: <strong>끊긴 기도가 그날 안에 실제로 이어지는가.</strong> 이것이 완주율을 지키는 기능입니다.</li>
+    </ul>
+    <h4>이 프로토타입이 아직 아닌 것</h4>
+    <ul>
+      <li>음성은 브라우저의 한국어 합성음입니다. 최종 음성(성우·사제 목소리)은 V1.5의 일입니다.</li>
+      <li>54일 리본·목소리 고르기는 V1.5, 다국어는 V2입니다.</li>
+    </ul>
+  </div>
+  <div class="row" style="margin-top:16px"><button class="go" id="aboutClose">닫기</button></div>
+</div>
+
+<script>
+/* ==========================================================
+   기도문 — 한국 천주교 통상 본문
+   각 항목은 앞 절(a, 앱이 읽음)과 뒷 절(b, 사용자가 받음)로 나뉜다.
+   ========================================================== */
+const P = {
+  sign:{k:'성호경', a:'성부와 성자와 성령의 이름으로.', b:'아멘.'},
+  creed:{k:'사도신경',
+    a:'전능하신 천주 성부, 천지의 창조주를 저는 믿나이다. 그 외아들 우리 주 예수 그리스도님, 성령으로 인하여 동정 마리아께 잉태되어 나시고, 본시오 빌라도 통치 아래서 고난을 받으시고, 십자가에 못 박혀 돌아가시고 묻히셨으며,',
+    b:'저승에 가시어 사흗날에 죽은 이들 가운데서 부활하시고, 하늘에 올라 전능하신 천주 성부 오른편에 앉으시며, 산 이와 죽은 이를 심판하러 오시리라 믿나이다. 성령을 믿으며, 거룩하고 보편된 교회와 모든 성인의 통공을 믿으며, 죄의 용서와 육신의 부활을 믿으며, 영원한 삶을 믿나이다. 아멘.'},
+  our:{k:'주님의 기도',
+    a:'하늘에 계신 우리 아버지, 아버지의 이름이 거룩히 빛나시며 아버지의 나라가 오시며 아버지의 뜻이 하늘에서와 같이 땅에서도 이루어지소서.',
+    b:'오늘 저희에게 일용할 양식을 주시고 저희에게 잘못한 이를 저희가 용서하오니 저희 죄를 용서하시고 저희를 유혹에 빠지지 않게 하시고 악에서 구하소서. 아멘.'},
+  hail:{k:'성모송',
+    a:'은총이 가득하신 마리아님, 기뻐하소서. 주님께서 함께 계시니 여인 중에 복되시며 태중의 아들 예수님 또한 복되십니다.',
+    b:'천주의 성모 마리아님, 이제와 저희 죽을 때에 저희 죄인을 위하여 빌어 주소서. 아멘.'},
+  glory:{k:'영광송',
+    a:'영광이 성부와 성자와 성령께,',
+    b:'처음과 같이 이제와 항상 영원히. 아멘.'},
+  fatima:{k:'구원을 비는 기도',
+    a:'예수님, 저희 죄를 용서하시며 저희를 지옥 불에서 구하시고,',
+    b:'연옥 영혼을 돌보시며 가장 버림받은 영혼을 돌보소서. 아멘.'}
+};
+
+const MYSTERIES = {
+  joyful:{name:'환희의 신비', days:[1,6], list:[
+    '마리아께서 예수님을 잉태하심을 묵상합시다.',
+    '마리아께서 엘리사벳을 찾아보심을 묵상합시다.',
+    '마리아께서 예수님을 낳으심을 묵상합시다.',
+    '마리아께서 예수님을 성전에서 봉헌하심을 묵상합시다.',
+    '마리아께서 잃으셨던 예수님을 성전에서 찾으심을 묵상합시다.']},
+  luminous:{name:'빛의 신비', days:[4], list:[
+    '예수님께서 요르단 강에서 세례받으심을 묵상합시다.',
+    '예수님께서 카나에서 첫 기적을 행하심을 묵상합시다.',
+    '예수님께서 하느님 나라를 선포하심을 묵상합시다.',
+    '예수님께서 거룩하게 변모하심을 묵상합시다.',
+    '예수님께서 성체성사를 세우심을 묵상합시다.']},
+  sorrowful:{name:'고통의 신비', days:[2,5], list:[
+    '예수님께서 우리를 위하여 피땀 흘리심을 묵상합시다.',
+    '예수님께서 우리를 위하여 매 맞으심을 묵상합시다.',
+    '예수님께서 우리를 위하여 가시관 쓰심을 묵상합시다.',
+    '예수님께서 우리를 위하여 십자가 지심을 묵상합시다.',
+    '예수님께서 우리를 위하여 십자가에 못 박혀 돌아가심을 묵상합시다.']},
+  glorious:{name:'영광의 신비', days:[0,3], list:[
+    '예수님께서 부활하심을 묵상합시다.',
+    '예수님께서 승천하심을 묵상합시다.',
+    '예수님께서 성령을 보내심을 묵상합시다.',
+    '마리아께서 하늘에 불려 올라가심을 묵상합시다.',
+    '마리아께서 하늘의 여왕이 되심을 묵상합시다.']}
+};
+const DAYNAME = ['일요일','월요일','화요일','수요일','목요일','금요일','토요일'];
+
+function todayMystery(){
+  const d = new Date().getDay();
+  for(const key in MYSTERIES){ if(MYSTERIES[key].days.includes(d)) return {key, ...MYSTERIES[key]}; }
+  return {key:'joyful', ...MYSTERIES.joyful};
+}
+
+/* 71 단계짜리 진행표를 만든다. decade 0 = 시작 기도. */
+function buildSteps(myst){
+  const s = [];
+  const push=(p,extra)=>s.push(Object.assign({kind:p.k,a:p.a,b:p.b},extra));
+  push(P.sign,{decade:0,bead:0,stage:'시작 기도'});
+  push(P.creed,{decade:0,bead:0,stage:'시작 기도'});
+  push(P.our,{decade:0,bead:0,stage:'시작 기도'});
+  for(let i=0;i<3;i++) push(P.hail,{decade:0,bead:i+1,beads:3,stage:'시작 기도'});
+  push(P.glory,{decade:0,bead:0,stage:'시작 기도'});
+  for(let d=1;d<=5;d++){
+    s.push({kind:'제 '+d+' 단', a:myst.list[d-1], b:'', decade:d, bead:0, stage:myst.name+' 제'+d+'단', announce:true});
+    push(P.our,{decade:d,bead:0,stage:myst.name+' 제'+d+'단'});
+    for(let i=0;i<10;i++) push(P.hail,{decade:d,bead:i+1,beads:10,stage:myst.name+' 제'+d+'단'});
+    push(P.glory,{decade:d,bead:0,stage:myst.name+' 제'+d+'단'});
+    push(P.fatima,{decade:d,bead:0,stage:myst.name+' 제'+d+'단'});
+  }
+  return s;
+}
+
+/* ==========================================================
+   저장 — 지향별로 진행 자리를 따로 기억한다 (④′ + ⑤′)
+   ========================================================== */
+const KEY='rosary.v1';
+const defaults = {
+  intents:[{id:'i1',name:'오늘의 지향',progress:null}],
+  active:'i1', silent:false, speed:1, resumeCount:0
+};
+let S = load();
+function load(){
+  try{ const raw=localStorage.getItem(KEY); if(raw) return Object.assign({},defaults,JSON.parse(raw)); }catch(e){}
+  return JSON.parse(JSON.stringify(defaults));
+}
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
+const activeIntent = () => S.intents.find(i=>i.id===S.active) || S.intents[0];
+
+/* ==========================================================
+   음성 — 브라우저 한국어 합성음. 없으면 사이만으로 진행한다.
+   ========================================================== */
+let koVoice=null, voicesReady=false;
+function pickVoice(){
+  const vs = speechSynthesis.getVoices();
+  if(!vs.length) return;
+  koVoice = vs.find(v=>v.lang==='ko-KR') || vs.find(v=>/^ko/i.test(v.lang)) || null;
+  voicesReady = true;
+  if(!koVoice) noVoiceNotice(); else document.getElementById('ttsWarn').classList.remove('on');
+}
+function noVoiceNotice(){
+  const w = document.getElementById('ttsWarn');
+  w.classList.add('on');
+  w.innerHTML = '이 브라우저에 <b>한국어 음성</b>이 없어 소리 없이 진행됩니다. 진동과 받는 사이는 그대로 동작하므로 <b>침묵 진행</b>과 <b>이어 주기</b>는 그대로 확인할 수 있습니다.';
+}
+if('speechSynthesis' in window){
+  pickVoice();
+  speechSynthesis.onvoiceschanged = pickVoice;
+  // 음성 목록이 늦게 오거나 아예 없는 환경이 있다. 1.2초 뒤에도 없으면 그 사실을 알린다.
+  setTimeout(()=>{ if(!voicesReady){ voicesReady=true; koVoice=null; noVoiceNotice(); } }, 1200);
+} else {
+  document.getElementById('ttsWarn').classList.add('on');
+  document.getElementById('ttsWarn').innerHTML='이 브라우저는 음성 합성을 지원하지 않습니다. 진동과 사이로만 진행됩니다.';
+}
+function speak(text, done){
+  if(S.silent || !koVoice || !('speechSynthesis' in window)){ done(0); return; }
+  try{
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.voice=koVoice; u.lang='ko-KR'; u.rate=0.92; u.pitch=1;
+    let fired=false;
+    const fin=()=>{ if(!fired){fired=true; done(0);} };
+    u.onend=fin; u.onerror=fin;
+    speechSynthesis.speak(u);
+    // 합성음이 조용히 끊기는 브라우저 대비 — 글자 수 기반 상한
+    setTimeout(fin, 900 + text.length*140);
+  }catch(e){ done(0); }
+}
+function buzz(pattern){ if(navigator.vibrate){ try{navigator.vibrate(pattern);}catch(e){} } }
+
+/* ==========================================================
+   진행 엔진
+   ========================================================== */
+let steps=[], idx=0, running=false, timer=null, startedAt=0, myst=null, resumeUsed=0;
+
+const $=id=>document.getElementById(id);
+const show=id=>{ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on')); $(id).classList.add('on'); };
+
+function renderHome(){
+  myst = todayMystery();
+  $('mysteryDay').textContent = DAYNAME[new Date().getDay()] + ' · 오늘의 신비';
+  $('mysteryName').textContent = myst.name;
+
+  const list=$('intentList'); list.innerHTML='';
+  S.intents.forEach(it=>{
+    const b=document.createElement('button');
+    b.className='intent'; b.setAttribute('aria-checked', String(it.id===S.active));
+    const pg = it.progress
+      ? '<b>'+progressLabel(it.progress)+'</b> 에서 멈춤'
+      : '아직 시작하지 않음';
+    b.innerHTML='<span class="dot"></span><span class="body"><span class="nm">'+esc(it.name)+'</span><span class="pg">'+pg+'</span></span>';
+    b.onclick=()=>{ S.active=it.id; save(); renderHome(); };
+    list.appendChild(b);
+  });
+
+  const it=activeIntent();
+  const r=$('resumeCard');
+  if(it.progress){
+    r.classList.add('on');
+    $('resumeText').textContent = progressLabel(it.progress) + ' 부터 이어서';
+    $('resumeSub').textContent = esc(it.name) + ' · ' + agoLabel(it.progress.at) + ' 멈춤';
+  } else r.classList.remove('on');
+
+  $('tgSilent').setAttribute('aria-pressed', String(!!S.silent));
+  $('speedLabel').textContent = S.speed<1?'느리게':(S.speed>1?'빠르게':'보통');
+  $('btnStart').textContent = it.progress ? '처음부터 다시 시작' : '시작';
+}
+function esc(s){ return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function progressLabel(p){
+  if(p.decade===0) return '시작 기도';
+  return '제'+p.decade+'단 '+(p.bead>0? p.bead+'번째 알':'');
+}
+function agoLabel(ts){
+  const m=Math.floor((Date.now()-ts)/60000);
+  if(m<1) return '방금';
+  if(m<60) return m+'분 전';
+  const h=Math.floor(m/60); if(h<24) return h+'시간 전';
+  const d=Math.floor(h/24); return d===1?'어제':d+'일 전';
+}
+
+function begin(fromResume){
+  myst = todayMystery();
+  steps = buildSteps(myst);
+  const it = activeIntent();
+  if(fromResume && it.progress){ idx = Math.min(it.progress.idx, steps.length-1); resumeUsed = (it.progress.resumes||0)+1; }
+  else { idx = 0; resumeUsed = 0; }
+  startedAt = Date.now();
+  running = true;
+  requestWakeLock();
+  show('pray');
+  $('prIntent').textContent = it.name;
+  runStep();
+}
+
+function runStep(){
+  if(!running) return;
+  if(idx >= steps.length){ finish(); return; }
+  const st = steps[idx];
+
+  $('prStage').textContent = st.stage;
+  $('prKind').textContent = st.kind;
+  $('prA').textContent = st.a;
+  $('prB').textContent = st.b || '';
+  $('prA').classList.add('speaking');
+  $('prB').classList.remove('turn');
+  $('turnHint').classList.remove('on');
+  $('waitBar').style.transition='none'; $('waitBar').style.width='0%';
+  renderBeads(st);
+  persist(st);
+
+  if(st.announce) buzz([28,60,28,60,28]); else buzz(18);
+
+  speak(st.a, ()=>{
+    if(!running) return;
+    // 앱이 앞 절을 마쳤다 → 사용자가 뒷 절을 받는 사이
+    const ms = pauseFor(st);
+    $('prA').classList.remove('speaking');
+    if(st.b){ $('prB').classList.add('turn'); $('turnHint').classList.add('on'); }
+    requestAnimationFrame(()=>{
+      $('waitBar').style.transition='width '+ms+'ms linear';
+      $('waitBar').style.width='100%';
+    });
+    timer = setTimeout(()=>{ if(!running) return; idx++; runStep(); }, ms);
+  });
+}
+
+function pauseFor(st){
+  if(!st.b) return 2200 / S.speed;                 // 신비 선포는 짧게 머문다
+  const base = 900 + st.b.length * 132;            // 뒷 절 글자 수로 사이를 잰다
+  const silentBonus = (S.silent || !koVoice) ? st.a.length*118 : 0; // 소리가 없으면 앞 절 몫도 기다린다
+  return Math.round((base + silentBonus) / S.speed);
+}
+
+function renderBeads(st){
+  const wrap=$('beads'); const n = st.beads || 0;
+  if(n !== wrap.dataset.n){ wrap.innerHTML=''; for(let i=0;i<n;i++){ const d=document.createElement('span'); d.className='bead'; wrap.appendChild(d);} wrap.dataset.n=n; }
+  [...wrap.children].forEach((el,i)=>{
+    el.className='bead' + (i+1<st.bead?' done':'') + (i+1===st.bead?' now':'');
+  });
+  const dec=$('decades');
+  if(!dec.dataset.built){ for(let i=0;i<5;i++){const d=document.createElement('span'); d.className='dec'; dec.appendChild(d);} dec.dataset.built='1'; }
+  [...dec.children].forEach((el,i)=>{
+    el.className='dec' + (i+1<st.decade?' done':'') + (i+1===st.decade?' now':'');
+  });
+}
+
+/* ④′ 핵심 — 알을 넘길 때마다 자리를 남긴다 */
+function persist(st){
+  const it=activeIntent();
+  it.progress={idx, decade:st.decade, bead:st.bead, at:Date.now(), resumes:resumeUsed};
+  save();
+}
+
+function pause(keep){
+  running=false; clearTimeout(timer);
+  if('speechSynthesis' in window) speechSynthesis.cancel();
+  releaseWakeLock();
+  if(keep===false){ activeIntent().progress=null; save(); }
+  renderHome(); show('home');
+}
+function finish(){
+  running=false; clearTimeout(timer);
+  if('speechSynthesis' in window) speechSynthesis.cancel();
+  releaseWakeLock();
+  const it=activeIntent();
+  $('doneIntent').textContent = it.name + ' 을 위하여';
+  $('statMin').textContent = Math.max(1, Math.round((Date.now()-startedAt)/60000));
+  $('statResume').textContent = resumeUsed;
+  it.progress=null; save();
+  show('done');
+}
+
+/* 화면이 꺼지지 않게 (지원하는 브라우저에서만) */
+let wl=null;
+async function requestWakeLock(){ try{ if('wakeLock' in navigator) wl = await navigator.wakeLock.request('screen'); }catch(e){} }
+function releaseWakeLock(){ try{ if(wl){ wl.release(); wl=null; } }catch(e){} }
+
+/* 탭을 벗어나면 = 실제 중단. 자리는 이미 저장돼 있다. */
+document.addEventListener('visibilitychange', ()=>{
+  if(document.hidden && running){ running=false; clearTimeout(timer); if('speechSynthesis' in window) speechSynthesis.cancel(); }
+});
+
+/* ==========================================================
+   조작
+   ========================================================== */
+$('btnStart').onclick = ()=>{ const it=activeIntent(); it.progress=null; save(); begin(false); };
+$('resumeCard').onclick = ()=> begin(true);
+$('btnPause').onclick = ()=> pause(true);   // 자리를 남긴다 → 홈에 이어가기 카드
+$('btnStop').onclick  = ()=> pause(false);  // 자리를 지운다 → 다음엔 처음부터
+$('btnHome').onclick = ()=>{ renderHome(); show('home'); };
+
+$('tgSilent').onclick = ()=>{ S.silent=!S.silent; save(); renderHome(); if(S.silent) buzz([20,50,20]); };
+
+const openSheet=(id)=>{ $('sheetBg').classList.add('on'); $(id).classList.add('on'); };
+const closeSheets=()=>{ $('sheetBg').classList.remove('on'); document.querySelectorAll('.sheet').forEach(s=>s.classList.remove('on')); };
+$('sheetBg').onclick = closeSheets;
+$('btnAddIntent').onclick = ()=>{ $('intentInput').value=''; openSheet('sheetIntent'); setTimeout(()=>$('intentInput').focus(),80); };
+$('intentCancel').onclick = closeSheets;
+$('intentSave').onclick = ()=>{
+  const v=$('intentInput').value.trim(); if(!v) return closeSheets();
+  const id='i'+Date.now();
+  S.intents.push({id,name:v,progress:null}); S.active=id; save();
+  closeSheets(); renderHome();
+};
+$('tgSpeed').onclick = ()=>{
+  document.querySelectorAll('#speedPicker button').forEach(b=>b.setAttribute('aria-pressed', String(parseFloat(b.dataset.sp)===S.speed)));
+  openSheet('sheetSpeed');
+};
+document.querySelectorAll('#speedPicker button').forEach(b=>{
+  b.onclick=()=>{ S.speed=parseFloat(b.dataset.sp); save();
+    document.querySelectorAll('#speedPicker button').forEach(x=>x.setAttribute('aria-pressed', String(x===b)));
+    renderHome(); };
+});
+$('speedClose').onclick = closeSheets;
+$('btnAbout').onclick = ()=> openSheet('sheetAbout');
+$('aboutClose').onclick = closeSheets;
+
+renderHome();
+</script>
+</body>
+</html>
