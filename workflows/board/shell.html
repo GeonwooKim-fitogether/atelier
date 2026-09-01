@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Atelier Dashboard — mobile-rosary (v2)</title>
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --card: #171717;
+      --card-hover: #1f1f1f;
+      --card-deep: #0f0f0f;
+      --border: rgba(255,255,255,0.10);
+      --border-strong: rgba(255,255,255,0.22);
+      --fg: #fafafa;
+      --muted: #a3a3a3;
+      --subtle: #6b6b6b;
+      --faint: #404040;
+      --done: #6ee7b7;
+      --doing: #93c5fd;
+      --wait: #6b6b6b;
+      --accent-business: #fde68a;
+      --accent-product: #93c5fd;
+      --accent-service: #c4b5fd;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100vh; overflow: hidden; }
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+      display: flex;
+      flex-direction: column;
+      font-size: 13px;
+    }
+    .top-header {
+      padding: 14px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+    .top-header h1 { font-size: 16px; font-weight: 600; }
+    .top-header .meta { font-size: 11px; color: var(--muted); }
+
+    .container { display: flex; flex: 1; overflow: hidden; }
+
+    /* === 좌측: 5 묶음 진행 흐름 === */
+    .sidebar {
+      flex: 0 0 220px;
+      border-right: 1px solid var(--border);
+      padding: 14px 12px;
+      overflow-y: auto;
+    }
+    .sb-title {
+      font-size: 10px;
+      color: var(--subtle);
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      padding: 0 4px;
+    }
+    /* L1 묶음 = 박스 분리 (Top-Down 시각 위계 [[top-down-ux-mandate]]) */
+    .bundle {
+      background: rgba(255,255,255,0.025);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 6px;
+      padding: 10px 8px 8px;
+      margin-bottom: 10px;
+    }
+    .bundle.done {
+      opacity: 0.5;
+    }
+    .bundle.active {
+      background: rgba(147,197,253,0.07);
+      border-color: rgba(147,197,253,0.25);
+      border-left: 3px solid var(--doing);
+      padding-left: 7px;
+    }
+    .bundle-num {
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      font-weight: 600;
+      margin-bottom: 3px;
+      padding: 0 4px;
+    }
+    .bundle.active .bundle-num { color: var(--doing); }
+    .bundle.done .bundle-num { color: var(--done); }
+    .bundle-name {
+      font-size: 12px;
+      color: var(--fg);
+      margin-bottom: 8px;
+      padding: 0 4px;
+      font-weight: 600;
+    }
+    /* L2 stage row = 묶음 안 단계 (작고 옅게) */
+    .bundle-stages {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      padding-top: 4px;
+      border-top: 1px solid rgba(255,255,255,0.04);
+    }
+    .stage-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 6px;
+      border-radius: 3px;
+      font-size: 11.5px;
+    }
+    .stage-row.done { color: var(--done); }
+    .stage-row.doing { color: var(--doing); background: rgba(147,197,253,0.08); }
+    .stage-row.wait { color: var(--wait); }
+    .stage-num {
+      font-size: 9.5px;
+      font-weight: 600;
+      min-width: 18px;
+      font-variant-numeric: tabular-nums;
+    }
+    .stage-name { flex: 1; }
+    .stage-mark {
+      font-size: 10px;
+      min-width: 14px;
+      text-align: right;
+    }
+
+    /* === 우측: 진행 자료 === */
+    .main {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px 28px;
+    }
+    .idea-header {
+      margin-bottom: 22px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    .idea-name {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .idea-tagline {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .idea-status {
+      display: inline-block;
+      margin-top: 6px;
+      padding: 3px 8px;
+      font-size: 10px;
+      color: var(--done);
+      background: rgba(110,231,183,0.08);
+      border: 1px solid rgba(110,231,183,0.30);
+      border-radius: 3px;
+      letter-spacing: 0.4px;
+    }
+
+    /* === 매트릭스 ─ 9 stage × 3 카테고리 === */
+    .matrix-section {
+      margin-bottom: 22px;
+    }
+    .matrix-section-title {
+      font-size: 12px;
+      color: var(--subtle);
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+    .stage-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      margin-bottom: 14px;
+      overflow: hidden;
+    }
+    .stage-card-header {
+      padding: 10px 14px;
+      background: var(--card-deep);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .stage-card-num {
+      font-size: 11px;
+      color: var(--muted);
+      font-weight: 600;
+    }
+    .stage-card-name {
+      font-size: 13px;
+      color: var(--fg);
+      font-weight: 500;
+      flex: 1;
+    }
+    .stage-card-status {
+      font-size: 10px;
+      padding: 2px 7px;
+      border-radius: 3px;
+      letter-spacing: 0.4px;
+    }
+    .stage-card-status.done {
+      color: var(--done);
+      background: rgba(110,231,183,0.08);
+      border: 1px solid rgba(110,231,183,0.30);
+    }
+    .stage-card-status.wait {
+      color: var(--subtle);
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+    }
+
+    /* 3 카테고리 셀 */
+    .cells {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+    }
+    .cell {
+      background: var(--card);
+      padding: 12px 14px;
+      min-height: 100px;
+    }
+    .cell-label {
+      font-size: 9.5px;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+    .cell-label.business { color: var(--accent-business); }
+    .cell-label.product { color: var(--accent-product); }
+    .cell-label.service { color: var(--accent-service); }
+    .cell-body {
+      font-size: 11.5px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+    .cell-body ul {
+      margin: 0;
+      padding-left: 16px;
+    }
+    .cell-body li { margin-bottom: 4px; }
+    .cell-body strong { color: var(--fg); font-weight: 600; }
+    .cell-empty {
+      color: var(--faint);
+      font-style: italic;
+      font-size: 11px;
+    }
+
+    /* placeholder */
+    .placeholder-row {
+      padding: 14px;
+      color: var(--faint);
+      font-size: 11.5px;
+      font-style: italic;
+      text-align: center;
+    }
+
+    .footer {
+      padding: 10px 24px;
+      border-top: 1px solid var(--border);
+      font-size: 10.5px;
+      color: var(--subtle);
+    }
+    .footer code {
+      color: var(--muted);
+      font-size: 10.5px;
+    }
+
+    /* === 필터 네비 === */
+    .bundle, .stage-row {
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .bundle:hover {
+      background: rgba(255,255,255,0.05);
+    }
+    .bundle.active:hover {
+      background: rgba(147,197,253,0.12);
+    }
+    .bundle.done:hover {
+      opacity: 0.7;
+    }
+    .stage-row:hover {
+      background: rgba(255,255,255,0.05);
+    }
+    .stage-row.doing:hover {
+      background: rgba(147,197,253,0.15);
+    }
+    .bundle.nav-selected {
+      outline: 1px solid rgba(255,255,255,0.30);
+    }
+    .stage-row.nav-selected {
+      outline: 1px solid rgba(255,255,255,0.25);
+      border-radius: 3px;
+    }
+
+    /* 필터 활성 배너 */
+    .filter-bar {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 14px;
+      background: rgba(147,197,253,0.07);
+      border-bottom: 1px solid rgba(147,197,253,0.20);
+      font-size: 11px;
+      color: var(--doing);
+    }
+    .filter-bar.visible { display: flex; }
+    .filter-bar-label { flex: 1; }
+    .filter-reset {
+      cursor: pointer;
+      font-size: 10.5px;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 2px 8px;
+      background: none;
+    }
+    .filter-reset:hover { color: var(--fg); border-color: rgba(255,255,255,0.3); }
+
+    .stage-card.hidden { display: none; }
+  </style>
+</head>
+<body>
+
+<div class="top-header">
+  <h1>Atelier 대시보드 — mobile-rosary (v2)</h1>
+  <div class="meta">9단계 흐름 × 사업·상품·서비스 3 영역 · 2026-05-29 재시작</div>
+</div>
+
+<div class="container">
+
+  <!-- 좌측: 5 묶음 진행 흐름 -->
+  <div class="sidebar">
+    <div class="sb-title">진행 흐름</div>
+
+    <div class="bundle" data-filter="control">
+      <div class="bundle-num" style="color:#fca5a5;">◆ 결정 큐</div>
+      <div class="bundle-name">열림 6 · 닫힘 8</div>
+    </div>
+    <div class="bundle done" data-filter="bundle-1">
+      <div class="bundle-num">묶음 1 ✓ 완료</div>
+      <div class="bundle-name">문제·고민 인터뷰</div>
+      <div class="bundle-stages">
+        <div class="stage-row done" data-filter="stage-01">
+          <span class="stage-num">01</span>
+          <span class="stage-name">시작 (문제 수집)</span>
+          <span class="stage-mark">✓</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="bundle done" data-filter="bundle-2">
+      <div class="bundle-num">묶음 2 ✓ 완료</div>
+      <div class="bundle-name">외부 정보 모으고 정리</div>
+      <div class="bundle-stages">
+        <div class="stage-row done" data-filter="stage-02">
+          <span class="stage-num">02</span>
+          <span class="stage-name">정보 수집 ✓</span>
+          <span class="stage-mark">✓</span>
+        </div>
+        <div class="stage-row done" data-filter="stage-03">
+          <span class="stage-num">03</span>
+          <span class="stage-name">정리·분석 ✓ (진행 결정)</span>
+          <span class="stage-mark">✓</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="bundle done" data-filter="bundle-3">
+      <div class="bundle-num">묶음 3 ✓ 완료 · 판정됨</div>
+      <div class="bundle-name">해결책 찾기</div>
+      <div class="bundle-stages">
+        <div class="stage-row done" data-filter="stage-04">
+          <span class="stage-num">04</span>
+          <span class="stage-name">아이디어 펼치기 ✓</span>
+          <span class="stage-mark">✓</span>
+        </div>
+        <div class="stage-row done" data-filter="stage-05">
+          <span class="stage-num">05</span>
+          <span class="stage-name">우선순위 정하기 ✓ (Pass)</span>
+          <span class="stage-mark">✓</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="bundle active" data-filter="bundle-4">
+      <div class="bundle-num" style="color:var(--doing);">묶음 4 ▸ 진행 중</div>
+      <div class="bundle-name">완성본 만들기</div>
+      <div class="bundle-stages">
+        <div class="stage-row done" data-filter="stage-06">
+          <span class="stage-num">06</span>
+          <span class="stage-name">서비스 설계 ✓</span>
+          <span class="stage-mark">✓</span>
+        </div>
+        <div class="stage-row done" data-filter="stage-07">
+          <span class="stage-num">07</span>
+          <span class="stage-name">시제품 만들기 ✓ v1 동작</span>
+          <span class="stage-mark">✓</span>
+        </div>
+        <div class="stage-row doing" data-filter="stage-08">
+          <span class="stage-num">08</span>
+          <span class="stage-name">검증 ▸ 4주 (임계 경로)</span>
+          <span class="stage-mark">▸</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="bundle" data-filter="bundle-5">
+      <div class="bundle-num">묶음 5 · 대기</div>
+      <div class="bundle-name">다음 단계 팀에 넘기기</div>
+      <div class="bundle-stages">
+        <div class="stage-row wait" data-filter="stage-09">
+          <span class="stage-num">09</span>
+          <span class="stage-name">인계 자료 묶기</span>
+          <span class="stage-mark">·</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 우측: 자료 -->
+  <div class="main">
+
+    <div class="filter-bar" id="filterBar">
+      <span class="filter-bar-label" id="filterLabel"></span>
+      <button class="filter-reset" id="filterReset">전체 보기</button>
+    </div>
+
+    <div class="idea-header">
+      <div class="idea-name">mobile-rosary (모바일 묵주기도)</div>
+      <div class="idea-tagline">대중교통·잠자기 전에 묵주·기도문 없이 스마트폰으로 묵주기도</div>
+      <div class="idea-status">묶음 4 진행 중 — 결정 큐 <strong style="color:#fca5a5;">열림 6</strong> · 닫힘 8 · <strong>06 서비스 설계 ✓ · 07 시제품 v4 동작 ✓</strong> · 08 검증 대기 (4주, 임계 경로)</div>
+    </div>
+
+    <div class="matrix-section">
+      <div class="matrix-section-title">9단계 × 3 영역 (사업·상품·서비스)</div>{{CARDS}}
+
+    </div>
+
+  </div>
+
+</div>
+
+<div class="footer">자료: <code>idea/mobile-rosary/</code> — <code>01-intake</code> · <code>02-research</code> · <code>03-analysis</code> · <code>04-ideation</code> · <code>05-prioritization</code> · <code>_meta</code> &nbsp;·&nbsp; 백업: <code>idea/mobile-rosary-v1/</code> &nbsp;·&nbsp; 옛 대시보드: <code>archive/dashboard-v1/</code></div>
+
+<script>
+  // 묶음 → 포함 stage 맵
+  const BUNDLE_STAGES = {
+    'bundle-1': ['stage-01'],
+    'bundle-2': ['stage-02', 'stage-03'],
+    'control': ['control'],
+    'bundle-3': ['stage-04', 'stage-05'],
+    'bundle-4': ['stage-06', 'stage-07', 'stage-08'],
+    'bundle-5': ['stage-09']
+  };
+
+  const BUNDLE_LABELS = {
+    'bundle-1': '묶음 1 — 문제·고민 인터뷰',
+    'bundle-2': '묶음 2 — 외부 정보 모으고 정리',
+    'control': '결정 큐 — 공방장이 답할 것',
+    'bundle-3': '묶음 3 — 해결책 찾기',
+    'bundle-4': '묶음 4 — 완성본 만들기',
+    'bundle-5': '묶음 5 — 다음 단계 팀에 넘기기'
+  };
+
+  const STAGE_LABELS = {
+    'stage-01': '01 시작 (문제 수집)',
+    'stage-02': '02 정보 수집',
+    'stage-03': '03 정리·분석',
+    'stage-04': '04 아이디어 펼치기',
+    'stage-05': '05 우선순위 정하기',
+    'stage-06': '06 서비스 설계',
+    'stage-07': '07 시제품 만들기',
+    'stage-08': '08 검증',
+    'stage-09': '09 인계 자료 묶기'
+  };
+
+  let activeFilter = null; // null = 전체
+
+  const cards = document.querySelectorAll('.stage-card[data-stage]');
+  const filterBar = document.getElementById('filterBar');
+  const filterLabel = document.getElementById('filterLabel');
+  const filterReset = document.getElementById('filterReset');
+
+  function applyFilter(type, key) {
+    // 이전 선택 해제
+    document.querySelectorAll('.nav-selected').forEach(el => el.classList.remove('nav-selected'));
+
+    if (activeFilter && activeFilter.key === key) {
+      // 같은 항목 다시 클릭 → 전체 보기
+      showAll();
+      return;
+    }
+
+    activeFilter = { type, key };
+
+    // 대상 stage 목록 결정
+    let targetStages;
+    if (type === 'bundle') {
+      targetStages = new Set(BUNDLE_STAGES[key] || []);
+    } else {
+      targetStages = new Set([key]);
+    }
+
+    // 카드 표시/숨김
+    cards.forEach(card => {
+      const stage = card.getAttribute('data-stage');
+      card.classList.toggle('hidden', !targetStages.has(stage));
+    });
+
+    // 배너 표시
+    const label = type === 'bundle' ? BUNDLE_LABELS[key] : STAGE_LABELS[key];
+    filterLabel.textContent = '보는 중: ' + label;
+    filterBar.classList.add('visible');
+
+    // 선택 강조
+    const sel = document.querySelector('[data-filter="' + key + '"]');
+    if (sel) sel.classList.add('nav-selected');
+  }
+
+  function showAll() {
+    activeFilter = null;
+    cards.forEach(card => card.classList.remove('hidden'));
+    filterBar.classList.remove('visible');
+    document.querySelectorAll('.nav-selected').forEach(el => el.classList.remove('nav-selected'));
+  }
+
+  // 사이드바 클릭 이벤트
+  document.querySelectorAll('[data-filter]').forEach(el => {
+    el.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const key = this.getAttribute('data-filter');
+      const type = key.startsWith('bundle') ? 'bundle' : 'stage';
+      applyFilter(type, key);
+    });
+  });
+
+  filterReset.addEventListener('click', showAll);
+</script>
+</body>
+</html>
