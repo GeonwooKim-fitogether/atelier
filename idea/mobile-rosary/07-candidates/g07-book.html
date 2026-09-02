@@ -1,0 +1,42 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>장르 7 — 한지 기도서</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&display=swap">
+<style>
+:root{--paper:#F0EAD9;--paper2:#E6DFCB;--ink:#2B2723;--soft:#7A7062;--muk:#1E1B18;--tint:#B98A6A}
+*{box-sizing:border-box;margin:0;padding:0}html,body{height:100%}
+body{background:var(--paper2);color:var(--ink);font:17px/1.8 "Noto Serif KR",serif;max-width:430px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;padding:18px 14px calc(18px + env(safe-area-inset-bottom))}
+.page{flex:1;background:var(--paper);background-image:radial-gradient(rgba(0,0,0,.025) 1px,transparent 1px),radial-gradient(rgba(255,255,255,.35) 1px,transparent 1px);background-size:7px 7px,11px 11px;padding:34px 28px 26px;position:relative;display:flex;flex-direction:column;box-shadow:inset 0 0 40px rgba(0,0,0,.05)}
+.page::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:linear-gradient(90deg,rgba(0,0,0,.14),transparent)}
+.folio{position:absolute;bottom:14px;right:24px;font-size:12px;color:var(--soft)}
+.vert{writing-mode:vertical-rl;text-orientation:mixed;font-size:14px;color:var(--soft);letter-spacing:.2em;position:absolute;right:22px;top:30px;height:60%}
+h1{font-size:28px;font-weight:300;line-height:1.35;margin:10px 0 6px}.soft{color:var(--soft);font-size:14px}
+.ink{width:100%;max-width:220px;margin:8px auto 4px}.ink svg{width:100%;height:auto}
+.spacer{flex:1}
+.a{font-size:22px;font-weight:600;line-height:1.75}.b{font-size:22px;font-weight:300;line-height:1.75;margin-top:14px;color:var(--soft)}
+.mine .a{font-weight:300;color:var(--soft)}.mine .b{font-weight:600;color:var(--ink)}
+.turn{font-size:13px;color:var(--soft);letter-spacing:.1em;margin-top:12px}.turn.mine{color:var(--tint)}
+.nav{display:flex;justify-content:space-between;align-items:center;margin-top:18px;font-size:14px;color:var(--soft)}.nav button{border:0;background:none;font:inherit;color:var(--soft);cursor:pointer;text-decoration:underline dotted}
+.act{border:0;background:none;font:400 19px "Noto Serif KR";color:var(--ink);border-bottom:1px solid var(--muk);padding:10px 0;text-align:left;cursor:pointer;width:100%}.act.s{color:var(--soft);border-bottom-color:rgba(0,0,0,.15);font-size:15px}
+.dots{display:flex;gap:7px;margin-top:10px}.dots i{width:9px;height:9px;border-radius:50%;background:rgba(30,27,24,.15)}.dots i.p{background:var(--muk)}.dots i.c{background:var(--tint)}
+.pause{position:fixed;inset:0;background:rgba(240,234,217,.94);display:flex;flex-direction:column;justify-content:center;padding:34px;max-width:430px;margin:0 auto}
+.stat{display:flex;gap:24px;margin:12px 0}.stat b{display:block;font-size:26px;font-weight:300}.stat span{font-size:12px;color:var(--soft)}
+</style></head><body>
+<div class="page" id="page"></div>
+<script src="engine.js"></script>
+<script>
+const R=Rosary.create({onChange:render}); let S=R.snapshot(); const pg=document.getElementById("page");
+const MUK=`<svg viewBox="0 0 220 120"><path d="M20 95 C60 20 110 15 160 40 C185 52 200 70 205 95" fill="none" stroke="#1E1B18" stroke-width="3" stroke-linecap="round" opacity=".8"/><path d="M75 78 C90 40 130 38 150 62" fill="none" stroke="#1E1B18" stroke-width="2" opacity=".55"/><circle cx="110" cy="52" r="9" fill="#B98A6A" opacity=".35"/></svg>`;
+function render(s){ S=s;
+  if(s.phase==="idle"){ pg.innerHTML=`<div class="vert">${s.todayName} · ${s.intent}</div><div class="soft">오늘의 신비</div><h1>${s.mystName}</h1><div class="ink">${MUK}</div><div class="spacer"></div>
+    ${s.pos?`<div class="soft">${s.posAgo}에 접어 둔 자리</div><button class="act" data-act="resume">${Rosary.MYST[s.pos.k][0]}, ${s.posWhere}부터 이어서 →</button><button class="act s" data-act="start">첫 장부터</button>`:`<button class="act" data-act="start">첫 장을 펼칩니다 →</button>`}
+    <div class="nav"><button data-act="silent">${s.silent?"침묵":"소리"}</button><button data-act="speed">사이 ${({0.75:"느리게",1:"보통",1.35:"빠르게"})[s.speed]}</button><button data-act="addIntent">지향</button></div><div class="folio">一</div>`; return; }
+  if(s.phase==="done"){ pg.innerHTML=`<div class="soft">${s.mystName}</div><h1>다 바쳤습니다</h1><div class="ink">${MUK}</div><div class="stat"><div><b>50</b><span>성모송</span></div><div><b>${s.elapsedMin}</b><span>분</span></div><div><b>${s.resumes}</b><span>이어서</span></div></div><div class="spacer"></div><button class="act" data-act="home">책을 덮습니다 →</button><div class="folio">終</div>`; return; }
+  const st=s.step, mine=s.phase==="mine";
+  pg.innerHTML=`<div class="vert">${st.mystery||s.mystName}</div><div class="soft">${st.label}</div><div class="${mine?'mine':''}" style="margin-top:14px"><div class="a">${st.a}</div>${st.b?`<div class="b">${st.b}</div>`:""}</div><div class="turn ${mine?'mine':''}">${s.phase==="paused"?"접어 둠":mine?"● 내 차례":"앱이 읽고 있습니다"}</div><div class="spacer"></div>
+    ${st.of?`<div class="dots">${Array.from({length:st.of},(_,i)=>`<i class="${i<st.bead?'p':i===st.bead?'c':''}"></i>`).join("")}</div>`:""}
+    <div class="nav"><button data-act="pause">접어 두기</button><span>${s.i+1} / 77</span><button data-act="end">덮기</button></div><div class="folio">${s.i+1}</div>
+    ${s.phase==="paused"?`<div class="pause"><div class="soft">접어 두었습니다</div><h1>${st.label}</h1><div class="soft">자리는 남아 있습니다</div><div style="height:26px"></div><button class="act" data-act="continue">이어서 바치기 →</button><button class="act s" data-act="home">처음 장으로</button></div>`:""}`; }
+document.addEventListener("click",e=>{ const b=e.target.closest("[data-act]"); if(!b) return; const a=b.dataset.act;
+  ({start:()=>R.start(),resume:()=>R.start({fromSaved:true}),pause:()=>R.pause(),continue:()=>R.resume(),end:()=>R.end(),home:()=>R.home(),silent:()=>R.toggleSilent(),speed:()=>R.setSpeed(S.speed===1?1.35:S.speed===1.35?0.75:1),addIntent:()=>{const n=prompt("지향 이름 (24자)"); if(n) R.addIntent(n);}})[a]?.(); });
+R.demoFromURL();
+</script></body></html>

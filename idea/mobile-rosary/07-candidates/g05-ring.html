@@ -1,0 +1,40 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>장르 5 — 링</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;500;700&display=swap">
+<style>
+:root{--bg:#000;--ink:#fff;--soft:#8E8E93;--ring:#2C2C2E;--on:#D9AE4C;--done:#6ee7b7}
+*{box-sizing:border-box;margin:0;padding:0}html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font:15px/1.4 "Noto Sans KR",system-ui,sans-serif;max-width:430px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center}
+.ring{width:300px;height:300px;position:relative}.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring .c{position:absolute;inset:0;display:grid;place-content:center}.ring .c b{font-size:84px;font-weight:300;line-height:1}.ring .c span{font-size:15px;color:var(--soft);margin-top:6px}
+.lbl{margin-top:18px;font-size:20px;font-weight:500}.sub{color:var(--soft);font-size:14px;margin-top:4px}
+.btn{margin-top:26px;border:0;border-radius:999px;padding:16px 34px;font:700 17px "Noto Sans KR";background:var(--on);color:#1A1205;cursor:pointer;min-height:54px;min-width:220px}
+.btn.o{background:#1C1C1E;color:var(--ink);margin-top:10px;font-weight:500}
+.text{margin-top:18px;font-size:17px;line-height:1.55;max-width:340px;color:var(--soft)}.text.mine{color:var(--ink)}
+.row{display:flex;gap:24px;margin-top:20px;font-size:13px;color:var(--soft)}.row button{border:0;background:none;color:var(--soft);font:inherit;text-decoration:underline dotted}
+.turn{margin-top:14px;font-size:13px;letter-spacing:.14em;color:var(--soft)}.turn.mine{color:var(--on)}
+.pause{position:fixed;inset:0;background:rgba(0,0,0,.9);display:grid;place-content:center;text-align:center;padding:24px}
+</style></head><body>
+<div id="app" style="display:contents"></div>
+<script src="engine.js"></script>
+<script>
+const R=Rosary.create({onChange:render}); let S=R.snapshot(); const app=document.getElementById("app");
+function ring(dec,frac,color){ // 다섯 조각 링 — dec=지난 단 수, frac=지금 단 진행 0..1
+  const r=132, C=2*Math.PI*r, seg=C/5, gap=10; let out=`<circle cx="150" cy="150" r="${r}" fill="none" stroke="var(--ring)" stroke-width="22"/>`;
+  for(let d=0;d<5;d++){ const len= d<dec? seg-gap : d===dec? Math.max(0,(seg-gap)*frac) : 0; if(len<=0) continue;
+    out+=`<circle cx="150" cy="150" r="${r}" fill="none" stroke="${color}" stroke-width="22" stroke-linecap="round" stroke-dasharray="${len} ${C-len}" stroke-dashoffset="${-(d*seg)}"/>`; }
+  return `<svg viewBox="0 0 300 300">${out}</svg>`; }
+function render(s){ S=s;
+  if(s.phase==="idle"){ app.innerHTML=`<div class="ring">${ring(0,0,"var(--on)")}<div class="c"><b>5</b><span>단</span></div></div><div class="lbl">${s.mystName}</div><div class="sub">${s.todayName} · ${s.intent}</div>
+    ${s.pos?`<button class="btn" data-act="resume">이어서 · ${s.posWhere}</button><div class="sub">${Rosary.MYST[s.pos.k][0]} · ${s.posAgo}</div><button class="btn o" data-act="start">처음부터</button>`:`<button class="btn" data-act="start">시작</button>`}
+    <div class="row"><button data-act="silent">${s.silent?"침묵":"소리"}</button><button data-act="speed">사이 ${({0.75:"느리게",1:"보통",1.35:"빠르게"})[s.speed]}</button></div>`; return; }
+  if(s.phase==="done"){ app.innerHTML=`<div class="ring">${ring(5,1,"var(--done)")}<div class="c"><b>✓</b><span>다 바쳤습니다</span></div></div><div class="lbl">${s.mystName}</div><div class="sub">성모송 50 · ${s.elapsedMin}분 · 이어서 ${s.resumes}번</div><button class="btn o" data-act="home">돌아가기</button>`; return; }
+  const st=s.step, mine=s.phase==="mine", dec=Math.max(0,st.dec-1), frac= st.dec? ((st.bead>=0?st.bead+1:st.t==="decl"?0:st.t==="our"?0.5:st.t==="glory"?11:12)/13) : 0;
+  app.innerHTML=`<div class="ring">${ring(dec,frac,"var(--on)")}<div class="c"><b>${st.bead>=0?st.bead+1:"·"}</b><span>${st.of?`/ ${st.of}`:""} ${st.label}</span></div></div>
+    <div class="turn ${mine?'mine':''}">${s.phase==="paused"?"멈춤":mine?"● 내 차례":"앱이 읽는 중"}</div><div class="text ${mine?'mine':''}">${mine&&st.b?st.b:st.a}</div>
+    <div class="row"><button data-act="pause">잠시 멈춤</button><button data-act="end">끝내기</button><button data-act="silent">${s.silent?"침묵":"소리"}</button></div>
+    ${s.phase==="paused"?`<div class="pause"><div class="lbl">멈춰 있습니다</div><div class="sub">${st.label} · 자리는 남아 있습니다</div><button class="btn" data-act="continue">이어서 바치기</button><button class="btn o" data-act="home">홈으로</button></div>`:""}`; }
+document.addEventListener("click",e=>{ const b=e.target.closest("[data-act]"); if(!b) return; const a=b.dataset.act;
+  ({start:()=>R.start(),resume:()=>R.start({fromSaved:true}),pause:()=>R.pause(),continue:()=>R.resume(),end:()=>R.end(),home:()=>R.home(),silent:()=>R.toggleSilent(),speed:()=>R.setSpeed(S.speed===1?1.35:S.speed===1.35?0.75:1)})[a]?.(); });
+R.demoFromURL();
+</script></body></html>

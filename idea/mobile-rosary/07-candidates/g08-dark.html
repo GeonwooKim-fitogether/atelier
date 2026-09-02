@@ -1,0 +1,38 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>장르 8 — 화면 없는 앱</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;500&display=swap">
+<style>
+:root{--bg:#000;--ink:#F0EAD9;--dim:#3A3A3A;--soft:#6B6B6B}
+*{box-sizing:border-box;margin:0;padding:0}html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font:16px/1.5 "Noto Sans KR",sans-serif;max-width:430px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:28px;-webkit-tap-highlight-color:transparent}
+.big{font-size:72px;font-weight:300;line-height:1}.lbl{font-size:17px;color:var(--soft);margin-top:10px}
+.dot{width:14px;height:14px;border-radius:50%;background:var(--dim)}.dot.on{background:var(--ink);box-shadow:0 0 0 10px rgba(240,234,217,.08)}
+.hint{color:var(--soft);font-size:14px;margin-top:26px;max-width:300px}
+.btn{margin-top:28px;border:1px solid var(--dim);background:none;color:var(--ink);border-radius:999px;padding:16px 32px;font:500 17px "Noto Sans KR";min-height:54px;cursor:pointer}
+.btn.f{background:var(--ink);color:#000;border-color:var(--ink)}
+.legend{margin-top:28px;font-size:13px;color:var(--soft);display:grid;gap:8px;text-align:left}.legend b{color:var(--ink);font-weight:500;letter-spacing:.2em}
+.reveal{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#000;padding:28px}
+.small{font-size:13px;color:var(--soft);margin-top:8px}
+.row{display:flex;gap:18px;margin-top:22px;font-size:13px;color:var(--soft)}.row button{border:0;background:none;color:var(--soft);font:inherit;text-decoration:underline dotted}
+</style></head><body>
+<div id="app" style="display:contents"></div>
+<script src="engine.js"></script>
+<script>
+const R=Rosary.create({onChange:render}); let S=R.snapshot(); const app=document.getElementById("app"); let reveal=false, tmr=null;
+function render(s){ S=s;
+  if(s.phase==="idle"){ app.innerHTML=`<div class="lbl">${s.todayName}</div><div class="big" style="font-size:30px;margin-top:6px">${s.mystName}</div>
+    ${s.pos?`<button class="btn f" data-act="resume">이어서 · ${s.posWhere}</button><div class="small">${Rosary.MYST[s.pos.k][0]} · ${s.posAgo}</div><button class="btn" data-act="start">처음부터</button>`:`<button class="btn f" data-act="start">눈을 감고 시작</button>`}
+    <div class="legend"><div><b>·</b> 알이 넘어갈 때 짧게 한 번</div><div><b>· · ·</b> 단이 바뀔 때 세 번</div><div><b>——</b> 다 바치면 길게 한 번</div></div>
+    <div class="hint">기도 중에는 화면이 꺼진 것처럼 어둡습니다. 어디쯤인지 궁금하면 화면을 한 번 톡 치세요.</div>
+    <div class="row"><button data-act="silent">${s.silent?"진동만":"소리 + 진동"}</button><button data-act="speed">사이 ${({0.75:"느리게",1:"보통",1.35:"빠르게"})[s.speed]}</button></div>`; return; }
+  if(s.phase==="done"){ app.innerHTML=`<div class="big" style="font-size:40px">다 바쳤습니다</div><div class="lbl">${s.mystName} · 성모송 50 · ${s.elapsedMin}분</div><button class="btn" data-act="home">돌아가기</button>`; return; }
+  const st=s.step, mine=s.phase==="mine";
+  if(s.phase==="paused"){ app.innerHTML=`<div class="big" style="font-size:34px">멈춰 있습니다</div><div class="lbl">${st.label} · 자리는 남아 있습니다</div><button class="btn f" data-act="continue">이어서 바치기</button><button class="btn" data-act="home">홈으로</button>`; return; }
+  if(reveal){ app.innerHTML=`<div class="reveal" data-act="hide"><div class="lbl">${st.mystery||s.mystName}</div><div class="big">${st.bead>=0?st.bead+1:"·"}<span style="font-size:28px;color:var(--soft)">${st.of?` / ${st.of}`:""}</span></div><div class="lbl">${st.label} · ${mine?"내 차례":"앱이 읽는 중"}</div><div class="hint" style="color:var(--ink);opacity:.8">${mine&&st.b?st.b:st.a}</div><div class="row"><button data-act="pause">잠시 멈춤</button><button data-act="end">끝내기</button></div></div>`; return; }
+  app.innerHTML=`<div style="position:fixed;inset:0" data-act="reveal"></div><div class="dot ${mine?'on':''}"></div>`; }
+document.addEventListener("click",e=>{ const b=e.target.closest("[data-act]"); if(!b) return; const a=b.dataset.act;
+  ({start:()=>R.start(),resume:()=>R.start({fromSaved:true}),pause:()=>R.pause(),continue:()=>R.resume(),end:()=>R.end(),home:()=>R.home(),silent:()=>R.toggleSilent(),speed:()=>R.setSpeed(S.speed===1?1.35:S.speed===1.35?0.75:1),
+    reveal:()=>{ reveal=true; render(S); clearTimeout(tmr); tmr=setTimeout(()=>{reveal=false; render(S);},4000); }, hide:()=>{ reveal=false; render(S); }})[a]?.(); });
+const demo=new URLSearchParams(location.search).get("demo"); if(demo==="pray"||demo==="mine") reveal=true;
+R.demoFromURL();
+</script></body></html>
