@@ -1,0 +1,78 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>방향 9 — 두루마리</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700&family=Noto+Sans+KR:wght@400;500&display=swap">
+<style>
+:root{--silk:#EFE9DC;--ink:#1A1815;--cinnabar:#B0402F;--navy:#35506E;--gold:#C9A227;--line:#DED6C4}
+*{box-sizing:border-box;margin:0;padding:0}html,body{height:100%}
+body{background:var(--silk);color:var(--ink);font:15px/1.64 "Noto Sans KR",system-ui,sans-serif;max-width:430px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column}
+.my{font-family:"Nanum Myeongjo",serif}
+header{padding:20px 22px 0;display:flex;justify-content:space-between;align-items:baseline}
+.k{font-size:11.5px;letter-spacing:.13em;color:#8B8474}
+h1{font-family:"Nanum Myeongjo",serif;font-weight:700;font-size:25px;line-height:1.22;margin-top:5px}
+.band{margin:18px 0 0;padding:0;position:relative;background:#F5F0E4;border-top:1px solid var(--line);border-bottom:1px solid var(--line);overflow:hidden}
+.band .edge{position:absolute;top:0;bottom:0;width:34px;z-index:2;pointer-events:none}
+.band .edge.l{left:0;background:linear-gradient(90deg,#F5F0E4,rgba(245,240,228,0))}
+.band .edge.r{right:0;background:linear-gradient(270deg,#F5F0E4,rgba(245,240,228,0))}
+.band .now{position:absolute;left:50%;top:0;bottom:0;width:1px;background:var(--cinnabar);z-index:2}
+.band svg{display:block;height:88px;width:100%}
+.legend{display:flex;justify-content:space-between;padding:7px 22px 0;font-size:11px;color:#8B8474}
+main{flex:1;display:flex;flex-direction:column;padding:0 22px calc(18px + env(safe-area-inset-bottom))}
+.pray{height:272px;padding-top:18px;display:flex;flex-direction:column;justify-content:flex-start;overflow:hidden}
+.a{font-family:"Nanum Myeongjo",serif;font-size:18px;line-height:1.76;color:#8B8474}
+.b{font-family:"Nanum Myeongjo",serif;font-weight:700;font-size:20.5px;line-height:1.72;margin-top:9px}
+.mine .a{color:#A79F8D}.mine .b{color:var(--cinnabar)}
+.turn{font-size:11.5px;letter-spacing:.12em;color:#8B8474;margin-top:13px}
+.turn.mine{color:var(--cinnabar)}
+.sp{flex:1}
+.row{display:flex;gap:18px;padding-top:12px;border-top:1px solid var(--line)}
+button{font:400 15px/1 "Noto Sans KR";border:0;background:none;color:var(--ink);cursor:pointer}
+.row button{font-size:13px;color:#8B8474;min-height:44px}
+/* 큰 단추도 블록으로 — 옆에 다른 것이 붙지 않게 */
+.go{display:block;font-family:"Nanum Myeongjo",serif;font-weight:700;font-size:20px;background:var(--navy);color:var(--silk);padding:17px 32px;align-self:flex-start;min-height:56px}
+.alt{font-size:14px;color:#8B8474;margin-top:12px;display:block;width:100%;min-height:44px}
+.card{border:1px solid var(--line);border-left:3px solid var(--gold);background:#F5F0E4;padding:13px 15px;margin-bottom:18px}
+.card b{font-family:"Nanum Myeongjo",serif;font-weight:700;font-size:16.5px}
+.card span{display:block;font-size:12.5px;color:#8B8474;margin-top:4px}
+.nums{display:flex;gap:26px;margin:18px 0}
+.nums b{display:block;font-family:"Nanum Myeongjo",serif;font-weight:700;font-size:30px}
+.nums span{font-size:11.5px;color:#8B8474}
+.veil{position:fixed;inset:0;max-width:430px;margin:0 auto;background:rgba(239,233,220,.97);display:flex;flex-direction:column;justify-content:center;padding:26px 22px}
+</style></head><body>
+<div id="app" style="display:contents"></div>
+<script src="engine.js"></script>
+<script>
+/* 77단계를 한 줄로 길게 놓고, 화면은 그 줄 위의 한 지점을 비춘다.
+   지나온 길이 왼쪽에 그대로 남아 보이므로, 진행률 숫자 없이 얼마나 왔는지 길이로 안다. */
+const STEP=15, H=88, MID=H/2;
+function scroll(i){
+  const q=Rosary.build(Rosary.today()); const W=77*STEP;
+  const off=-(i*STEP)+150;  // 현재 자리를 화면 가운데(150px)로
+  let s='<svg viewBox="0 0 300 '+H+'" preserveAspectRatio="xMinYMin slice" aria-label="77단계가 한 줄로 놓인 띠. 지나온 길이 왼쪽에 남는다"><g transform="translate('+off.toFixed(1)+',0)">';
+  s+='<line x1="0" y1="'+MID+'" x2="'+W+'" y2="'+MID+'" stroke="#DED6C4" stroke-width="1.4"/>';
+  s+='<line x1="0" y1="'+MID+'" x2="'+(i*STEP)+'" y2="'+MID+'" stroke="#B0402F" stroke-width="1.8"/>';
+  q.forEach((st,k)=>{
+    const x=k*STEP, past=k<i, cur=k===i;
+    if(st.t==="decl"){ s+='<line x1="'+x+'" y1="10" x2="'+x+'" y2="'+(H-10)+'" stroke="'+(past?"#C9A227":"#CFC6B2")+'" stroke-width="1.2"/>'
+      +'<text x="'+(x+4)+'" y="19" font-size="10.5" fill="'+(past?"#8B8474":"#B4AB97")+'" font-family="Nanum Myeongjo, serif">제'+st.dec+'단</text>'; return; }
+    const big=st.t!=="hail", r=big?5.2:3.4;
+    s+='<circle cx="'+x+'" cy="'+MID+'" r="'+r+'" fill="'+(cur?"#B0402F":past?"#35506E":"none")+'" stroke="'+(cur?"#B0402F":past?"#35506E":"#CFC6B2")+'" stroke-width="1.2"/>';
+    if(cur) s+='<circle cx="'+x+'" cy="'+MID+'" r="11" fill="none" stroke="#B0402F" stroke-width=".9" opacity=".55"/>';
+  });
+  return s+'</g></svg>';
+}
+const R=Rosary.create({onChange:render}); let S=R.snapshot(); const app=document.getElementById("app");
+const band=i=>'<div class="band"><div class="edge l"></div><div class="edge r"></div><div class="now"></div>'+scroll(i)+'</div><div class="legend"><span>지나온 길</span><span>남은 길</span></div>';
+function render(s){ S=s;
+  if(s.phase==="idle"){ app.innerHTML='<header><div><div class="k">'+s.todayName+'</div><h1>'+s.mystName+'</h1></div><div class="k">77</div></header>'+band(0)
+   +'<main><div class="pray" style="height:auto;justify-content:flex-start;padding-top:18px">'
+   +(s.pos?'<div class="card"><b>'+Rosary.MYST[s.pos.k][0]+' · '+s.posWhere+'</b><span>'+s.posAgo+'에 멈췄습니다 · 그날의 신비로 이어집니다</span></div><button class="go" data-a="resume">이어서 바치기</button><button class="alt" data-a="start">처음부터 다시</button>':'<div class="card"><b>'+s.intent+'</b><span>77단계가 한 줄로 이어집니다 · 약 20분</span></div><button class="go" data-a="start">시작</button>')
+   +'</div><div class="sp"></div><div class="row"><button data-a="silent">'+(s.silent?"침묵 진행":"소리 진행")+'</button><button data-a="speed">받는 사이 '+({0.75:"느리게",1:"보통",1.35:"빠르게"})[s.speed]+'</button><button data-a="addIntent">지향 더하기</button></div></main>'; return; }
+  if(s.phase==="done"){ app.innerHTML='<header><div><div class="k">'+s.mystName+'</div><h1>다 바쳤습니다</h1></div><div class="k">77 / 77</div></header>'+band(76)+'<main><div class="nums"><div><b>50</b><span>성모송</span></div><div><b>'+s.elapsedMin+'</b><span>걸린 분</span></div><div><b>'+s.resumes+'</b><span>이어서</span></div></div><div style="color:#8B8474;font-size:13.5px">'+s.intent+'을 위하여</div><div class="sp"></div><button class="alt" data-a="home">돌아가기</button></main>'; return; }
+  const st=s.step, mine=s.phase==="mine";
+  app.innerHTML='<header><div><div class="k">'+st.label+'</div><h1 style="font-size:20px">'+(st.mystery||s.mystName)+'</h1></div><div class="k">'+(s.i+1)+' / 77</div></header>'+band(s.i)
+   +'<main><div class="pray '+(mine?"mine":"")+'"><div class="a">'+st.a+'</div>'+(st.b?'<div class="b">'+st.b+'</div>':'')+'<div class="turn '+(mine?"mine":"")+'">'+(mine?"내 차례":"듣는 중")+'</div></div><div class="sp"></div><div class="row"><button data-a="pause">잠시 멈춤</button><button data-a="end">여기서 끝내기</button></div></main>'
+   +(s.phase==="paused"?'<div class="veil"><div class="k">멈춰 있습니다</div><h1 style="margin:6px 0 14px">'+st.label+'</h1><div class="card"><b>자리는 남아 있습니다</b><span>'+(st.mystery||s.mystName)+'</span></div><button class="go" data-a="continue">이어서 바치기</button><button class="alt" data-a="home">홈으로</button></div>':'');
+}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-a]");if(!b)return;({start:()=>R.start(),resume:()=>R.start({fromSaved:true}),pause:()=>R.pause(),continue:()=>R.resume(),end:()=>R.end(),home:()=>R.home(),silent:()=>R.toggleSilent(),speed:()=>R.setSpeed(S.speed===1?1.35:S.speed===1.35?.75:1),addIntent:()=>{const n=prompt("지향 이름 (24자)");if(n)R.addIntent(n);}})[b.dataset.a]?.();});
+R.demoFromURL();
+</script></body></html>

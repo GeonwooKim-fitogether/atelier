@@ -1,0 +1,59 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>방향 10 — 큰 글자</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@400;500;900&family=Noto+Sans+KR:wght@400;500&display=swap">
+<style>
+:root{--paper:#FFFDF8;--ink:#141312;--red:#C0392B;--grey:#767066;--rule:#E8E2D4}
+*{box-sizing:border-box;margin:0;padding:0}html,body{height:100%}
+body{background:var(--paper);color:var(--ink);font:17px/1.6 "Noto Sans KR",system-ui,sans-serif;max-width:430px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column}
+.ga{font-family:"Gothic A1","Noto Sans KR",sans-serif;font-weight:900;letter-spacing:-.02em}
+header{padding:22px 20px 14px;border-bottom:3px solid var(--ink)}
+.k{font-size:15px;font-weight:500;color:var(--grey)}
+h1{font-family:"Gothic A1",sans-serif;font-weight:900;font-size:36px;line-height:1.14;margin-top:6px}
+main{flex:1;display:flex;flex-direction:column;padding:0 20px calc(18px + env(safe-area-inset-bottom))}
+.who{font-family:"Gothic A1",sans-serif;font-weight:900;font-size:21px;padding:16px 0 4px;color:var(--grey)}
+.who.mine{color:var(--red)}
+.pray{height:330px;display:flex;flex-direction:column;justify-content:flex-start;overflow:hidden;border-bottom:1px solid var(--rule)}
+.a{font-size:21px;line-height:1.62;color:var(--grey)}
+.b{font-size:26px;line-height:1.56;margin-top:14px;font-weight:500}
+.mine .a{font-size:19px;color:#9A948A}
+.mine .b{font-size:30px;color:var(--ink);font-weight:500}
+.pos{font-family:"Gothic A1",sans-serif;font-weight:900;font-size:19px;padding:14px 0;border-bottom:1px solid var(--rule)}
+.pos em{font-style:normal;color:var(--red)}
+.sp{flex:1}
+button{font:500 19px/1 "Noto Sans KR";border:0;background:none;color:var(--ink);cursor:pointer;text-align:left}
+.go{font-family:"Gothic A1",sans-serif;font-weight:900;font-size:26px;background:var(--ink);color:var(--paper);padding:24px 20px;width:100%;text-align:center;min-height:76px}
+.go.red{background:var(--red)}
+.alt{font-size:19px;color:var(--grey);padding:18px 0;width:100%;text-align:center;min-height:60px;border-bottom:1px solid var(--rule)}
+.row{display:flex;flex-direction:column}
+.row button{font-size:18px;color:var(--ink);padding:17px 0;min-height:58px;border-bottom:1px solid var(--rule)}
+.card{border:3px solid var(--ink);padding:16px 18px;margin:18px 0}
+.card b{font-family:"Gothic A1",sans-serif;font-weight:900;font-size:22px;display:block;line-height:1.28}
+.card span{display:block;font-size:16px;color:var(--grey);margin-top:7px}
+.nums{margin:20px 0;border-top:3px solid var(--ink)}
+.nums div{display:flex;justify-content:space-between;align-items:baseline;padding:14px 0;border-bottom:1px solid var(--rule)}
+.nums span{font-size:18px;color:var(--grey)}
+.nums b{font-family:"Gothic A1",sans-serif;font-weight:900;font-size:30px}
+.veil{position:fixed;inset:0;max-width:430px;margin:0 auto;background:var(--paper);display:flex;flex-direction:column;justify-content:center;padding:24px 20px}
+</style></head><body>
+<div id="app" style="display:contents"></div>
+<script src="engine.js"></script>
+<script>
+/* 주 사용자가 60대 신자라는 사실을 끝까지 밀면 나오는 화면. 그림이 하나도 없다.
+   본문이 21px 에서 시작하고 내 차례 절이 30px 이다. 대비와 크기만으로 위계를 만든다. */
+const R=Rosary.create({onChange:render}); let S=R.snapshot(); const app=document.getElementById("app");
+function render(s){ S=s;
+  if(s.phase==="idle"){ app.innerHTML='<header><div class="k">'+s.todayName+'</div><h1>'+s.mystName+'</h1></header>'
+   +'<main>'+(s.pos?'<div class="card"><b>'+Rosary.MYST[s.pos.k][0]+'<br>'+s.posWhere+'</b><span>'+s.posAgo+'에 멈췄습니다.<br>그 자리부터 이어집니다.</span></div><button class="go red" data-a="resume">이어서 바치기</button><button class="alt" data-a="start">처음부터 다시</button>':'<div class="card"><b>'+s.intent+'</b><span>앞 절은 앱이 읽고<br>뒷 절은 제가 받아 바칩니다.</span></div><button class="go" data-a="start">시작</button>')
+   +'<div class="sp"></div><div class="row"><button data-a="silent">소리 — '+(s.silent?"끔":"켬")+'</button><button data-a="speed">받는 사이 — '+({0.75:"느리게",1:"보통",1.35:"빠르게"})[s.speed]+'</button><button data-a="addIntent">지향 더하기</button></div></main>'; return; }
+  if(s.phase==="done"){ app.innerHTML='<header><div class="k">'+s.mystName+'</div><h1>다 바쳤습니다</h1></header><main><div class="nums"><div><span>성모송</span><b>50</b></div><div><span>걸린 시간</span><b>'+s.elapsedMin+'분</b></div><div><span>이어서 바친 횟수</span><b>'+s.resumes+'</b></div></div><div style="font-size:19px">'+s.intent+'을 위하여</div><div class="sp"></div><button class="go" data-a="home">돌아가기</button></main>'; return; }
+  const st=s.step, mine=s.phase==="mine";
+  app.innerHTML='<header><div class="k">'+st.label+'</div><h1 style="font-size:27px">'+(st.mystery||s.mystName)+'</h1></header>'
+   +'<main><div class="who '+(mine?"mine":"")+'">'+(mine?"제 차례입니다":"앱이 읽습니다")+'</div>'
+   +'<div class="pray '+(mine?"mine":"")+'"><div class="a">'+st.a+'</div>'+(st.b?'<div class="b">'+st.b+'</div>':'')+'</div>'
+   +'<div class="pos">77단계 중 <em>'+(s.i+1)+'</em>번째'+(st.of?' · '+(st.bead+1)+' / '+st.of+'번째 알':'')+'</div>'
+   +'<div class="sp"></div><div class="row"><button data-a="pause">잠시 멈춤 (자리 남음)</button><button data-a="end">여기서 끝내기</button></div></main>'
+   +(s.phase==="paused"?'<div class="veil"><div class="k">멈춰 있습니다</div><h1 style="font-size:32px;margin-top:6px">'+st.label+'</h1><div class="card"><b>자리는 남아 있습니다</b><span>'+(st.mystery||s.mystName)+'</span></div><button class="go red" data-a="continue">이어서 바치기</button><button class="alt" data-a="home">홈으로</button></div>':'');
+}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-a]");if(!b)return;({start:()=>R.start(),resume:()=>R.start({fromSaved:true}),pause:()=>R.pause(),continue:()=>R.resume(),end:()=>R.end(),home:()=>R.home(),silent:()=>R.toggleSilent(),speed:()=>R.setSpeed(S.speed===1?1.35:S.speed===1.35?.75:1),addIntent:()=>{const n=prompt("지향 이름 (24자)");if(n)R.addIntent(n);}})[b.dataset.a]?.();});
+R.demoFromURL();
+</script></body></html>

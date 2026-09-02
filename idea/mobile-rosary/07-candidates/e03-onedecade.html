@@ -1,0 +1,76 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>방향 3 — 오늘의 한 단</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hahmlet:wght@500;700&family=Noto+Sans+KR:wght@400;500&display=swap">
+<style>
+:root{--morn:#FBF7F0;--indigo:#2E4A6B;--apricot:#E5A272;--ash:#8A8578;--ink:#1F1D1A;--line:#E3DCCE}
+*{box-sizing:border-box;margin:0;padding:0}html,body{height:100%}
+body{background:var(--morn);color:var(--ink);font:15px/1.64 "Noto Sans KR",system-ui,sans-serif;max-width:430px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column}
+h1,.dis{font-family:"Hahmlet","Noto Serif KR",serif;font-weight:700;letter-spacing:-.01em}
+header{padding:20px 22px 0}
+.k{font-size:11.5px;letter-spacing:.13em;color:var(--ash)}
+h1{font-size:27px;line-height:1.2;margin-top:5px}
+.rungs{display:flex;flex-direction:column;gap:1px;margin:16px 0 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.rung{display:grid;grid-template-columns:30px 1fr auto;gap:10px;align-items:center;padding:9px 22px;color:#B6AFA0}
+.rung .n{font-family:"Hahmlet",serif;font-weight:700;font-size:16px}
+.rung .t{font-size:13px;line-height:1.35}
+.rung .s{font-size:11px}
+.rung.now{color:var(--ink);background:#F5EFE3}
+.rung.now .n{color:var(--indigo)}
+.rung.past{color:var(--ash)}
+.rung.past .s{color:var(--indigo)}
+main{flex:1;display:flex;flex-direction:column;padding:0 22px calc(18px + env(safe-area-inset-bottom))}
+.pray{height:244px;display:flex;flex-direction:column;justify-content:flex-start;overflow:hidden}
+.a{font-size:17.5px;line-height:1.72;color:var(--ash)}
+.b{font-family:"Hahmlet",serif;font-size:20px;line-height:1.7;margin-top:9px}
+.mine .a{color:#ADA69A}.mine .b{color:var(--indigo);font-weight:700}
+.turn{font-size:11.5px;letter-spacing:.12em;color:var(--ash);margin-top:14px}
+.turn.mine{color:var(--apricot)}
+.sp{flex:1}
+.row{display:flex;gap:18px;padding-top:13px;border-top:1px solid var(--line)}
+button{font:400 15px/1 "Noto Sans KR";border:0;background:none;color:var(--ink);cursor:pointer}
+.row button{font-size:13px;color:var(--ash);min-height:44px}
+/* 큰 단추도 블록으로 — 옆에 다른 것이 붙지 않게 */
+.go{display:block;font-family:"Hahmlet",serif;font-weight:700;font-size:19px;background:var(--indigo);color:#FBF7F0;padding:17px 30px;border-radius:3px;align-self:flex-start;min-height:56px}
+.go.warm{background:var(--apricot);color:#2B2721}
+.alt{font-size:14px;color:var(--ash);margin-top:12px;display:block;width:100%;min-height:44px}
+.card{border:1px solid var(--line);border-left:3px solid var(--apricot);background:#F7F2E7;padding:13px 15px;margin-bottom:18px}
+.card b{font-family:"Hahmlet",serif;font-weight:700;font-size:16.5px}
+.card span{display:block;font-size:12.5px;color:var(--ash);margin-top:4px}
+.nums{display:flex;gap:26px;margin:18px 0}
+.nums b{display:block;font-family:"Hahmlet",serif;font-weight:700;font-size:30px}
+.nums span{font-size:11.5px;color:var(--ash)}
+.veil{position:fixed;inset:0;max-width:430px;margin:0 auto;background:rgba(251,247,240,.97);display:flex;flex-direction:column;justify-content:center;padding:26px 22px}
+</style></head><body>
+<div id="app" style="display:contents"></div>
+<script src="engine.js"></script>
+<script>
+/* 분량의 단위를 5단이 아니라 한 단(약 5분)으로 바꾼다 — Rosario 가 연 갈림길.
+   한 단이 끝나면 화면이 스스로 멈추고, 계속할지 여기서 마칠지 그때 고른다. */
+const R=Rosary.create({onChange:render}); let S=R.snapshot(); const app=document.getElementById("app");
+let lastDec=0, gate=false;
+function rungs(cur){ const list=S.mystList||Rosary.MYST[Rosary.today()][1];
+  return '<div class="rungs">'+list.map((m,k)=>{const d=k+1,cls=d===cur?"now":d<cur?"past":"";
+    return '<div class="rung '+cls+'"><div class="n">'+d+'</div><div class="t">'+m+'</div><div class="s">'+(d<cur?"마침":d===cur?"오늘 몫":"약 5분")+'</div></div>';}).join("")+'</div>'; }
+function render(s){ S=s; const dec=s.step?s.step.dec:0;
+  if((s.phase==="reading"||s.phase==="mine")&&dec>lastDec&&lastDec>=1){ gate=true; lastDec=dec; R.pause(); return; }
+  if(dec>=1) lastDec=dec;
+  if(gate&&s.phase==="paused"){ app.innerHTML='<header><div class="k">제'+(lastDec-1)+'단</div><h1>오늘 몫을 마쳤습니다</h1></header>'+rungs(lastDec)
+    +'<main><div class="pray" style="height:auto;justify-content:flex-start;padding-top:18px"><div class="card"><b>한 단, 성모송 10번</b><span>여기서 마쳐도 됩니다. 자리는 남아 있어 다음에 그 자리부터 이어집니다.</span></div><button class="go warm" data-a="more">한 단 더 바치기</button><button class="alt" data-a="stop">오늘은 여기까지</button></div><div class="sp"></div></main>'; return; }
+  if(s.phase==="idle"){ gate=false; lastDec=0;
+    app.innerHTML='<header><div class="k">'+s.todayName+' · '+s.mystName+'</div><h1>오늘의 한 단</h1></header>'+rungs(s.pos?0:1)
+    +'<main><div class="pray" style="height:auto;justify-content:flex-start;padding-top:18px">'
+    +(s.pos?'<div class="card"><b>'+Rosary.MYST[s.pos.k][0]+' · '+s.posWhere+'</b><span>'+s.posAgo+'에 멈췄습니다 · 그 자리부터 이어집니다</span></div><button class="go" data-a="resume">이어서 바치기</button><button class="alt" data-a="start">처음부터 다시</button>':'<div class="card"><b>'+s.intent+'</b><span>다섯 단을 한 번에 바치지 않습니다. 오늘은 한 단, 약 5분입니다.</span></div><button class="go" data-a="start">한 단 바치기</button>')
+    +'</div><div class="sp"></div><div class="row"><button data-a="silent">'+(s.silent?"침묵 진행":"소리 진행")+'</button><button data-a="speed">받는 사이 '+({0.75:"느리게",1:"보통",1.35:"빠르게"})[s.speed]+'</button><button data-a="addIntent">지향 더하기</button></div></main>'; return; }
+  if(s.phase==="done"){ app.innerHTML='<header><div class="k">'+s.mystName+'</div><h1>다섯 단을 다 바쳤습니다</h1></header>'+rungs(6)+'<main><div class="pray" style="height:auto"><div class="nums"><div><b>50</b><span>성모송</span></div><div><b>'+s.elapsedMin+'</b><span>걸린 분</span></div><div><b>'+s.resumes+'</b><span>이어서</span></div></div><div style="color:var(--ash);font-size:14px">'+s.intent+'을 위하여</div><div class="sp"></div><button class="alt" data-a="home">돌아가기</button></div></main>'; return; }
+  const st=s.step, mine=s.phase==="mine";
+  app.innerHTML='<header><div class="k">'+st.label+'</div><h1 style="font-size:21px">'+(st.mystery||s.mystName)+'</h1></header>'+rungs(Math.max(1,dec))
+   +'<main><div class="pray '+(mine?"mine":"")+'"><div class="a">'+st.a+'</div>'+(st.b?'<div class="b">'+st.b+'</div>':'')+'<div class="turn '+(mine?"mine":"")+'">'+(mine?"내 차례":"듣는 중")+'</div></div><div class="sp"></div><div class="row"><button data-a="pause">잠시 멈춤</button><button data-a="end">여기서 끝내기</button></div></main>'
+   +(s.phase==="paused"?'<div class="veil"><div class="k">멈춰 있습니다</div><h1 style="margin:6px 0 14px">'+st.label+'</h1><div class="card"><b>자리는 남아 있습니다</b><span>'+(st.mystery||s.mystName)+'</span></div><button class="go" data-a="continue">이어서 바치기</button><button class="alt" data-a="home">홈으로</button></div>':'');
+}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-a]");if(!b)return;
+ ({start:()=>{gate=false;lastDec=0;R.start();},resume:()=>{gate=false;R.start({fromSaved:true});},pause:()=>R.pause(),continue:()=>R.resume(),
+   more:()=>{gate=false;R.resume();},stop:()=>{gate=false;R.pause();R.home();},
+   end:()=>R.end(),home:()=>{gate=false;R.home();},silent:()=>R.toggleSilent(),speed:()=>R.setSpeed(S.speed===1?1.35:S.speed===1.35?.75:1),
+   addIntent:()=>{const n=prompt("지향 이름 (24자)");if(n)R.addIntent(n);}})[b.dataset.a]?.();});
+R.demoFromURL();
+</script></body></html>

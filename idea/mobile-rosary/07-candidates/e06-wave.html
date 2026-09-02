@@ -1,0 +1,71 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>방향 6 — 파형</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;600&family=JetBrains+Mono:wght@300;500&family=Noto+Sans+KR:wght@400;500&display=swap">
+<style>
+:root{--deep:#16232B;--chalk:#F2F4F1;--verm:#D95A3C;--water:#4E8FA8;--grey:#7E8A8C;--line:#24343D}
+*{box-sizing:border-box;margin:0;padding:0}html,body{height:100%}
+body{background:var(--deep);color:var(--chalk);font:15px/1.64 "Noto Sans KR",system-ui,sans-serif;max-width:430px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column}
+.px{font-family:"IBM Plex Sans KR","Noto Sans KR",sans-serif}
+.mn{font-family:"JetBrains Mono",monospace}
+header{padding:20px 22px 0;display:flex;justify-content:space-between;align-items:baseline}
+.k{font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--grey)}
+h1{font-family:"IBM Plex Sans KR",sans-serif;font-weight:600;font-size:24px;line-height:1.22;margin-top:5px}
+.scope{padding:18px 22px 6px}
+.lane{display:grid;grid-template-columns:52px 1fr;gap:12px;align-items:center;padding:12px 0}
+.lane .who{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--grey);text-align:right}
+.lane.on .who{color:var(--verm)}
+.lane svg{width:100%;height:44px;display:block}
+.split{height:1px;background:var(--line)}
+main{flex:1;display:flex;flex-direction:column;padding:0 22px calc(18px + env(safe-area-inset-bottom))}
+.pray{height:256px;display:flex;flex-direction:column;justify-content:flex-start;overflow:hidden;border-top:1px solid var(--line);padding-top:16px}
+.a{font-size:17px;line-height:1.7;color:#71818A}
+.b{font-size:20px;line-height:1.68;margin-top:9px}
+.mine .a{color:#556670}.mine .b{color:var(--verm);font-weight:500}
+.cnt{font-size:12px;color:var(--grey);margin-top:12px}
+.sp{flex:1}
+.row{display:flex;gap:18px;padding-top:13px;border-top:1px solid var(--line)}
+button{font:400 15px/1 "Noto Sans KR";border:0;background:none;color:var(--chalk);cursor:pointer}
+.row button{font-size:13px;color:var(--grey);min-height:44px}
+/* 큰 단추도 블록으로 — 옆에 다른 것이 붙지 않게 */
+.go{display:block;font-family:"IBM Plex Sans KR",sans-serif;font-weight:600;font-size:18px;background:var(--verm);color:#101A1F;padding:17px 30px;border-radius:2px;align-self:flex-start;min-height:56px}
+.alt{font-size:14px;color:var(--grey);margin-top:12px;display:block;width:100%;min-height:44px}
+.card{border:1px solid var(--line);border-left:2px solid var(--water);padding:13px 15px;margin-bottom:18px;background:#1A2A33}
+.card b{font-family:"IBM Plex Sans KR",sans-serif;font-weight:600;font-size:16.5px}
+.card span{display:block;font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--grey);margin-top:5px}
+.nums{display:flex;gap:26px;margin:18px 0}
+.nums b{display:block;font-family:"JetBrains Mono",monospace;font-weight:300;font-size:34px}
+.nums span{font-size:11.5px;color:var(--grey)}
+.veil{position:fixed;inset:0;max-width:430px;margin:0 auto;background:rgba(22,35,43,.96);display:flex;flex-direction:column;justify-content:center;padding:26px 22px}
+</style></head><body>
+<div id="app" style="display:contents"></div>
+<script src="engine.js"></script>
+<script>
+/* 교대 낭송을 눈으로 보이게 만든다 — 앱의 절은 가는 직선, 내 절은 굵은 파형.
+   소리를 끈 상태에서도 이 두 줄만 보면 차례를 안다. */
+function wave(active,seed,color){
+  const N=46, pts=[]; for(let k=0;k<N;k++){
+    const t=k/(N-1), env=Math.sin(Math.PI*t);
+    const h=active? env*(9+7*Math.sin(k*1.7+seed)+4*Math.sin(k*.63+seed*2)) : 0.6;
+    pts.push([2+t*296, 22-Math.abs(h), 22+Math.abs(h)]);
+  }
+  let d=""; pts.forEach(p=>{ d+='<line x1="'+p[0].toFixed(1)+'" y1="'+p[1].toFixed(1)+'" x2="'+p[0].toFixed(1)+'" y2="'+p[2].toFixed(1)+'" stroke="'+color+'" stroke-width="'+(active?3:1.6)+'" stroke-linecap="round"/>'; });
+  return '<svg viewBox="0 0 300 44" preserveAspectRatio="none" aria-hidden="true">'+d+'</svg>';
+}
+const R=Rosary.create({onChange:render}); let S=R.snapshot(); const app=document.getElementById("app");
+function scope(s){ const mine=s.phase==="mine";
+  return '<div class="scope"><div class="lane '+(mine?"":"on")+'"><div class="who">앱</div>'+wave(!mine,s.i*.9,mine?"#33454E":"#4E8FA8")+'</div><div class="split"></div><div class="lane '+(mine?"on":"")+'"><div class="who">나</div>'+wave(mine,s.i*1.4+2,mine?"#D95A3C":"#33454E")+'</div></div>'; }
+function render(s){ S=s;
+  if(s.phase==="idle"){ app.innerHTML='<header><div><div class="k">'+s.todayName+'</div><h1>'+s.mystName+'</h1></div><div class="k">77단계</div></header>'
+   +'<div class="scope"><div class="lane on"><div class="who">앱</div>'+wave(true,3,"#4E8FA8")+'</div><div class="split"></div><div class="lane"><div class="who">나</div>'+wave(false,1,"#33454E")+'</div></div>'
+   +'<main><div class="pray" style="height:auto;justify-content:flex-start">'
+   +(s.pos?'<div class="card"><b>'+Rosary.MYST[s.pos.k][0]+' · '+s.posWhere+'</b><span>'+s.posAgo+' · 그날의 신비로 이어집니다</span></div><button class="go" data-a="resume">이어서 바치기</button><button class="alt" data-a="start">처음부터 다시</button>':'<div class="card"><b>'+s.intent+'</b><span>앱이 앞 절 · 내가 뒷 절 · 약 20분</span></div><button class="go" data-a="start">시작</button>')
+   +'<div class="sp"></div><div class="row"><button data-a="silent">'+(s.silent?"침묵 진행":"소리 진행")+'</button><button data-a="speed">받는 사이 '+({0.75:"느리게",1:"보통",1.35:"빠르게"})[s.speed]+'</button><button data-a="addIntent">지향 더하기</button></div></div></main>'; return; }
+  if(s.phase==="done"){ app.innerHTML='<header><div><div class="k">'+s.mystName+'</div><h1>다 바쳤습니다</h1></div><div class="k">77 / 77</div></header><main><div class="nums"><div><b>50</b><span>성모송</span></div><div><b>'+s.elapsedMin+'</b><span>걸린 분</span></div><div><b>'+s.resumes+'</b><span>이어서</span></div></div><div style="color:var(--grey);font-size:14px">'+s.intent+'을 위하여</div><div class="sp"></div><button class="alt" data-a="home">돌아가기</button></main>'; return; }
+  const st=s.step, mine=s.phase==="mine";
+  app.innerHTML='<header><div><div class="k">'+st.label+'</div><h1 style="font-size:19px">'+(st.mystery||s.mystName)+'</h1></div><div class="k">'+String(s.i+1).padStart(2,"0")+' / 77</div></header>'
+   +scope(s)+'<main><div class="pray '+(mine?"mine":"")+'"><div class="a">'+st.a+'</div>'+(st.b?'<div class="b">'+st.b+'</div>':'')+'<div class="cnt">'+(mine?"내 차례":"앱이 읽는 중")+(st.of?"   ·   "+(st.bead+1)+" / "+st.of+"번째 알":"")+'</div></div><div class="sp"></div><div class="row"><button data-a="pause">잠시 멈춤</button><button data-a="end">여기서 끝내기</button></div></main>'
+   +(s.phase==="paused"?'<div class="veil"><div class="k">멈춰 있습니다</div><h1 style="margin:6px 0 14px">'+st.label+'</h1><div class="card"><b>자리는 남아 있습니다</b><span>'+(st.mystery||s.mystName)+'</span></div><button class="go" data-a="continue">이어서 바치기</button><button class="alt" data-a="home">홈으로</button></div>':'');
+}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-a]");if(!b)return;({start:()=>R.start(),resume:()=>R.start({fromSaved:true}),pause:()=>R.pause(),continue:()=>R.resume(),end:()=>R.end(),home:()=>R.home(),silent:()=>R.toggleSilent(),speed:()=>R.setSpeed(S.speed===1?1.35:S.speed===1.35?.75:1),addIntent:()=>{const n=prompt("지향 이름 (24자)");if(n)R.addIntent(n);}})[b.dataset.a]?.();});
+R.demoFromURL();
+</script></body></html>

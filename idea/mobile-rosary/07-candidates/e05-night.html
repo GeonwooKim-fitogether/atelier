@@ -1,0 +1,64 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>방향 5 — 밤</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Noto+Sans+KR:wght@400;500&display=swap">
+<style>
+:root{--dark:#07080A;--ember:#3A2A1C;--lamp:#E8B060;--ash:#6B6560;--silk:#E4DDD0}
+*{box-sizing:border-box;margin:0;padding:0}html,body{height:100%}
+body{background:var(--dark);color:var(--silk);font:15px/1.66 "Noto Sans KR",system-ui,sans-serif;max-width:430px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;-webkit-tap-highlight-color:transparent}
+.gd{font-family:"Gowun Dodum","Noto Sans KR",sans-serif}
+header{padding:20px 22px 0;display:flex;justify-content:space-between;align-items:baseline}
+.k{font-size:11.5px;letter-spacing:.14em;color:#4A464A}
+h1{font-family:"Gowun Dodum",sans-serif;font-size:23px;color:#A79E90}
+.stage{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 24px;text-align:center;cursor:pointer}
+.lamp{width:112px;height:112px;border-radius:50%;background:radial-gradient(circle at 50% 45%,var(--lamp) 0,rgba(232,176,96,.36) 38%,rgba(232,176,96,.05) 66%,transparent 74%);animation:br 5.6s ease-in-out infinite}
+.lamp.mine{animation-duration:2.6s;transform:scale(1.16)}
+@keyframes br{0%,100%{opacity:.5}50%{opacity:1}}
+@media(prefers-reduced-motion:reduce){.lamp{animation:none;opacity:.85}}
+.hint{font-family:"Gowun Dodum",sans-serif;font-size:13.5px;color:#4A464A;margin-top:26px;letter-spacing:.04em}
+.big{position:fixed;inset:0;max-width:430px;margin:0 auto;background:rgba(7,8,10,.97);display:flex;flex-direction:column;justify-content:center;padding:30px 24px;z-index:3}
+.big .lab{font-size:12px;letter-spacing:.14em;color:#4A464A}
+.big .a{font-family:"Gowun Dodum",sans-serif;font-size:20px;line-height:1.7;color:#6B6560;margin-top:16px}
+.big .b{font-family:"Gowun Dodum",sans-serif;font-size:29px;line-height:1.56;color:var(--lamp);margin-top:14px}
+.big .cl{font-size:12px;color:#3D3A3D;margin-top:26px}
+footer{padding:0 22px calc(20px + env(safe-area-inset-bottom))}
+.row{display:flex;gap:18px;padding-top:14px;border-top:1px solid #16181B}
+button{font:400 15px/1 "Noto Sans KR";border:0;background:none;color:var(--silk);cursor:pointer}
+.row button{font-size:13px;color:#4A464A;min-height:44px}
+/* 큰 단추도 블록으로 — 옆에 다른 것이 붙지 않게 */
+.go{display:block;font-family:"Gowun Dodum",sans-serif;font-size:20px;background:#4A3524;color:#FFD08A;padding:18px 32px;border-radius:2px;align-self:flex-start;min-height:56px;border:1px solid #4A3524}
+.alt{font-size:14px;color:#4A464A;margin-top:12px;display:block;width:100%;min-height:44px}
+.card{border:1px solid #1B1D20;border-left:2px solid var(--lamp);padding:13px 15px;margin-bottom:18px;background:#0C0E11}
+.card b{font-family:"Gowun Dodum",sans-serif;font-size:16.5px;color:#C9C0B0}
+.card span{display:block;font-size:12.5px;color:#4A464A;margin-top:4px}
+.nums{display:flex;gap:26px;margin:18px 0}
+.nums b{display:block;font-family:"Gowun Dodum",sans-serif;font-size:30px;color:var(--lamp)}
+.nums span{font-size:11.5px;color:#4A464A}
+</style></head><body>
+<div id="app" style="display:contents"></div>
+<script src="engine.js"></script>
+<script>
+/* 밤에 침대에서 눈을 감고 쓰는 앱. 기본 상태에 글자가 없다 —
+   등불이 천천히 숨 쉬면 앱이 읽는 중, 빠르고 크게 밝아지면 내 차례. 화면을 건드리면 그때 큰 글자가 뜬다. */
+const R=Rosary.create({onChange:render}); let S=R.snapshot(); const app=document.getElementById("app"); let peek=false;
+function render(s){ S=s;
+  if(s.phase==="idle"){ peek=false;
+    app.innerHTML='<header><div><div class="k">'+s.todayName+'</div><h1>'+s.mystName+'</h1></div></header>'
+    +'<div class="stage" style="cursor:default"><div class="lamp"></div><div class="hint">불빛이 느리게 숨 쉬면 듣는 중,<br>빠르게 밝아지면 내 차례입니다</div></div>'
+    +'<footer>'+(s.pos?'<div class="card"><b>'+Rosary.MYST[s.pos.k][0]+' · '+s.posWhere+'</b><span>'+s.posAgo+'에 멈췄습니다</span></div><button class="go" data-a="resume">이어서 바치기</button><button class="alt" data-a="start">처음부터 다시</button>':'<div class="card"><b>'+s.intent+'</b><span>어두운 화면과 목소리만으로 바칩니다</span></div><button class="go" data-a="start">시작</button>')
+    +'<div class="row"><button data-a="silent">'+(s.silent?"침묵 진행":"소리 진행")+'</button><button data-a="speed">받는 사이 '+({0.75:"느리게",1:"보통",1.35:"빠르게"})[s.speed]+'</button><button data-a="addIntent">지향 더하기</button></div></footer>'; return; }
+  if(s.phase==="done"){ app.innerHTML='<header><div><div class="k">'+s.mystName+'</div><h1>다 바쳤습니다</h1></div></header><div class="stage" style="cursor:default"><div class="lamp" style="animation:none;opacity:.34"></div></div><footer><div class="nums"><div><b>50</b><span>성모송</span></div><div><b>'+s.elapsedMin+'</b><span>걸린 분</span></div><div><b>'+s.resumes+'</b><span>이어서</span></div></div><button class="alt" data-a="home">돌아가기</button></footer>'; return; }
+  const st=s.step, mine=s.phase==="mine";
+  app.innerHTML='<header><div><div class="k">'+st.label+'</div><h1 style="font-size:18px">'+(st.mystery||s.mystName)+'</h1></div><div class="k">'+(mine?"내 차례":"듣는 중")+'</div></header>'
+   +'<div class="stage" data-a="peek"><div class="lamp '+(mine?"mine":"")+'"></div><div class="hint">'+(mine?"받아 바치실 차례입니다":"앞 절을 읽고 있습니다")+'<br>화면을 누르면 기도문이 뜹니다</div></div>'
+   +'<footer><div class="row"><button data-a="pause">잠시 멈춤</button><button data-a="end">여기서 끝내기</button></div></footer>'
+   +(peek?'<div class="big" data-a="unpeek"><div class="lab">'+st.label+'</div><div class="a">'+st.a+'</div>'+(st.b?'<div class="b">'+st.b+'</div>':'')+'<div class="cl">아무 곳이나 누르면 닫힙니다</div></div>':'')
+   +(s.phase==="paused"?'<div class="big"><div class="lab">멈춰 있습니다</div><div class="b" style="font-size:24px">자리는 남아 있습니다</div><div class="a" style="font-size:16px">'+st.label+' · '+(st.mystery||s.mystName)+'</div><div style="margin-top:24px"><button class="go" data-a="continue">이어서 바치기</button><button class="alt" data-a="home">홈으로</button></div></div>':'');
+}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-a]");if(!b)return;
+ ({start:()=>R.start(),resume:()=>R.start({fromSaved:true}),pause:()=>{peek=false;R.pause();},continue:()=>R.resume(),end:()=>R.end(),home:()=>R.home(),
+   peek:()=>{peek=true;render(S);},unpeek:()=>{peek=false;render(S);},
+   silent:()=>R.toggleSilent(),speed:()=>R.setSpeed(S.speed===1?1.35:S.speed===1.35?.75:1),addIntent:()=>{const n=prompt("지향 이름 (24자)");if(n)R.addIntent(n);}})[b.dataset.a]?.();});
+/* 시연: '내 차례' 순간은 화면을 들여다본 상태로 보여 준다 */
+R.demoFromURL();
+if(new URLSearchParams(location.search).get("demo")==="mine"){ peek=true; render(S); }
+</script></body></html>

@@ -4,7 +4,7 @@ import { readFileSync, writeFileSync, readdirSync, mkdirSync } from "node:fs";
 import { dirname, join } from "node:path"; import { fileURLToPath } from "node:url";
 const here = dirname(fileURLToPath(import.meta.url));
 mkdirSync(join(here, "art"), { recursive: true });
-const files = readdirSync(join(here, "dist")).filter(f => /^d\d\d-.*\.html$/.test(f)).sort();
+const files = readdirSync(join(here, "dist")).filter(f => /^[de]\d\d-.*\.html$/.test(f)).sort();
 for (const f of files) {
   const src = readFileSync(join(here, "dist", f), "utf8");
   const head = src.slice(src.indexOf("<head>") + 6, src.indexOf("</head>"));

@@ -4,19 +4,19 @@ import { readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path"; import { fileURLToPath } from "node:url";
 const here = dirname(fileURLToPath(import.meta.url));
 const C = [
- ["d01-najeon","1","자개","옻칠 검정 위 무지개빛 자개 조각. 알마다 빛깔이 다르다","https://claude.ai/code/artifact/1f7ba463-7365-44d2-9061-c79f10f0025c"],
- ["d02-jogakbo","2","조각보","77단계가 곧 조각보의 조각. 채워지며 보자기가 된다","https://claude.ai/code/artifact/6dc295c2-43ca-4b3b-94bd-29e400e57fed"],
- ["d03-sagyeong","3","사경","세로쓰기 먹과 주사. 한 단을 마치면 낙관이 찍힌다","https://claude.ai/code/artifact/4762666d-d348-4af6-96f0-92992baa534e"],
- ["d04-bell","4","종","소리처럼 퍼지는 동심원. 다섯 신비가 다섯 겹","https://claude.ai/code/artifact/9697318c-c16d-4493-a39a-c5b577193089"],
- ["d05-lantern","5","등불","진행이 곧 밝기. 내 차례에 심지가 살아난다","https://claude.ai/code/artifact/3b381025-1980-4fcb-98a5-d26047b46cd4"],
- ["d06-hand","6","손","알 하나가 화면 너비의 3분의 1. 손끝으로만 넘긴다","https://claude.ai/code/artifact/fb687462-f87e-4380-acde-2c369a6c9ede"],
- ["d07-liturgy","7","전례색","신비마다 화면 전체 색이 바뀐다. 알은 금빛 실선","https://claude.ai/code/artifact/45da28bd-4a08-4c3e-bc20-3633795507e5"],
- ["d08-silence","8","침묵","숨쉬는 점 하나뿐. 두드리면 큰 숫자가 잠깐 나타난다","https://claude.ai/code/artifact/5cf74ffb-9003-488f-ac53-dc35ca7a52a1"],
- ["d09-woodcut","9","판화 성모","3색 목판화 성모. 모은 두 손 아래로 묵주가 드리운다","https://claude.ai/code/artifact/e3d126f5-9451-4b77-9096-f6d41e0ef4fb"],
- ["d10-grid","10","격자","화면 밖으로 흘러넘치는 거대한 숫자","https://claude.ai/code/artifact/b11ff076-fe9f-45fa-abbd-dd021a10d71e"],
+ ["e01-rosary","1","묵주 전체","알 55개가 실제 묵주 형태로 다 보이고 지금 알만 놋빛으로 켜진다","https://claude.ai/code/artifact/3490fdbd-b189-42fc-a7c9-c4c443e1416a"],
+ ["e02-field","2","색면","단이 넘어가면 화면 전체 색이 바뀐다. 색이 곧 위치다","https://claude.ai/code/artifact/fbe88b43-f2fa-4fd5-bb72-32ffe6bdc26b"],
+ ["e03-onedecade","3","오늘의 한 단","5단이 아니라 한 단(약 5분)이 기본 분량이다","https://claude.ai/code/artifact/84605498-487b-4fef-be7d-71666d31f5ea"],
+ ["e04-poster","4","벽보","지향이 개인 메모가 아니라 사람 수가 붙은 벽보다","https://claude.ai/code/artifact/17af82d7-fac8-4fe9-a878-f722feb7bbe4"],
+ ["e05-night","5","밤","기본 상태에 글자가 없다. 등불의 숨결이 차례를 알린다","https://claude.ai/code/artifact/e39531cd-d952-4468-8a1d-48b6184971ee"],
+ ["e06-wave","6","파형","앱의 절은 가는 직선, 내 절은 굵은 파형","https://claude.ai/code/artifact/c4bc24b5-3e8d-4829-9611-2c76a81d53c6"],
+ ["e07-fold","7","접힌 종이","단을 마칠 때마다 종이가 한 겹 접힌다","https://claude.ai/code/artifact/121e9354-4898-4ba8-88b3-38d87f414c9b"],
+ ["e08-cairn","8","돌탑","성모송 한 번에 돌 하나가 쌓인다","https://claude.ai/code/artifact/9551fb11-0695-4854-8eaa-b770716acf80"],
+ ["e09-scroll","9","두루마리","77단계가 한 줄. 지나온 길이 왼쪽에 남는다","https://claude.ai/code/artifact/e361ed3e-6495-4b0c-ba84-46e70f0d2d22"],
+ ["e10-largetype","10","큰 글자","그림이 하나도 없다. 크기와 대비만으로 위계를 만든다","https://claude.ai/code/artifact/5e625d9b-b5ec-403c-8551-ba78ab6355c5"],
 ];
 const M = [["open","여는 순간"],["mine","바치는 동안 — 내 차례"],["resume","끊겼다 돌아오는 순간"],["done","마치는 순간"]];
-const data = C.map(([id,n,name,desc,url]) => ({ id,n,name,desc,url, shots:Object.fromEntries(M.map(([m])=>[m,"data:image/jpeg;base64,"+readFileSync(join(here,"shots",`${id}-${m}.jpg`)).toString("base64")])) }));
+const data = C.map(([id,n,name,desc,url]) => ({ id,n,name,desc,url, shots:Object.fromEntries(M.map(([m])=>[m,"data:image/jpeg;base64,"+readFileSync(join(here,"shots","thumbs",`${id}-${m}.jpg`)).toString("base64")])) }));
 const html = `<title>묵주기도 시안 월드컵</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@500;700&family=Noto+Sans+KR:wght@400;500;700&family=JetBrains+Mono:wght@500&display=swap">
 <style>
@@ -51,9 +51,9 @@ h1{font:700 24px/1.3 "IBM Plex Sans KR",sans-serif;margin:0}h2{font:700 19px/1.3
 @media (max-width:560px){.pair{grid-template-columns:1fr}.grid4{grid-template-columns:repeat(4,1fr)}}
 </style>
 <div class="w">
-<div class="eyebrow">Atelier · mobile-rosary · 07-d · 2026-09-02</div>
+<div class="eyebrow">Atelier · mobile-rosary · 07-e · 2026-09-02</div>
 <h1>묵주기도 시안 월드컵</h1>
-<p class="lead">후보 열 개가 <b>같은 엔진</b>(77단계 · 자리 저장 · 침묵 모드) 위에서 돕니다. 이번 열은 <b>재료가 서로 다릅니다</b> — 자개 · 조각보 · 먹 · 종 · 등불 · 손 · 전례색 · 침묵 · 목판 · 격자. 두 라운드, 15분 안.</p>
+<p class="lead">후보 열 개가 <b>같은 엔진</b>(77단계 · 자리 저장 · 침묵 모드) 위에서 돕니다. 이번 열은 <b>장치가 서로 다릅니다</b> — 화면이 "지금 어디인가"와 "누구 차례인가"를 알려 주는 방법 자체가 후보마다 다릅니다. Hallow · The Holy Rosary · Rosario 세 앱의 실제 화면에서 읽은 장치를 우리 엔진 위로 옮긴 것입니다. 두 라운드, 15분 안.</p>
 <p class="lead" style="color:var(--warn)">아래 그림은 제 검증 환경에서 찍은 것이라 <b>본래 서체가 아닌 대체 서체</b>로 보입니다. 조판의 인상은 "열어서 눌러보기"로 실제 기기에서 봐 주십시오.</p>
 <div class="step" id="step"></div>
 <div id="stage"></div>
@@ -61,7 +61,7 @@ h1{font:700 24px/1.3 "IBM Plex Sans KR",sans-serif;margin:0}h2{font:700 19px/1.3
 </div>
 <script>
 const C=${JSON.stringify(data)}; const M=${JSON.stringify(M)};
-const PAIRS=[["d01-najeon","d06-hand"],["d02-jogakbo","d07-liturgy"],["d03-sagyeong","d08-silence"],["d04-bell","d09-woodcut"],["d05-lantern","d10-grid"]];
+const PAIRS=[["e01-rosary","e06-wave"],["e02-field","e07-fold"],["e03-onedecade","e08-cairn"],["e04-poster","e09-scroll"],["e05-night","e10-largetype"]];
 const WHY=["직관적이다","차분하다","읽기 쉽다","기도에 맞는다","시니어에게 맞다","재미있다","익숙하다"];
 const byId=Object.fromEntries(C.map(c=>[c.id,c]));
 let st={r1:{},r1why:{},r2:{},r2why:{}}; try{ st=Object.assign(st,JSON.parse(localStorage.getItem("wc.v1")||"{}")); }catch(e){}

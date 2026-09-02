@@ -1,0 +1,68 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>방향 7 — 접힌 종이</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Song+Myung&family=Noto+Sans+KR:wght@400;500&display=swap">
+<style>
+:root{--paper:#FAF8F3;--fold:#E0D9CB;--ink:#26241F;--seal:#B23A2E;--pencil:#6E695E;--line:#EAE4D8}
+*{box-sizing:border-box;margin:0;padding:0}html,body{height:100%}
+body{background:#EFEADF;color:var(--ink);font:15px/1.64 "Noto Sans KR",system-ui,sans-serif;max-width:430px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column}
+.sm{font-family:"Song Myung","Nanum Myeongjo",serif}
+.sheet{background:var(--paper);margin:12px 12px 0;flex:1;display:flex;flex-direction:column;box-shadow:0 6px 16px rgba(38,36,31,.08)}
+.folds{padding:0 0 2px}
+.f{display:grid;grid-template-columns:26px 1fr auto;gap:10px;align-items:center;padding:10px 18px;border-bottom:1px solid var(--line)}
+.f.done{background:linear-gradient(180deg,var(--fold),#D6CDBB);color:#8B8474}
+.f.done .t{text-decoration:line-through;text-decoration-color:#B7AE9B}
+.f.now{border-left:3px solid var(--seal);padding-left:15px}
+.f .n{font-family:"Song Myung",serif;font-size:16px;color:var(--pencil)}
+.f.now .n{color:var(--seal)}
+.f .t{font-size:13px;line-height:1.35}
+.f .s{font-family:"Song Myung",serif;font-size:11.5px;color:#A79F8D}
+header{padding:18px 18px 12px}
+.k{font-size:11.5px;letter-spacing:.13em;color:var(--pencil)}
+h1{font-family:"Song Myung",serif;font-size:27px;line-height:1.22;margin-top:5px}
+main{flex:1;display:flex;flex-direction:column;padding:0 18px calc(16px + env(safe-area-inset-bottom))}
+.pray{height:248px;display:flex;flex-direction:column;justify-content:flex-start;overflow:hidden}
+.a{font-family:"Song Myung",serif;font-size:18px;line-height:1.76;color:#8E8878}
+.b{font-family:"Song Myung",serif;font-size:20.5px;line-height:1.74;margin-top:9px}
+.mine .a{color:#ACA694}.mine .b{color:var(--seal)}
+.turn{font-size:11.5px;letter-spacing:.12em;color:var(--pencil);margin-top:14px}
+.turn.mine{color:var(--seal)}
+.sp{flex:1}
+.row{display:flex;gap:18px;padding-top:12px;border-top:1px solid var(--line)}
+button{font:400 15px/1 "Noto Sans KR";border:0;background:none;color:var(--ink);cursor:pointer}
+.row button{font-size:13px;color:var(--pencil);min-height:44px}
+/* 큰 단추도 블록으로 — 옆에 다른 것이 붙지 않게 */
+.go{display:block;font-family:"Song Myung",serif;font-size:20px;background:var(--ink);color:var(--paper);padding:17px 30px;align-self:flex-start;min-height:56px}
+.alt{font-size:14px;color:var(--pencil);margin-top:12px;display:block;width:100%;min-height:44px}
+.card{border:1px solid var(--line);border-left:3px solid var(--seal);padding:13px 15px;margin-bottom:18px}
+.card b{font-family:"Song Myung",serif;font-size:16.5px}
+.card span{display:block;font-size:12.5px;color:var(--pencil);margin-top:4px}
+.folded{margin:0 auto;width:150px;height:150px;background:linear-gradient(135deg,var(--fold),#CFC5B1);display:flex;align-items:center;justify-content:center;box-shadow:0 3px 9px rgba(38,36,31,.16)}
+.folded span{font-family:"Song Myung",serif;font-size:15px;color:#6E6757;letter-spacing:.1em}
+.nums{display:flex;gap:24px;margin:18px 0;justify-content:center}
+.nums b{display:block;font-family:"Song Myung",serif;font-size:29px;text-align:center}
+.nums span{font-size:11.5px;color:var(--pencil)}
+.veil{position:fixed;inset:0;max-width:430px;margin:0 auto;background:rgba(239,234,223,.97);display:flex;flex-direction:column;justify-content:center;padding:26px 20px}
+</style></head><body>
+<div id="app" style="display:contents"></div>
+<script src="engine.js"></script>
+<script>
+/* 마침을 축하가 아니라 정리로 표현한다 — 단을 마칠 때마다 종이가 한 겹 접히고,
+   다 바치면 손바닥만 한 네모 하나가 남는다. 늘어나는 진행률이 아니라 줄어드는 종이다. */
+const R=Rosary.create({onChange:render}); let S=R.snapshot(); const app=document.getElementById("app");
+function folds(cur){ const list=S.mystList||Rosary.MYST[Rosary.today()][1];
+  return '<div class="folds">'+list.map((m,k)=>{const d=k+1,cls=d<cur?"done":d===cur?"now":"";
+    return '<div class="f '+cls+'"><div class="n">'+d+'</div><div class="t">'+m+'</div><div class="s">'+(d<cur?"접힘":d===cur?"펴는 중":"")+'</div></div>';}).join("")+'</div>'; }
+function render(s){ S=s; const dec=s.step?s.step.dec:0;
+  if(s.phase==="idle"){ app.innerHTML='<div class="sheet"><header><div class="k">'+s.todayName+' · '+s.mystName+'</div><h1>다섯 겹</h1></header>'+folds(0)
+   +'<main><div class="pray" style="height:auto;justify-content:flex-start;padding-top:16px">'
+   +(s.pos?'<div class="card"><b>'+Rosary.MYST[s.pos.k][0]+' · '+s.posWhere+'</b><span>'+s.posAgo+'에 멈췄습니다 · 그날의 신비로 이어집니다</span></div><button class="go" data-a="resume">이어서 바치기</button><button class="alt" data-a="start">처음부터 다시</button>':'<div class="card"><b>'+s.intent+'</b><span>한 단을 마칠 때마다 한 겹씩 접힙니다</span></div><button class="go" data-a="start">시작</button>')
+   +'</div><div class="sp"></div><div class="row"><button data-a="silent">'+(s.silent?"침묵 진행":"소리 진행")+'</button><button data-a="speed">받는 사이 '+({0.75:"느리게",1:"보통",1.35:"빠르게"})[s.speed]+'</button><button data-a="addIntent">지향 더하기</button></div></main></div>'; return; }
+  if(s.phase==="done"){ app.innerHTML='<div class="sheet"><header><div class="k">'+s.mystName+'</div><h1>다 접었습니다</h1></header><main><div class="sp"></div><div class="folded"><span>다 바쳤습니다</span></div><div class="nums"><div><b>50</b><span>성모송</span></div><div><b>'+s.elapsedMin+'</b><span>걸린 분</span></div><div><b>'+s.resumes+'</b><span>이어서</span></div></div><div style="text-align:center;color:var(--pencil);font-size:13.5px">'+s.intent+'을 위하여</div><div class="sp"></div><button class="alt" data-a="home" style="align-self:center">돌아가기</button></main></div>'; return; }
+  const st=s.step, mine=s.phase==="mine";
+  app.innerHTML='<div class="sheet"><header><div class="k">'+st.label+'</div><h1 style="font-size:21px">'+(st.mystery||s.mystName)+'</h1></header>'+folds(Math.max(1,dec))
+   +'<main><div class="pray '+(mine?"mine":"")+'"><div class="a">'+st.a+'</div>'+(st.b?'<div class="b">'+st.b+'</div>':'')+'<div class="turn '+(mine?"mine":"")+'">'+(mine?"내 차례":"듣는 중")+'</div></div><div class="sp"></div><div class="row"><button data-a="pause">잠시 멈춤</button><button data-a="end">여기서 끝내기</button></div></main></div>'
+   +(s.phase==="paused"?'<div class="veil"><div class="k">멈춰 있습니다</div><h1 style="font-size:25px;margin:6px 0 14px">'+st.label+'</h1><div class="card"><b>자리는 남아 있습니다</b><span>'+(st.mystery||s.mystName)+'</span></div><button class="go" data-a="continue">이어서 바치기</button><button class="alt" data-a="home">홈으로</button></div>':'');
+}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-a]");if(!b)return;({start:()=>R.start(),resume:()=>R.start({fromSaved:true}),pause:()=>R.pause(),continue:()=>R.resume(),end:()=>R.end(),home:()=>R.home(),silent:()=>R.toggleSilent(),speed:()=>R.setSpeed(S.speed===1?1.35:S.speed===1.35?.75:1),addIntent:()=>{const n=prompt("지향 이름 (24자)");if(n)R.addIntent(n);}})[b.dataset.a]?.();});
+R.demoFromURL();
+</script></body></html>
