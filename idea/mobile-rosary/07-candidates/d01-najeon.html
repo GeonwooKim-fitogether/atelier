@@ -1,0 +1,68 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>방향 1 — 자개</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@400;500&display=swap">
+<style>
+:root{--lacquer:#0B0A0C;--lacquer2:#15131A;--nacre-a:#A8D8D0;--nacre-b:#E8C4D8;--nacre-c:#F2E3B8;--cinnabar:#8C2318;--dust:#6A6570;--paper:#D8D2C8}
+*{box-sizing:border-box;margin:0;padding:0}html,body{height:100%}
+body{background:var(--lacquer);color:var(--paper);font:15px/1.6 "Noto Sans KR",system-ui,sans-serif;max-width:430px;margin:0 auto;min-height:100vh;position:relative;overflow:hidden}
+.chain{position:absolute;inset:0;z-index:0}.chain svg{width:100%;height:100%}
+.ui{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;padding:26px 22px calc(24px + env(safe-area-inset-bottom))}
+.bt{font-family:"Gowun Batang","Noto Serif KR",serif}
+.eye{font-size:11px;letter-spacing:.22em;color:var(--dust);text-transform:none}
+h1{font-family:"Gowun Batang",serif;font-weight:700;font-size:31px;line-height:1.25;margin-top:8px;letter-spacing:-.01em}
+.who{font-size:13px;color:var(--dust);margin-top:6px}
+.sp{flex:1}
+.pr{max-width:13.5em}
+.pr .m{font-size:12px;letter-spacing:.14em;color:var(--nacre-a);margin-bottom:14px}
+.pr .a{font-family:"Gowun Batang",serif;font-size:21px;line-height:1.72;color:var(--paper);transition:color .5s}
+.pr .b{font-family:"Gowun Batang",serif;font-size:21px;line-height:1.72;color:var(--dust);margin-top:12px;transition:color .5s}
+.pr.mine .a{color:#43404A}.pr.mine .b{color:var(--nacre-c)}
+.turn{margin-top:18px;font-size:11px;letter-spacing:.24em;color:var(--dust)}.turn.mine{color:var(--nacre-c)}
+.acts{display:flex;flex-direction:column;gap:9px;margin-top:22px;max-width:16em}
+button{font:500 15px/1 "Noto Sans KR",sans-serif;cursor:pointer;border:0;text-align:left}
+.b1{background:none;color:var(--nacre-c);border-bottom:1px solid var(--nacre-c);padding:0 0 9px;font-size:17px;font-family:"Gowun Batang",serif}
+.b2{background:none;color:var(--dust);padding:2px 0;font-size:13px}
+.b3{background:none;color:var(--cinnabar);padding:0 0 8px;border-bottom:1px solid rgba(140,35,24,.7);font-size:17px;font-family:"Gowun Batang",serif}
+.res{font-size:12px;color:var(--dust);margin-bottom:4px}
+.opts{display:flex;gap:16px;margin-top:20px;font-size:12px;color:var(--dust)}.opts button{background:none;color:var(--dust);font-size:12px}
+.done .n{display:flex;gap:26px;margin:22px 0 8px}.done .n b{display:block;font-family:"Gowun Batang",serif;font-weight:400;font-size:27px;color:var(--nacre-c)}.done .n span{font-size:11px;color:var(--dust);letter-spacing:.1em}
+.seal{width:34px;height:34px;background:var(--cinnabar);margin-top:16px;display:grid;place-items:center;font-family:"Gowun Batang",serif;font-size:15px;color:#F2E3B8}
+.veil{position:absolute;inset:0;z-index:2;background:rgba(11,10,12,.9);display:flex;flex-direction:column;justify-content:center;padding:26px 22px}
+</style></head><body>
+<div class="chain" id="chain"></div><div class="ui" id="ui"></div>
+<script src="engine.js"></script>
+<script>
+const R=Rosary.create({onChange:render}); let S=R.snapshot();
+const G=['<linearGradient id="n0" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#A8D8D0"/><stop offset=".5" stop-color="#E8C4D8"/><stop offset="1" stop-color="#F2E3B8"/></linearGradient>',
+'<linearGradient id="n1" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F2E3B8"/><stop offset=".45" stop-color="#A8D8D0"/><stop offset="1" stop-color="#E8C4D8"/></linearGradient>',
+'<linearGradient id="n2" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#E8C4D8"/><stop offset=".55" stop-color="#F2E3B8"/><stop offset="1" stop-color="#A8D8D0"/></linearGradient>'].join("");
+function shard(cx,cy,r,i){ let p=""; const n=6; for(let k=0;k<n;k++){ const a=(k/n)*Math.PI*2+i*.7, rr=r*(.78+.34*Math.abs(Math.sin(i*1.7+k*2.3))); p+=(k?" L":"M")+(cx+rr*Math.cos(a)).toFixed(1)+" "+(cy+rr*Math.sin(a)).toFixed(1); } return p+" Z"; }
+function chain(s){
+  const n=55, cur = s.step ? (s.step.dec? (s.step.dec-1)*11+(s.step.bead>=0?s.step.bead+1:0) : (s.step.bead>=0?s.step.bead:0)) : -1;
+  const live = s.phase!=="idle" && s.phase!=="done", all = s.phase==="done";
+  let o="", pts=[];
+  for(let i=0;i<n;i++){ const y=46+i*13.4, x=288+44*Math.sin(i/6.6); pts.push([x,y]); }
+  o+='<path d="'+pts.map((p,i)=>(i?"L":"M")+p[0].toFixed(1)+" "+p[1].toFixed(1)).join(" ")+'" fill="none" stroke="#332F3C" stroke-width="1.5"/>';
+  pts.forEach(([x,y],i)=>{ const big=i%11===0, r=big?14:10.5, on=all||(live&&i<=cur);
+    if(on) o+='<path d="'+shard(x,y,i===cur&&live?r*1.7:r,i)+'" fill="url(#n'+(i%3)+')" opacity="'+(i===cur&&live?1:all?.92:.62)+'"/>';
+    else o+='<path d="'+shard(x,y,r,i)+'" fill="#1B1822" stroke="#413C4E" stroke-width="1.4"/>';
+    if(i===cur&&live) o+='<circle cx="'+x+'" cy="'+y+'" r="34" fill="none" stroke="#F2E3B8" stroke-opacity=".3" stroke-width="1.2"/><circle cx="'+x+'" cy="'+y+'" r="52" fill="none" stroke="#A8D8D0" stroke-opacity=".12" stroke-width="1"/>'; });
+  const ly=46+(n-1)*13.4;
+  o+='<path d="M288 '+ly+' L288 '+(ly+34)+'" stroke="#2A2730" stroke-width="1"/><path d="'+shard(288,ly+18,9,7)+'" fill="#15131A" stroke="#2E2B36"/><path d="M292 '+(ly+58)+' h28 M306 '+(ly+44)+' v30" stroke="#8C2318" stroke-width="4.5" stroke-linecap="square"/>';
+  return '<svg viewBox="0 0 390 844" preserveAspectRatio="xMidYMid slice"><defs>'+G+'</defs>'+o+'</svg>';
+}
+function render(s){ S=s; document.getElementById("chain").innerHTML=chain(s); const u=document.getElementById("ui");
+  if(s.phase==="idle"){ u.innerHTML='<div class="eye">'+s.todayName+'</div><h1>'+s.mystName+'</h1><div class="who">'+s.intent+'을 위하여</div><div class="sp"></div>'
+    +'<div class="acts">'+(s.pos?'<div class="res">'+Rosary.MYST[s.pos.k][0]+' · '+s.posWhere+' · '+s.posAgo+'</div><button class="b1" data-a="resume">이어서 바치기</button><button class="b2" data-a="start">처음부터 다시</button>':'<button class="b1" data-a="start">시작</button>')
+    +'</div><div class="opts"><button data-a="silent">'+(s.silent?"침묵 진행":"소리로 진행")+'</button><button data-a="speed">받는 사이 '+({0.75:"느리게",1:"보통",1.35:"빠르게"})[s.speed]+'</button></div>'; return; }
+  if(s.phase==="done"){ u.innerHTML='<div class="sp"></div><div class="done"><div class="eye">'+s.mystName+'</div><h1>다 바쳤습니다</h1><div class="who">'+s.intent+'을 위하여</div>'
+    +'<div class="n"><div><b>50</b><span>성모송</span></div><div><b>'+s.elapsedMin+'</b><span>걸린 분</span></div><div><b>'+s.resumes+'</b><span>이어서</span></div></div><div class="seal">畢</div></div><div class="sp"></div><button class="b2" data-a="home">돌아가기</button>'; return; }
+  const st=s.step, mine=s.phase==="mine";
+  u.innerHTML='<div class="eye">'+st.label+'</div><div class="sp"></div>'
+    +'<div class="pr '+(mine?"mine":"")+'"><div class="m">'+(st.mystery||s.mystName)+'</div><div class="a">'+st.a+'</div>'+(st.b?'<div class="b">'+st.b+'</div>':'')+'<div class="turn '+(mine?"mine":"")+'">'+(mine?"내 차례":"앱이 읽고 있습니다")+'</div></div>'
+    +'<div class="opts"><button data-a="pause">잠시 멈춤</button><button data-a="end">여기서 끝내기</button></div>'
+    +(s.phase==="paused"?'<div class="veil"><div class="eye">멈춰 있습니다</div><h1 style="font-size:26px">'+st.label+'</h1><div class="who">자리는 남아 있습니다</div><div class="acts"><button class="b1" data-a="continue">이어서 바치기</button><button class="b2" data-a="home">홈으로</button></div></div>':'');
+}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-a]");if(!b)return;({start:()=>R.start(),resume:()=>R.start({fromSaved:true}),pause:()=>R.pause(),continue:()=>R.resume(),end:()=>R.end(),home:()=>R.home(),silent:()=>R.toggleSilent(),speed:()=>R.setSpeed(S.speed===1?1.35:S.speed===1.35?.75:1)})[b.dataset.a]?.();});
+R.demoFromURL();
+</script></body></html>

@@ -4,16 +4,16 @@ import { readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path"; import { fileURLToPath } from "node:url";
 const here = dirname(fileURLToPath(import.meta.url));
 const C = [
- ["g01-hub","1","Hallow식 콘텐츠 허브","탭 바 · 세션 목록 · 플레이어. 제일 익숙한 형태","https://claude.ai/code/artifact/7982b329-2b80-4728-9a4b-a9a1ac38fcfd"],
- ["g02-icon","2","성화 위 묵주","한복 성모가 주인, 묵주는 얼굴 아래","https://claude.ai/code/artifact/09710252-b796-41bf-88e2-c33a3ea9d4f0"],
- ["g03-liturgy","3","전례 텍스트","흰 화면, 세리프, 전례색 하나","https://claude.ai/code/artifact/520ffe4d-7b99-412f-8624-aa0d22e922f3"],
- ["g04-player","4","세션 플레이어","호흡하는 원, 남은 시간, 재생·멈춤","https://claude.ai/code/artifact/4cbe6780-0ab8-4cdf-8b3d-26c0a9b848cc"],
- ["g05-ring","5","링","다섯 조각 링과 큰 숫자","https://claude.ai/code/artifact/9322275f-9c43-4875-89ca-c6de16284906"],
- ["g06-tactile","6","손으로 넘기는 묵주","화면 전체가 묵주, 알을 톡 치면 넘어간다","https://claude.ai/code/artifact/b981112b-f347-4e15-a5b1-1b4cae0bfa23"],
- ["g07-book","7","한지 기도서","종이 질감, 먹선, 한 장에 기도 하나","https://claude.ai/code/artifact/a500545f-c031-4e9e-bf32-8e99bc922495"],
- ["g08-dark","8","화면 없는 앱","검은 화면 · 목소리 · 진동","https://claude.ai/code/artifact/d6e03632-8dc3-4755-a406-d00739a52514"],
- ["g09-widget","9","위젯 카드","카드 한 장이 홈, 눌러서 바로 기도","https://claude.ai/code/artifact/bfd35b4b-7944-462c-9e57-304f6638aea2"],
- ["g10-bento","10","웹 트렌드","벤토 그리드 · 유리 질감 · 큰 세리프","https://claude.ai/code/artifact/5031731a-dc83-46b0-9074-989fc2e45628"],
+ ["d01-najeon","1","자개","옻칠 검정 위 무지개빛 자개 조각. 알마다 빛깔이 다르다","https://claude.ai/code/artifact/1f7ba463-7365-44d2-9061-c79f10f0025c"],
+ ["d02-jogakbo","2","조각보","77단계가 곧 조각보의 조각. 채워지며 보자기가 된다","https://claude.ai/code/artifact/6dc295c2-43ca-4b3b-94bd-29e400e57fed"],
+ ["d03-sagyeong","3","사경","세로쓰기 먹과 주사. 한 단을 마치면 낙관이 찍힌다","https://claude.ai/code/artifact/4762666d-d348-4af6-96f0-92992baa534e"],
+ ["d04-bell","4","종","소리처럼 퍼지는 동심원. 다섯 신비가 다섯 겹","https://claude.ai/code/artifact/9697318c-c16d-4493-a39a-c5b577193089"],
+ ["d05-lantern","5","등불","진행이 곧 밝기. 내 차례에 심지가 살아난다","https://claude.ai/code/artifact/3b381025-1980-4fcb-98a5-d26047b46cd4"],
+ ["d06-hand","6","손","알 하나가 화면 너비의 3분의 1. 손끝으로만 넘긴다","https://claude.ai/code/artifact/fb687462-f87e-4380-acde-2c369a6c9ede"],
+ ["d07-liturgy","7","전례색","신비마다 화면 전체 색이 바뀐다. 알은 금빛 실선","https://claude.ai/code/artifact/45da28bd-4a08-4c3e-bc20-3633795507e5"],
+ ["d08-silence","8","침묵","숨쉬는 점 하나뿐. 두드리면 큰 숫자가 잠깐 나타난다","https://claude.ai/code/artifact/5cf74ffb-9003-488f-ac53-dc35ca7a52a1"],
+ ["d09-woodcut","9","판화 성모","3색 목판화 성모. 모은 두 손 아래로 묵주가 드리운다","https://claude.ai/code/artifact/e3d126f5-9451-4b77-9096-f6d41e0ef4fb"],
+ ["d10-grid","10","격자","화면 밖으로 흘러넘치는 거대한 숫자","https://claude.ai/code/artifact/b11ff076-fe9f-45fa-abbd-dd021a10d71e"],
 ];
 const M = [["open","여는 순간"],["mine","바치는 동안 — 내 차례"],["resume","끊겼다 돌아오는 순간"],["done","마치는 순간"]];
 const data = C.map(([id,n,name,desc,url]) => ({ id,n,name,desc,url, shots:Object.fromEntries(M.map(([m])=>[m,"data:image/jpeg;base64,"+readFileSync(join(here,"shots",`${id}-${m}.jpg`)).toString("base64")])) }));
@@ -51,16 +51,17 @@ h1{font:700 24px/1.3 "IBM Plex Sans KR",sans-serif;margin:0}h2{font:700 19px/1.3
 @media (max-width:560px){.pair{grid-template-columns:1fr}.grid4{grid-template-columns:repeat(4,1fr)}}
 </style>
 <div class="w">
-<div class="eyebrow">Atelier · mobile-rosary · 07-b · 2026-09-02</div>
+<div class="eyebrow">Atelier · mobile-rosary · 07-d · 2026-09-02</div>
 <h1>묵주기도 시안 월드컵</h1>
-<p class="lead">후보 열 개가 <b>같은 엔진</b>(77단계 · 자리 저장 · 침묵 모드) 위에서 돕니다. 구조도 색도 다 다릅니다. 두 라운드, 15분 안.</p>
+<p class="lead">후보 열 개가 <b>같은 엔진</b>(77단계 · 자리 저장 · 침묵 모드) 위에서 돕니다. 이번 열은 <b>재료가 서로 다릅니다</b> — 자개 · 조각보 · 먹 · 종 · 등불 · 손 · 전례색 · 침묵 · 목판 · 격자. 두 라운드, 15분 안.</p>
+<p class="lead" style="color:var(--warn)">아래 그림은 제 검증 환경에서 찍은 것이라 <b>본래 서체가 아닌 대체 서체</b>로 보입니다. 조판의 인상은 "열어서 눌러보기"로 실제 기기에서 봐 주십시오.</p>
 <div class="step" id="step"></div>
 <div id="stage"></div>
-<div class="card"><div class="eyebrow">후보 전부 — 누르면 실제로 돌아가는 화면이 열립니다</div><div class="gal" id="gal"></div><p class="note">밖에서 받은 그림 후보(Stitch · Claude Design 등)는 들어오는 대로 여기 추가됩니다.</p></div>
+<div class="card"><div class="eyebrow">후보 전부 — 누르면 실제로 돌아가는 화면이 열립니다</div><div class="gal" id="gal"></div><p class="note">각 후보는 <b>같은 엔진</b> 위의 껍데기라, 이긴 부분끼리 갈아 끼워 하나로 합칠 수 있습니다. 밖에서 받은 그림 후보(Stitch · Claude Design 등)는 들어오는 대로 여기 추가됩니다.</p></div>
 </div>
 <script>
 const C=${JSON.stringify(data)}; const M=${JSON.stringify(M)};
-const PAIRS=[["g01-hub","g06-tactile"],["g02-icon","g07-book"],["g03-liturgy","g08-dark"],["g04-player","g09-widget"],["g05-ring","g10-bento"]];
+const PAIRS=[["d01-najeon","d06-hand"],["d02-jogakbo","d07-liturgy"],["d03-sagyeong","d08-silence"],["d04-bell","d09-woodcut"],["d05-lantern","d10-grid"]];
 const WHY=["직관적이다","차분하다","읽기 쉽다","기도에 맞는다","시니어에게 맞다","재미있다","익숙하다"];
 const byId=Object.fromEntries(C.map(c=>[c.id,c]));
 let st={r1:{},r1why:{},r2:{},r2why:{}}; try{ st=Object.assign(st,JSON.parse(localStorage.getItem("wc.v1")||"{}")); }catch(e){}

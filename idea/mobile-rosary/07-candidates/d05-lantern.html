@@ -1,0 +1,59 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>방향 5 — 등불</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Song+Myung&family=Noto+Sans+KR:wght@300;400;500&display=swap">
+<style>
+:root{--night:#0E1116;--changho:#1C232B;--lamp:#F5D08C;--hanji:#E8D9B5;--soot:#3A342C;--soft:#7A7466}
+*{box-sizing:border-box;margin:0;padding:0}html,body{height:100%}
+body{background:var(--night);color:var(--hanji);font:15px/1.6 "Noto Sans KR",system-ui,sans-serif;max-width:430px;margin:0 auto;min-height:100vh;position:relative;overflow:hidden}
+.sm{font-family:"Song Myung","Noto Serif KR",serif}
+.glow{position:absolute;left:50%;top:230px;transform:translate(-50%,-50%);width:520px;height:520px;border-radius:50%;pointer-events:none;z-index:0;
+  background:radial-gradient(circle,rgba(245,208,140,var(--i,.10)) 0%,rgba(245,208,140,0) 62%);transition:--i .8s}
+.lamp{position:absolute;left:50%;top:120px;transform:translateX(-50%);z-index:0}
+.ui{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;padding:26px 24px calc(24px + env(safe-area-inset-bottom))}
+.eye{font-size:11px;letter-spacing:.22em;color:var(--soft)}
+h1{font-family:"Song Myung",serif;font-size:29px;line-height:1.3;margin-top:8px}
+.who{font-size:13px;color:var(--soft);margin-top:5px}
+.sp{flex:1}
+.pr{max-width:17em}
+.pr .m{font-size:12px;letter-spacing:.12em;color:var(--lamp);opacity:.75;margin-bottom:12px}
+.pr .a{font-family:"Song Myung",serif;font-size:20px;line-height:1.78;color:var(--hanji)}
+.pr .b{font-family:"Song Myung",serif;font-size:20px;line-height:1.78;color:#57503F;margin-top:10px}
+.pr.mine .a{color:#57503F}.pr.mine .b{color:var(--lamp)}
+.turn{margin-top:16px;font-size:11px;letter-spacing:.22em;color:var(--soft)}.turn.mine{color:var(--lamp)}
+button{font:400 15px/1 "Noto Sans KR";border:0;background:none;cursor:pointer;color:var(--soft)}
+.b1{font-family:"Song Myung",serif;font-size:19px;color:var(--night);background:var(--lamp);padding:15px 26px;min-height:52px;align-self:flex-start}
+.b2{font-size:13px;margin-top:12px;align-self:flex-start}
+.res{font-size:12px;color:var(--soft);margin-bottom:10px}
+.opts{display:flex;gap:20px;margin-top:22px;font-size:12px}.opts button{font-size:12px}
+.n{display:flex;gap:26px;margin:20px 0}.n b{display:block;font-family:"Song Myung",serif;font-size:26px;color:var(--lamp)}.n span{font-size:11px;color:var(--soft)}
+.veil{position:absolute;inset:0;z-index:2;background:rgba(14,17,22,.93);display:flex;flex-direction:column;justify-content:center;padding:26px 24px}
+</style></head><body>
+<div class="glow" id="glow"></div><div class="lamp" id="lamp"></div><div class="ui" id="ui"></div>
+<script src="engine.js"></script>
+<script>
+const R=Rosary.create({onChange:render}); let S=R.snapshot();
+function lamp(s){ const d=s.step?s.step.dec:0, done=s.phase==="done", f=done?1:Math.min(1,(d+(s.step&&s.step.bead>=0?s.step.bead/10:0))/5);
+  const bright=(.24+f*.76).toFixed(2), flare=s.phase==="mine"?1.14:1;
+  return '<svg width="200" height="250" viewBox="0 0 200 250">'
+   +'<path d="M46 40 h108 v6 h-12 v150 h12 v6 H46 v-6 h12 V46 H46 Z" fill="#3A342C"/>'
+   +'<rect x="58" y="46" width="84" height="150" fill="#E8D9B5" opacity="'+bright+'"/>'
+   +'<g stroke="#3A342C" stroke-width="1.6" opacity=".85">'+[0,1,2].map(i=>'<line x1="'+(58+(i+1)*21)+'" y1="46" x2="'+(58+(i+1)*21)+'" y2="196"/>').join("")
+   +[0,1,2,3,4].map(i=>'<line x1="58" y1="'+(46+(i+1)*25)+'" x2="142" y2="'+(46+(i+1)*25)+'"/>').join("")+'</g>'
+   +'<ellipse cx="100" cy="132" rx="'+(15*flare).toFixed(1)+'" ry="'+(30*flare).toFixed(1)+'" fill="#F5D08C" opacity="'+(.35+f*.5).toFixed(2)+'"/>'
+   +'<path d="M100 18 v22 M84 26 h32" stroke="#3A342C" stroke-width="3"/></svg>'; }
+function render(s){ S=s; document.getElementById("lamp").innerHTML=lamp(s);
+  const d=s.step?s.step.dec:0, f=s.phase==="done"?1:Math.min(1,d/5);
+  document.getElementById("glow").style.setProperty("--i",(0.06+f*0.17).toFixed(3));
+  const u=document.getElementById("ui");
+  if(s.phase==="idle"){ u.innerHTML='<div class="eye">'+s.todayName+'</div><h1>'+s.mystName+'</h1><div class="who">'+s.intent+'을 위하여</div><div class="sp"></div>'
+    +(s.pos?'<div class="res">'+Rosary.MYST[s.pos.k][0]+' · '+s.posWhere+' · '+s.posAgo+'</div><button class="b1" data-a="resume">이어서 바치기</button><button class="b2" data-a="start">처음부터 다시</button>':'<button class="b1" data-a="start">불을 켭니다</button>')
+    +'<div class="opts"><button data-a="silent">'+(s.silent?"침묵 진행":"소리로 진행")+'</button><button data-a="speed">받는 사이 '+({0.75:"느리게",1:"보통",1.35:"빠르게"})[s.speed]+'</button></div>'; return; }
+  if(s.phase==="done"){ u.innerHTML='<div class="sp"></div><div class="eye">'+s.mystName+'</div><h1>다 바쳤습니다</h1><div class="who">'+s.intent+'을 위하여</div><div class="n"><div><b>50</b><span>성모송</span></div><div><b>'+s.elapsedMin+'</b><span>걸린 분</span></div><div><b>'+s.resumes+'</b><span>이어서</span></div></div><button class="b2" data-a="home">돌아가기</button>'; return; }
+  const st=s.step, mine=s.phase==="mine";
+  u.innerHTML='<div class="eye">'+st.label+'</div><div class="sp"></div><div class="pr '+(mine?"mine":"")+'"><div class="m">'+(st.mystery||s.mystName)+'</div><div class="a">'+st.a+'</div>'+(st.b?'<div class="b">'+st.b+'</div>':'')+'<div class="turn '+(mine?"mine":"")+'">'+(mine?"내 차례 — 심지가 흔들립니다":"앱이 읽고 있습니다")+'</div></div>'
+    +'<div class="opts"><button data-a="pause">잠시 멈춤</button><button data-a="end">여기서 끝내기</button></div>'
+    +(s.phase==="paused"?'<div class="veil"><div class="eye">멈춰 있습니다</div><h1 style="font-size:25px">'+st.label+'</h1><div class="who">자리는 남아 있습니다</div><button class="b1" data-a="continue" style="margin-top:16px">이어서 바치기</button><button class="b2" data-a="home">홈으로</button></div>':'');
+}
+R.demoFromURL();
+document.addEventListener("click",e=>{const b=e.target.closest("[data-a]");if(!b)return;({start:()=>R.start(),resume:()=>R.start({fromSaved:true}),pause:()=>R.pause(),continue:()=>R.resume(),end:()=>R.end(),home:()=>R.home(),silent:()=>R.toggleSilent(),speed:()=>R.setSpeed(S.speed===1?1.35:S.speed===1.35?.75:1)})[b.dataset.a]?.();});
+</script></body></html>

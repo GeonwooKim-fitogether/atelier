@@ -14,3 +14,8 @@ Thumbs.db
 
 # 통합 현황판은 .integration/ 의 사실에서 매번 재생성된다 (수기 이중장부 방지)
 integration-board.html
+
+# 07 시안 후보의 파생 산출물 — 소스(dNN-*.html · engine.js · urls.json)에서 매번 재생성된다
+idea/mobile-rosary/07-candidates/art/
+idea/mobile-rosary/07-candidates/worldcup.html
+idea/mobile-rosary/07-candidates/shots/sheet.html

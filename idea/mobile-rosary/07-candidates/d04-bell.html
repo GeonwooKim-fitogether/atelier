@@ -1,0 +1,57 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>방향 4 — 종</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Diphylleia&family=Noto+Sans+KR:wght@300;400;500&display=swap">
+<style>
+:root{--dark:#12100E;--bronze:#9A7B4F;--ring:#D4C4A0;--shadow:#2A2520;--dawn:#4A6670;--soft:#7E766B}
+*{box-sizing:border-box;margin:0;padding:0}html,body{height:100%}
+body{background:radial-gradient(ellipse at 50% 42%,#1A1713 0%,var(--dark) 62%);color:var(--ring);font:15px/1.6 "Noto Sans KR",system-ui,sans-serif;max-width:430px;margin:0 auto;min-height:100vh;position:relative;overflow:hidden;text-align:center}
+.dp{font-family:"Diphylleia","Noto Serif KR",serif;font-weight:400}
+.field{position:absolute;inset:0;z-index:0}.field svg{width:100%;height:100%}
+.ui{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:30px 24px calc(26px + env(safe-area-inset-bottom))}
+.eye{font-size:11px;letter-spacing:.24em;color:var(--soft)}
+h1{font-family:"Diphylleia",serif;font-size:30px;line-height:1.3;margin-top:8px;color:var(--ring)}
+.who{font-size:13px;color:var(--soft);margin-top:6px}
+.sp{flex:1}
+.ctr{height:280px;display:grid;place-items:center;position:relative;width:100%}
+.num{font-family:"Diphylleia",serif;font-size:56px;line-height:1;color:var(--ring)}
+.num small{display:block;font-family:"Noto Sans KR";font-size:12px;letter-spacing:.2em;color:var(--soft);margin-top:10px;font-weight:300}
+.pr{max-width:17em}
+.pr .a{font-family:"Diphylleia",serif;font-size:19px;line-height:1.75;color:var(--ring)}
+.pr .b{font-family:"Diphylleia",serif;font-size:19px;line-height:1.75;color:#5C554C;margin-top:10px}
+.pr.mine .a{color:#5C554C}.pr.mine .b{color:var(--bronze)}
+.turn{margin-top:16px;font-size:11px;letter-spacing:.24em;color:var(--soft)}.turn.mine{color:var(--bronze)}
+button{font:400 15px/1 "Noto Sans KR";border:0;background:none;cursor:pointer;color:var(--soft)}
+.b1{font-family:"Diphylleia",serif;font-size:19px;color:var(--ring);border:1px solid rgba(212,196,160,.4);border-radius:999px;padding:15px 34px;min-height:52px;margin-top:6px}
+.b2{font-size:13px;margin-top:12px}
+.res{font-size:12px;color:var(--soft);margin-bottom:12px}
+.opts{display:flex;gap:20px;margin-top:24px;font-size:12px}.opts button{font-size:12px}
+.n{display:flex;gap:26px;justify-content:center;margin:20px 0}.n b{display:block;font-family:"Diphylleia",serif;font-size:26px;color:var(--ring)}.n span{font-size:11px;color:var(--soft)}
+.veil{position:absolute;inset:0;z-index:2;background:rgba(18,16,14,.93);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:26px}
+</style></head><body>
+<div class="field" id="field"></div><div class="ui" id="ui"></div>
+<script src="engine.js"></script>
+<script>
+const R=Rosary.create({onChange:render}); let S=R.snapshot();
+function field(s){ const cx=195, cy=352, d=s.step?s.step.dec:0, done=s.phase==="done", live=s.phase!=="idle";
+  let o=""; // 다섯 단 = 다섯 겹 동심원 띠
+  for(let i=5;i>=1;i--){ const r=54+i*30, on=done||i<d, cur=i===d&&live;
+    o+='<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="none" stroke="'+(on?"#9A7B4F":cur?"#D4C4A0":"#241F1A")+'" stroke-width="'+(cur?2.5:1.5)+'" opacity="'+(on?.85:cur?1:.9)+'"/>'; }
+  if(live&&s.phase!=="done"){ // 울림 — 알마다 하나
+    const b=s.step&&s.step.bead>=0?s.step.bead:0;
+    for(let k=0;k<3;k++) o+='<circle cx="'+cx+'" cy="'+cy+'" r="'+(60+k*46+(b%3)*9)+'" fill="none" stroke="#D4C4A0" stroke-opacity="'+(.16-k*.045)+'" stroke-width="1"/>'; }
+  o+='<circle cx="'+cx+'" cy="'+cy+'" r="46" fill="none" stroke="#4A6670" stroke-width="1" stroke-opacity=".55"/>';
+  return '<svg viewBox="0 0 390 844" preserveAspectRatio="xMidYMid slice">'+o+'</svg>'; }
+function render(s){ S=s; document.getElementById("field").innerHTML=field(s); const u=document.getElementById("ui");
+  if(s.phase==="idle"){ u.innerHTML='<div class="eye">'+s.todayName+'</div><h1>'+s.mystName+'</h1><div class="who">'+s.intent+'을 위하여</div><div class="ctr"><div class="num">五<small>다섯 단</small></div></div><div class="sp"></div>'
+    +(s.pos?'<div class="res">'+Rosary.MYST[s.pos.k][0]+' · '+s.posWhere+' · '+s.posAgo+'</div><button class="b1" data-a="resume">이어서 바치기</button><button class="b2" data-a="start">처음부터 다시</button>':'<button class="b1" data-a="start">첫 타종</button>')
+    +'<div class="opts"><button data-a="silent">'+(s.silent?"침묵 진행":"소리로 진행")+'</button><button data-a="speed">받는 사이 '+({0.75:"느리게",1:"보통",1.35:"빠르게"})[s.speed]+'</button></div>'; return; }
+  if(s.phase==="done"){ u.innerHTML='<div class="eye">'+s.mystName+'</div><div class="ctr"><div class="num">畢<small>다 바쳤습니다</small></div></div><h1 style="font-size:22px">'+s.intent+'을 위하여</h1><div class="n"><div><b>50</b><span>성모송</span></div><div><b>'+s.elapsedMin+'</b><span>걸린 분</span></div><div><b>'+s.resumes+'</b><span>이어서</span></div></div><div class="sp"></div><button class="b2" data-a="home">돌아가기</button>'; return; }
+  const st=s.step, mine=s.phase==="mine";
+  u.innerHTML='<div class="eye">'+st.label+'</div><div class="ctr"><div class="num">'+(st.bead>=0?st.bead+1:"·")+'<small>'+(st.of?"/ "+st.of:(st.mystery||s.mystName))+'</small></div></div>'
+    +'<div class="pr '+(mine?"mine":"")+'"><div class="a">'+st.a+'</div>'+(st.b?'<div class="b">'+st.b+'</div>':'')+'<div class="turn '+(mine?"mine":"")+'">'+(mine?"내 차례":"앱이 읽고 있습니다")+'</div></div><div class="sp"></div>'
+    +'<div class="opts"><button data-a="pause">잠시 멈춤</button><button data-a="end">여기서 끝내기</button></div>'
+    +(s.phase==="paused"?'<div class="veil"><div class="eye">멈춰 있습니다</div><h1 style="font-size:25px">'+st.label+'</h1><div class="who">자리는 남아 있습니다</div><button class="b1" data-a="continue">이어서 바치기</button><button class="b2" data-a="home">홈으로</button></div>':'');
+}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-a]");if(!b)return;({start:()=>R.start(),resume:()=>R.start({fromSaved:true}),pause:()=>R.pause(),continue:()=>R.resume(),end:()=>R.end(),home:()=>R.home(),silent:()=>R.toggleSilent(),speed:()=>R.setSpeed(S.speed===1?1.35:S.speed===1.35?.75:1)})[b.dataset.a]?.();});
+R.demoFromURL();
+</script></body></html>

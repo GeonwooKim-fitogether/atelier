@@ -1,0 +1,50 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>방향 7 — 전례색</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hahmlet:wght@400;700;800&family=Noto+Sans+KR:wght@400;500&display=swap">
+<style>
+:root{--field:#4A6741;--on:#F2EDE4;--gold:#C9A227;--dim:rgba(242,237,228,.55)}
+*{box-sizing:border-box;margin:0;padding:0}html,body{height:100%}
+body{background:var(--field);color:var(--on);font:15px/1.6 "Noto Sans KR",system-ui,sans-serif;max-width:430px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;padding:28px 24px calc(26px + env(safe-area-inset-bottom));transition:background .9s}
+.hh{font-family:"Hahmlet","Noto Serif KR",serif}
+.eye{font-size:11px;letter-spacing:.26em;color:var(--dim)}
+h1{font-family:"Hahmlet",serif;font-weight:800;font-size:52px;line-height:1.02;letter-spacing:-.03em;margin-top:14px}
+h1.sm{font-size:34px;line-height:1.15}
+.who{font-size:13px;color:var(--dim);margin-top:10px}
+.sp{flex:1}
+.hair{display:flex;gap:5px;margin:22px 0}
+.hair i{flex:1;height:1.5px;background:rgba(242,237,228,.28)}
+.hair i.on{background:var(--gold);height:2.5px}
+.hair i.cur{background:var(--on);height:4px}
+.pr .a{font-family:"Hahmlet",serif;font-size:21px;line-height:1.65;font-weight:400}
+.pr .b{font-family:"Hahmlet",serif;font-size:21px;line-height:1.65;color:var(--dim);margin-top:12px}
+.pr.mine .a{color:var(--dim)}.pr.mine .b{color:var(--gold);font-weight:700}
+.turn{margin-top:16px;font-size:11px;letter-spacing:.24em;color:var(--dim)}.turn.mine{color:var(--gold)}
+button{font:500 15px/1 "Noto Sans KR";border:0;background:none;cursor:pointer;color:var(--dim);text-align:left}
+.b1{font-family:"Hahmlet",serif;font-size:20px;font-weight:700;color:var(--field);background:var(--on);padding:16px 26px;min-height:54px;align-self:flex-start}
+.b2{font-size:13px;margin-top:12px;align-self:flex-start}
+.res{font-size:12px;color:var(--dim);margin-bottom:10px}
+.opts{display:flex;gap:20px;margin-top:22px;font-size:12px}.opts button{font-size:12px}
+.n{display:flex;gap:26px;margin:20px 0}.n b{display:block;font-family:"Hahmlet",serif;font-weight:400;font-size:30px}.n span{font-size:11px;color:var(--dim)}
+.veil{position:fixed;inset:0;background:var(--field);max-width:430px;margin:0 auto;display:flex;flex-direction:column;justify-content:center;padding:28px 24px}
+</style></head><body>
+<div id="ui" style="display:contents"></div>
+<script src="engine.js"></script>
+<script>
+const R=Rosary.create({onChange:render}); let S=R.snapshot();
+const FIELD={joy:"#8E6F1E",light:"#2F6D7A",sorrow:"#5B2C6F",glory:"#4A6741"};
+function render(s){ S=s; document.documentElement.style.setProperty("--field",FIELD[s.key]||"#4A6741"); document.body.style.background="var(--field)";
+  const u=document.getElementById("ui");
+  if(s.phase==="idle"){ u.innerHTML='<div class="eye">'+s.todayName+'</div><h1>'+s.mystName+'</h1><div class="who">'+s.intent+'을 위하여 · 오늘의 색</div><div class="sp"></div>'
+    +(s.pos?'<div class="res">'+Rosary.MYST[s.pos.k][0]+' · '+s.posWhere+' · '+s.posAgo+'</div><button class="b1" data-a="resume">이어서 바치기</button><button class="b2" data-a="start">처음부터 다시</button>':'<button class="b1" data-a="start">시작</button>')
+    +'<div class="opts"><button data-a="silent">'+(s.silent?"침묵 진행":"소리로 진행")+'</button><button data-a="speed">받는 사이 '+({0.75:"느리게",1:"보통",1.35:"빠르게"})[s.speed]+'</button></div>'; return; }
+  if(s.phase==="done"){ u.innerHTML='<div class="eye">'+s.mystName+'</div><h1 class="sm">다 바쳤습니다</h1><div class="who">'+s.intent+'을 위하여</div><div class="n"><div><b>50</b><span>성모송</span></div><div><b>'+s.elapsedMin+'</b><span>걸린 분</span></div><div><b>'+s.resumes+'</b><span>이어서</span></div></div><div class="sp"></div><button class="b2" data-a="home">돌아가기</button>'; return; }
+  const st=s.step, mine=s.phase==="mine", of=st.of||0;
+  u.innerHTML='<div class="eye">'+st.label+'</div><h1 class="sm">'+(st.mystery||s.mystName)+'</h1>'
+    +(of?'<div class="hair">'+Array.from({length:of},(_,i)=>'<i class="'+(i<st.bead?"on":i===st.bead?"cur":"")+'"></i>').join("")+'</div>':'<div class="hair"><i class="cur"></i></div>')
+    +'<div class="pr '+(mine?"mine":"")+'"><div class="a">'+st.a+'</div>'+(st.b?'<div class="b">'+st.b+'</div>':'')+'<div class="turn '+(mine?"mine":"")+'">'+(mine?"내 차례":"앱이 읽고 있습니다")+'</div></div><div class="sp"></div>'
+    +'<div class="opts"><button data-a="pause">잠시 멈춤</button><button data-a="end">여기서 끝내기</button></div>'
+    +(s.phase==="paused"?'<div class="veil"><div class="eye">멈춰 있습니다</div><h1 class="sm">'+st.label+'</h1><div class="who">자리는 남아 있습니다</div><div style="height:22px"></div><button class="b1" data-a="continue">이어서 바치기</button><button class="b2" data-a="home">홈으로</button></div>':'');
+}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-a]");if(!b)return;({start:()=>R.start(),resume:()=>R.start({fromSaved:true}),pause:()=>R.pause(),continue:()=>R.resume(),end:()=>R.end(),home:()=>R.home(),silent:()=>R.toggleSilent(),speed:()=>R.setSpeed(S.speed===1?1.35:S.speed===1.35?.75:1)})[b.dataset.a]?.();});
+R.demoFromURL();
+</script></body></html>
