@@ -1,0 +1,131 @@
+<title>__TITLE__</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500&display=swap">
+<style>
+  /* 07-a 와이어프레임 — 색을 쓰지 않는다. 회색 단계만 쓴다 (docs/stage-07-procedure.md §4) */
+  :root {
+    --ground: #EDEDEC; --surface: #FAFAF9; --surface-2: #E2E2E0;
+    --ink: #1B1B1A; --ink-2: #454543; --muted: #787876; --line: #C9C9C6;
+    --wf-fill: #DEDEDB; --wf-fill-2: #C7C7C3; --wf-stroke: #A5A5A1; --wf-text: #858581;
+    --grid: rgba(27,27,26,0.05);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #131313; --surface: #1A1A19; --surface-2: #232322;
+      --ink: #E7E7E5; --ink-2: #C2C2BF; --muted: #8A8A87; --line: #2E2E2C;
+      --wf-fill: #262625; --wf-fill-2: #343432; --wf-stroke: #52524F; --wf-text: #83837F;
+      --grid: rgba(231,231,229,0.045);
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground: #131313; --surface: #1A1A19; --surface-2: #232322;
+    --ink: #E7E7E5; --ink-2: #C2C2BF; --muted: #8A8A87; --line: #2E2E2C;
+    --wf-fill: #262625; --wf-fill-2: #343432; --wf-stroke: #52524F; --wf-text: #83837F;
+    --grid: rgba(231,231,229,0.045);
+  }
+  * { box-sizing: border-box; }
+  body { background: var(--ground); color: var(--ink); font-family: "Noto Sans KR", "Apple SD Gothic Neo", system-ui, sans-serif; font-size: 15.5px; line-height: 1.76; -webkit-font-smoothing: antialiased; }
+  main { max-width: 900px; margin: 0 auto; padding: 44px 20px 96px; display: flex; flex-direction: column; gap: 44px; }
+  h1, h2, h3 { font-family: "IBM Plex Sans KR", "Noto Sans KR", sans-serif; margin: 0; line-height: 1.34; text-wrap: balance; }
+  h1 { font-size: 29px; font-weight: 700; letter-spacing: -0.02em; }
+  h2 { font-size: 20px; font-weight: 600; }
+  h3 { font-size: 15.5px; font-weight: 600; }
+  p { margin: 0; color: var(--ink-2); }
+  strong { color: var(--ink); font-weight: 600; }
+  code { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: .88em; background: var(--surface-2); padding: 1px 6px; border-radius: 3px; color: var(--ink); }
+  .eyebrow { font-family: "IBM Plex Mono", monospace; font-size: 11.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+  header { display: flex; flex-direction: column; gap: 13px; }
+  .lead { background: var(--surface); border: 1px solid var(--line); border-left: 3px solid var(--ink); padding: 17px 21px; display: flex; flex-direction: column; gap: 9px; }
+  section { display: flex; flex-direction: column; gap: 18px; }
+  .sec-head { border-bottom: 1px solid var(--line); padding-bottom: 9px; display: flex; flex-direction: column; gap: 5px; }
+
+  figure { margin: 0; display: flex; flex-direction: column; gap: 10px; }
+  figure svg { width: 100%; height: auto; display: block; }
+  figcaption { font-size: 13.5px; color: var(--muted); line-height: 1.65; }
+  .board { background: var(--surface); border: 1px solid var(--line); padding: 20px 16px; overflow-x: auto; background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px); background-size: 16px 16px; }
+  .board svg { min-width: 640px; }
+
+  /* wireframe screens */
+  .screens { display: grid; grid-template-columns: repeat(2, 1fr); gap: 30px 26px; }
+  .screen { display: flex; flex-direction: column; gap: 11px; }
+  .screen .cap { display: flex; flex-direction: column; gap: 2px; }
+  .screen .cap b { font-family: "IBM Plex Sans KR", sans-serif; font-size: 15px; font-weight: 600; color: var(--ink); }
+  .screen .cap span { font-family: "IBM Plex Mono", monospace; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+  .screen .desc { font-size: 13.5px; color: var(--ink-2); line-height: 1.68; }
+  .phone { border: 2px solid var(--wf-stroke); border-radius: 18px; padding: 8px 8px 10px; display: flex; flex-direction: column; gap: 7px; aspect-ratio: 390 / 700; }
+  .notch { align-self: center; width: 62px; height: 5px; border-radius: 3px; background: var(--wf-stroke); flex: none; margin: 2px 0 3px; }
+  .wfbox { border: 1px solid var(--wf-stroke); background: var(--wf-fill); border-radius: 4px; display: flex; flex-direction: column; justify-content: center; gap: 5px; padding: 7px 9px; position: relative; }
+  .wfbox.solid { background: var(--wf-fill-2); }
+  .wfbox.dashed { border-style: dashed; background: transparent; }
+  .wfbox.plain { border: 0; background: transparent; padding: 2px 4px; }
+  .wfbox .lbl { font-family: "IBM Plex Mono", monospace; font-size: 9.5px; letter-spacing: .03em; color: var(--wf-text); line-height: 1.32; }
+  .bar { height: 6px; border-radius: 3px; background: var(--wf-stroke); opacity: .5; }
+  .bar.thin { height: 4px; }
+  .w95 { width: 95%; } .w80 { width: 80%; } .w65 { width: 65%; } .w50 { width: 50%; } .w35 { width: 35%; } .w22 { width: 22%; }
+  .row { display: flex; gap: 7px; }
+  .row > * { flex: 1; }
+  .grow { flex: 1; }
+  .sheetzone { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; }
+  .dim { flex: 1; border-radius: 4px; background: var(--wf-fill); opacity: .45; }
+  .sheet { border: 1px solid var(--wf-stroke); border-bottom: 0; border-radius: 10px 10px 0 0; background: var(--wf-fill); padding: 9px; display: flex; flex-direction: column; gap: 7px; }
+  .handle { align-self: center; width: 34px; height: 4px; border-radius: 2px; background: var(--wf-stroke); opacity: .7; }
+  .prov { position: absolute; right: 5px; top: 4px; font-family: "IBM Plex Mono", monospace; font-size: 8.5px; letter-spacing: .05em; color: var(--wf-text); border: 1px solid var(--wf-stroke); border-radius: 2px; padding: 0 3px; line-height: 1.5; }
+
+  .tablewrap { overflow-x: auto; border: 1px solid var(--line); background: var(--surface); }
+  table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+  th, td { text-align: left; padding: 10px 13px; vertical-align: top; border-top: 1px solid var(--line); line-height: 1.6; color: var(--ink-2); }
+  th { border-top: 0; background: var(--surface-2); font-family: "IBM Plex Mono", monospace; font-size: 10.5px; letter-spacing: .09em; text-transform: uppercase; color: var(--muted); font-weight: 500; white-space: nowrap; }
+  td:first-child { color: var(--ink); font-weight: 500; white-space: nowrap; font-family: "IBM Plex Mono", monospace; font-size: 12px; }
+  td.scr { white-space: nowrap; }
+
+  .finds { display: flex; flex-direction: column; gap: 14px; }
+  .find { background: var(--surface); border: 1px solid var(--line); border-left: 3px solid var(--ink); padding: 14px 18px; display: flex; flex-direction: column; gap: 6px; }
+  .find .q { font-family: "IBM Plex Mono", monospace; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+  .find b { font-family: "IBM Plex Sans KR", sans-serif; font-size: 15.5px; color: var(--ink); font-weight: 600; }
+  .find p { font-size: 14px; }
+  .find .prov-note { font-size: 13.5px; color: var(--muted); border-top: 1px dashed var(--line); padding-top: 7px; }
+  ul, ol { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 7px; color: var(--ink-2); }
+  li::marker { color: var(--muted); }
+  footer { border-top: 1px solid var(--line); padding-top: 16px; font-size: 13.5px; color: var(--muted); display: flex; flex-direction: column; gap: 6px; }
+  @media (max-width: 720px) {
+    .screens { grid-template-columns: 1fr; }
+    h1 { font-size: 24px; }
+  }
+</style>
+
+<main>
+  <header>
+    <span class="eyebrow">__EYEBROW__</span>
+    <h1>__TITLE__</h1>
+    <div class="lead">__LEAD__</div>
+  </header>
+
+  <section>
+    <div class="sec-head"><span class="eyebrow">1 · 유저 플로</span><h2>화면이 어떻게 이어지나</h2></div>
+    <div class="board">__FLOW__</div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="eyebrow">2 · 와이어프레임</span><h2>화면 __NSCREENS__장 — 무엇이 어디에 놓이나</h2></div>
+    <div class="board"><div class="screens">__SCREENS__</div></div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="eyebrow">3 · 대조</span><h2>유저 스토리의 모든 조건이 어느 화면에서 일어나나</h2></div>
+    <p>07-a 의 넘어가는 조건은 화면 목록이 닫혔다는 것과, 유저 스토리의 모든 Given·When·Then 이 어느 화면에서 일어나는지 지목된다는 것이다. 아래가 그 대조표다.</p>
+    <div class="tablewrap"><table><tr><th>스토리</th><th>조건</th><th>어느 화면</th></tr>__XREF__</table></div>
+    __XREFNOTE__
+  </section>
+
+  __FINDINGS__
+
+  <section>
+    <div class="sec-head"><span class="eyebrow">5 · 판정</span><h2>이 문서가 07-a 의 조건을 만족하나</h2></div>
+    <div class="tablewrap"><table><tr><th>조건</th><th>상태</th></tr>__VERDICT__</table></div>
+    <p><strong>보는 법</strong> — 어디서: 이 파일(<code>07-prototype/a-wireframe.html</code>)을 브라우저로 열면 · 무엇을 하면: 유저 플로와 화면들을 위에서 아래로 읽으면 · 무엇이 보이나: 화면이 몇 개이고 어느 화면에서 어디로 가는지, 그리고 06 이 아직 정하지 않은 자리가 보인다.</p>
+  </section>
+
+  <footer>
+    <span>__FOOTER__</span>
+    <span>이 파일은 <code>.claude/skills/atelier-npi/bundle4/wireframe.mjs</code> 가 <code>a-wireframe.spec.json</code> 을 읽어 생성했다. 손으로 고치지 말고 spec 을 고친 뒤 다시 생성한다.</span>
+  </footer>
+</main>

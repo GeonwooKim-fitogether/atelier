@@ -4,7 +4,7 @@
   /* 07-a 와이어프레임 — 색을 쓰지 않는다. 회색 단계만 쓴다 (docs/stage-07-procedure.md §4) */
   :root {
     --ground: #EDEDEC; --surface: #FAFAF9; --surface-2: #E2E2E0;
-    --ink: #1B1B1A; --ink-2: #45454390; --ink-2: #454543; --muted: #787876; --line: #C9C9C6;
+    --ink: #1B1B1A; --ink-2: #454543; --muted: #787876; --line: #C9C9C6;
     --wf-fill: #DEDEDB; --wf-fill-2: #C7C7C3; --wf-stroke: #A5A5A1; --wf-text: #858581;
     --grid: rgba(27,27,26,0.05);
   }
@@ -96,20 +96,14 @@
   <header>
     <span class="eyebrow">mobile-rosary V1 · 07-a 산출물</span>
     <h1>묵주기도 앱 화면 설계도</h1>
-    <div class="lead">
-      <p><strong>이 문서는 유저 플로와 로우 피델리티 와이어프레임입니다.</strong> 색·글꼴·아이콘·실제 기도문 글자를 일부러 넣지 않았습니다. 정하는 것은 셋입니다. 무엇이 화면에 있는가, 위아래 순서가 어떤가, 무엇이 제일 큰가.</p>
-      <p>입력은 <code>06-service-design.md</code>의 유저 스토리 넷과 정보 구조, 그리고 <code>07-prototype/00-brief.md</code>입니다. 정본 서식은 『프로덕트 기획』 5-2이고 절차는 <code>docs/stage-07-procedure.md</code> §4입니다.</p>
-      <p><strong>그리는 동안 06이 정하지 않은 것 여섯 개가 드러났습니다.</strong> 맨 아래 절에 모아 두었고, 화면에서 잠정으로 정한 자리에는 <code>잠정</code> 표시를 달았습니다. 그 여섯이 이 단계의 실제 산출물입니다.</p>
-    </div>
+    <div class="lead"><p><strong>이 문서는 유저 플로와 로우 피델리티 와이어프레임이다.</strong> 색·글꼴·아이콘·실제 기도문 글자를 일부러 넣지 않았다. 정하는 것은 셋이다. 무엇이 화면에 있는가, 위아래 순서가 어떤가, 무엇이 제일 큰가.</p>
+      <p>입력은 <code>06-service-design.md</code> 의 유저 스토리 넷과 정보 구조, 그리고 <code>07-prototype/00-brief.md</code> 다. 정본 서식은 『프로덕트 기획』 5-2 이고 절차는 <code>docs/stage-07-procedure.md</code> §4 다.</p>
+      <p><strong>그리는 동안 06 이 정하지 않은 것 여섯 개가 드러났다.</strong> 맨 아래 절에 모아 두었고, 화면에서 잠정으로 정한 자리에는 잠정 표시를 달았다. 그 여섯이 이 단계의 실제 산출물이다.</p></div>
   </header>
 
   <section>
-    <div class="sec-head">
-      <span class="eyebrow">1 · 유저 플로</span>
-      <h2>화면이 어떻게 이어지나</h2>
-    </div>
-    <div class="board">
-      <figure>
+    <div class="sec-head"><span class="eyebrow">1 · 유저 플로</span><h2>화면이 어떻게 이어지나</h2></div>
+    <div class="board"><figure>
         <svg viewBox="0 0 980 910" role="img" aria-label="묵주기도 앱의 유저 플로. 앱을 열면 저장된 자리 유무에 따라 홈이 두 상태로 갈리고, 기도 화면에서 침묵 진행 여부에 따라 소리 낭송과 진동 진행으로 갈리며, 알마다 받는 사이를 두고 제5단 10번째 알까지 반복한 뒤 완주 화면으로 간다. 중단하면 자리를 저장하거나 지우고 홈으로 돌아간다." fill="none" stroke="currentColor">
           <defs>
             <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
@@ -191,22 +185,13 @@
             <text x="836" y="176" text-anchor="end">홈으로 돌아간다</text>
           </g>
         </svg>
-        <figcaption>
-          기호는 책 5-2를 따랐습니다. 둥근 사각형은 시작과 끝, 직사각형은 화면과 동작, 마름모는 분기입니다. 점선은 돌아가는 경로입니다.
-          <strong>지향 시트·침묵 진행 토글·받는 사이 시트는 이 도해에 없습니다</strong> — 06 §2가 그 셋을 "홈에 머문다"로 정했으므로 화면 전환이 아니고, 흐름 노드로 그리면 없는 이동을 있는 것처럼 보이게 합니다. 세 시트는 아래 와이어프레임에 있습니다.
-        </figcaption>
-      </figure>
-    </div>
+        <figcaption>기호는 책 5-2 를 따랐다. 둥근 사각형은 시작과 끝, 직사각형은 화면과 동작, 마름모는 분기다. 점선은 돌아가는 경로다. <strong>지향 시트·침묵 진행 토글·받는 사이 시트는 이 도해에 없다</strong> — 06 §2 가 그 셋을 홈에 머문다로 정했으므로 화면 전환이 아니고, 흐름 노드로 그리면 없는 이동을 있는 것처럼 보이게 한다. 세 시트는 아래 와이어프레임에 있다.</figcaption>
+      </figure></div>
   </section>
 
   <section>
-    <div class="sec-head">
-      <span class="eyebrow">2 · 와이어프레임</span>
-      <h2>화면 일곱 장 — 무엇이 어디에 놓이나</h2>
-    </div>
-    <div class="board">
-      <div class="screens">
-
+    <div class="sec-head"><span class="eyebrow">2 · 와이어프레임</span><h2>화면 7장 — 무엇이 어디에 놓이나</h2></div>
+    <div class="board"><div class="screens">
         <div class="screen">
           <div class="cap"><span>화면 1 / 7</span><b>홈 · 상태 A</b></div>
           <div class="phone">
@@ -216,10 +201,10 @@
             <div class="wfbox solid" style="flex:0 0 19%"><span class="lbl">시작 단추 · 80pt 이상</span><div class="bar w50"></div></div>
             <div class="grow"></div>
             <div class="wfbox" style="flex:0 0 9%"><span class="lbl">지향 고르기 · 추가</span></div>
-            <div class="wfbox" style="flex:0 0 9%"><span class="lbl">침묵 진행 (꺼짐)</span><div class="bar thin w22" style="align-self:flex-end"></div></div>
+            <div class="wfbox" style="flex:0 0 9%"><span class="lbl">침묵 진행 (꺼짐)</span></div>
             <div class="wfbox" style="flex:0 0 9%"><span class="lbl">받는 사이 · 보통</span></div>
           </div>
-          <p class="desc">첫 실행과 완주 직후의 홈입니다. <strong>이어가기 카드가 없는 것이 기본 상태</strong>이고 생기는 것이 예외입니다(06 §3의 "데이터가 전무한 시점부터 시작한다"). 시작 단추가 화면에서 가장 크고, 설정 셋은 아래에 작게 둡니다.</p>
+          <p class="desc">첫 실행과 완주 직후의 홈이다. <strong>이어가기 카드가 없는 것이 기본 상태</strong>이고 생기는 것이 예외다(06 §3 의 "데이터가 전무한 시점부터 시작한다"). 시작 단추가 화면에서 가장 크고, 설정 셋은 아래에 작게 둔다.</p>
         </div>
 
         <div class="screen">
@@ -232,10 +217,10 @@
             <div class="wfbox solid" style="flex:0 0 17%"><span class="lbl">시작 단추 · 처음부터</span><div class="bar w50"></div></div>
             <div class="grow"></div>
             <div class="wfbox" style="flex:0 0 9%"><span class="lbl">지향 고르기 · 추가</span></div>
-            <div class="wfbox" style="flex:0 0 9%"><span class="lbl">침묵 진행</span><div class="bar thin w22" style="align-self:flex-end"></div></div>
+            <div class="wfbox" style="flex:0 0 9%"><span class="lbl">침묵 진행</span></div>
             <div class="wfbox" style="flex:0 0 9%"><span class="lbl">받는 사이</span></div>
           </div>
-          <p class="desc">저장된 자리가 있을 때만 맨 위에 카드가 붙습니다(US-03). 카드가 시작 단추보다 위에 있고, 시작 단추는 여전히 남아 있어 처음부터 다시 바칠 길이 막히지 않습니다. <strong>이 카드가 몇 개까지 보이는지는 06이 정하지 않았습니다</strong>(발견 6).</p>
+          <p class="desc">저장된 자리가 있을 때만 맨 위에 카드가 붙는다(US-03). 카드가 시작 단추보다 위에 있고, 시작 단추는 여전히 남아 있어 처음부터 다시 바칠 길이 막히지 않는다. <strong>이 카드가 몇 개까지 보이는지는 06 이 정하지 않았다</strong>(발견 2).</p>
         </div>
 
         <div class="screen">
@@ -248,12 +233,9 @@
             <div class="wfbox" style="flex:0 0 16%"><span class="lbl">앞 절 — 앱이 읽는 부분</span><div class="bar w95"></div><div class="bar w65"></div></div>
             <div class="wfbox solid" style="flex:0 0 18%"><span class="lbl">뒷 절 — 받을 차례에 강조 + "받아 바치세요"</span><div class="bar w95"></div><div class="bar w50"></div></div>
             <div class="grow"></div>
-            <div class="row" style="flex:0 0 12%">
-              <div class="wfbox"><span class="lbl">잠시 멈춤 · 자리 저장</span></div>
-              <div class="wfbox dashed"><span class="prov">잠정</span><span class="lbl">여기서 끝내기</span></div>
-            </div>
+            <div class="row" style="flex:0 0 12%"><div class="wfbox"><span class="lbl">잠시 멈춤 · 자리 저장</span></div><div class="wfbox dashed"><span class="prov">잠정</span><span class="lbl">여기서 끝내기</span></div></div>
           </div>
-          <p class="desc">US-01의 화면입니다. 앞 절과 뒷 절이 위아래로 나뉘어, 앱이 읽는 부분과 내가 받는 부분이 자리로 구분됩니다. 받을 차례에 뒷 절 자리가 강조되고 안내가 나타납니다. 하단 두 단추 중 왼쪽이 자리를 저장하고, 오른쪽이 자리를 지웁니다. <strong>지우는 쪽에 확인을 두는지가 정해지지 않았습니다</strong>(발견 2).</p>
+          <p class="desc">US-01 의 화면이다. 앞 절과 뒷 절이 위아래로 나뉘어, 앱이 읽는 부분과 내가 받는 부분이 자리로 구분된다. 받을 차례에 뒷 절 자리가 강조되고 안내가 나타난다. 하단 두 단추 중 왼쪽이 자리를 저장하고, 오른쪽이 자리를 지운다. <strong>지우는 쪽에 확인을 두는지가 정해지지 않았다</strong>(발견 4).</p>
         </div>
 
         <div class="screen">
@@ -266,12 +248,9 @@
             <div class="wfbox solid" style="flex:0 0 26%"><span class="prov">잠정</span><span class="lbl">기도문 한 덩어리 — 앞 절과 뒷 절을 나누지 않는다 (앱이 읽지 않으므로 사용자가 양쪽을 다 바친다)</span><div class="bar w95"></div><div class="bar w80"></div><div class="bar w50"></div></div>
             <div class="wfbox plain" style="flex:0 0 7%"><span class="lbl">진동으로 넘어갑니다 · 화면을 보지 않아도 됩니다</span></div>
             <div class="grow"></div>
-            <div class="row" style="flex:0 0 12%">
-              <div class="wfbox"><span class="lbl">잠시 멈춤 · 자리 저장</span></div>
-              <div class="wfbox dashed"><span class="lbl">여기서 끝내기</span></div>
-            </div>
+            <div class="row" style="flex:0 0 12%"><div class="wfbox"><span class="lbl">잠시 멈춤 · 자리 저장</span></div><div class="wfbox dashed"><span class="lbl">여기서 끝내기</span></div></div>
           </div>
-          <p class="desc">US-02의 화면입니다. <strong>이 화면은 06에 명세가 없어 잠정으로 그렸습니다</strong>(발견 1). US-02는 소리와 진동만 규정하고 화면에 무엇을 보일지 정하지 않았는데, 앱이 읽지 않으므로 앞 절과 뒷 절을 나누는 것이 뜻을 잃습니다. 그래서 한 덩어리로 묶고 진동 안내를 두었습니다. 화면을 보지 않는 것이 전제이지만, 주머니에서 꺼내 봤을 때 자리를 잃지 않아야 하므로 단과 알 번호는 남깁니다.</p>
+          <p class="desc">US-02 의 화면이다. <strong>이 화면은 06 에 명세가 없어 잠정으로 그렸다</strong>(발견 1). US-02 는 소리와 진동만 규정하고 화면에 무엇을 보일지 정하지 않았는데, 앱이 읽지 않으므로 앞 절과 뒷 절을 나누는 것이 뜻을 잃는다. 그래서 한 덩어리로 묶고 진동 안내를 두었다. 화면을 보지 않는 것이 전제이지만, 주머니에서 꺼내 봤을 때 자리를 잃지 않아야 하므로 단과 알 번호는 남긴다.</p>
         </div>
 
         <div class="screen">
@@ -279,13 +258,13 @@
           <div class="phone">
             <div class="notch"></div>
             <div class="grow"></div>
-            <div class="wfbox plain" style="flex:0 0 12%"><span class="lbl">"5단을 마쳤습니다" 한 줄</span><div class="bar w65" style="align-self:center"></div></div>
+            <div class="wfbox plain" style="flex:0 0 12%"><span class="lbl">"5단을 마쳤습니다" 한 줄</span><div class="bar w65"></div></div>
             <div class="wfbox plain" style="flex:0 0 8%"><span class="prov">잠정</span><span class="lbl">바친 횟수를 조용히 센다 (순위·달성률 없음)</span></div>
             <div class="grow"></div>
-            <div class="wfbox" style="flex:0 0 12%"><span class="lbl">홈으로 돌아가기</span><div class="bar w35" style="align-self:center"></div></div>
+            <div class="wfbox" style="flex:0 0 12%"><span class="lbl">홈으로 돌아가기</span><div class="bar w35"></div></div>
             <div class="grow" style="flex:0 0 6%"></div>
           </div>
-          <p class="desc">화면에 한 가지만 둡니다. 06 §4의 톤 규칙에 따라 순위·비교·달성률을 넣지 않고, 바친 횟수만 조용히 셉니다. 여기서 홈으로 가면 저장된 자리가 지워져 홈은 상태 A가 됩니다. <strong>5단 뒤에 마침 기도가 있는지가 정해지지 않았습니다</strong>(발견 4).</p>
+          <p class="desc">화면에 한 가지만 둔다. 06 §4 의 톤 규칙에 따라 순위·비교·달성률을 넣지 않고, 바친 횟수만 조용히 센다. 여기서 홈으로 가면 저장된 자리가 지워져 홈은 상태 A 가 된다. <strong>5단 뒤에 마침 기도가 있는지가 정해지지 않았다</strong>(발견 3).</p>
         </div>
 
         <div class="screen">
@@ -304,7 +283,7 @@
               </div>
             </div>
           </div>
-          <p class="desc">홈에서 열리고 홈에 머무릅니다(06 §2). US-04에 따라 지향마다 저장된 자리가 따로 기억되므로, 목록에서 어느 지향에 자리가 남아 있는지 보입니다. 고르면 시트가 닫히고 홈의 이어가기 카드가 그 지향의 자리로 바뀝니다. <strong>추가할 때 이름 말고 무엇을 더 받는지, 첫 실행의 기본 지향 이름이 무엇인지가 정해지지 않았습니다</strong>(발견 3).</p>
+          <p class="desc">홈에서 열리고 홈에 머무른다(06 §2). US-04 에 따라 지향마다 저장된 자리가 따로 기억되므로, 목록에서 어느 지향에 자리가 남아 있는지 보인다. 고르면 시트가 닫히고 홈의 이어가기 카드가 그 지향의 자리로 바뀐다. <strong>추가할 때 이름 말고 무엇을 더 받는지, 첫 실행의 기본 지향 이름이 무엇인지가 정해지지 않았다</strong>(발견 5).</p>
         </div>
 
         <div class="screen">
@@ -323,22 +302,14 @@
               </div>
             </div>
           </div>
-          <p class="desc">세 단계뿐입니다. 기준값은 뒷 절 글자 수 × 132ms + 900ms이고 느리게는 ÷0.75, 빠르게는 ÷1.35입니다(06 US-01 비고). 숫자를 화면에 노출하지 않고 세 낱말로만 고르게 합니다. 이 사이가 실제 호흡에 맞는지는 07-c가 답합니다.</p>
-        </div>
-
-      </div>
-    </div>
+          <p class="desc">세 단계뿐이다. 기준값은 뒷 절 글자 수 × 132ms + 900ms 이고 느리게는 ÷0.75, 빠르게는 ÷1.35 다(06 US-01 비고). 숫자를 화면에 노출하지 않고 세 낱말로만 고르게 한다. 이 사이가 실제 호흡에 맞는지는 07-c 가 답한다.</p>
+        </div></div></div>
   </section>
 
   <section>
-    <div class="sec-head">
-      <span class="eyebrow">3 · 대조</span>
-      <h2>유저 스토리의 모든 조건이 어느 화면에서 일어나나</h2>
-    </div>
-    <p>07-a의 넘어가는 조건은 "화면 목록이 닫혔다"와 "유저 스토리의 모든 Given·When·Then이 어느 화면에서 일어나는지 지목된다"입니다. 아래가 그 대조표입니다.</p>
-    <div class="tablewrap"><table>
-      <tr><th>스토리</th><th>조건</th><th>어느 화면</th></tr>
-      <tr><td>US-01</td><td>Given 기도가 진행 중이고 침묵 진행이 꺼져 있다</td><td class="scr">화면 3</td></tr>
+    <div class="sec-head"><span class="eyebrow">3 · 대조</span><h2>유저 스토리의 모든 조건이 어느 화면에서 일어나나</h2></div>
+    <p>07-a 의 넘어가는 조건은 화면 목록이 닫혔다는 것과, 유저 스토리의 모든 Given·When·Then 이 어느 화면에서 일어나는지 지목된다는 것이다. 아래가 그 대조표다.</p>
+    <div class="tablewrap"><table><tr><th>스토리</th><th>조건</th><th>어느 화면</th></tr><tr><td>US-01</td><td>Given 기도가 진행 중이고 침묵 진행이 꺼져 있다</td><td class="scr">화면 3</td></tr>
       <tr><td>US-01</td><td>When 앱이 성모송 앞 절을 다 읽는다</td><td class="scr">화면 3 · 앞 절 자리</td></tr>
       <tr><td>US-01</td><td>Then 소리를 멈추고 받는 사이 동안 기다린다</td><td class="scr">화면 3 (플로의 받는 사이)</td></tr>
       <tr><td>US-01</td><td>And 뒷 절이 강조되고 "받아 바치세요"가 나타난다</td><td class="scr">화면 3 · 뒷 절 자리</td></tr>
@@ -347,7 +318,7 @@
       <tr><td>US-02</td><td>When 기도를 시작한다 / Then 아무 소리도 내지 않는다</td><td class="scr">화면 4</td></tr>
       <tr><td>US-02</td><td>And 알마다 짧은 진동 한 번</td><td class="scr">화면 4 · 진동 안내</td></tr>
       <tr><td>US-02</td><td>And 단이 바뀔 때 진동 세 번</td><td class="scr">화면 4 · 단 표시가 바뀌는 순간</td></tr>
-      <tr><td>US-02</td><td>And 받는 사이가 앞 절 몫까지 길어진다</td><td class="scr">화면 없음 · 플로의 받는 사이</td></tr>
+      <tr><td>US-02</td><td>And 받는 사이가 앞 절 몫까지 길어진다</td><td class="scr">화면 없음 · 07-c 항목</td></tr>
       <tr><td>US-03</td><td>Given 제3단 4번째 알까지 바치고 앱을 닫았다</td><td class="scr">화면 3·4 → 플로의 중단</td></tr>
       <tr><td>US-03</td><td>When 앱을 다시 연다 / Then 홈 맨 위에 카드가 보인다</td><td class="scr">화면 2</td></tr>
       <tr><td>US-03</td><td>And 누르면 그 자리에서 다시 시작된다</td><td class="scr">화면 2 → 화면 3·4</td></tr>
@@ -356,82 +327,65 @@
       <tr><td>US-04</td><td>Given 지향이 둘 이상 있다</td><td class="scr">화면 6</td></tr>
       <tr><td>US-04</td><td>When 홈에서 지향을 고른다</td><td class="scr">화면 1·2 → 화면 6</td></tr>
       <tr><td>US-04</td><td>Then 그 지향의 저장된 자리가 카드에 보인다</td><td class="scr">화면 2</td></tr>
-      <tr><td>US-04</td><td>And 다른 지향을 고르면 그 지향의 자리로 바뀐다</td><td class="scr">화면 6 → 화면 2</td></tr>
-    </table></div>
-    <p><strong>지목되지 않은 조건은 하나입니다.</strong> US-02의 "받는 사이가 길어진다"는 화면에 나타나는 것이 아니라 타이밍이므로 화면이 없고, 07-c가 확인할 항목입니다. 나머지 열여덟 조건은 모두 자리를 찾았습니다.</p>
+      <tr><td>US-04</td><td>And 다른 지향을 고르면 그 지향의 자리로 바뀐다</td><td class="scr">화면 6 → 화면 2</td></tr></table></div>
+    <p><strong>화면을 찾지 못한 조건은 하나다.</strong> US-02 의 "받는 사이가 길어진다"는 화면에 나타나는 것이 아니라 타이밍이므로 화면이 없고, 07-c 가 확인할 항목이다. 나머지 열여덟 조건은 모두 자리를 찾았다.</p>
   </section>
 
+  
   <section>
-    <div class="sec-head">
-      <span class="eyebrow">4 · 발견</span>
-      <h2>06이 정하지 않은 것 여섯</h2>
-    </div>
-    <p>그리는 동안 드러난 것입니다. 여섯 다 <strong>와이어프레임에서 잠정으로 정해 두었고</strong>, 06에서 확정해야 07-b가 흔들리지 않습니다. 판돈이 큰 것부터 적었습니다.</p>
+    <div class="sec-head"><span class="eyebrow">4 · 발견</span><h2>06 이 정하지 않은 것 6</h2></div>
+    <p>그리는 동안 드러난 것이다. 와이어프레임에서는 잠정으로 정해 두었고, 06 에서 확정해야 07-b 가 흔들리지 않는다. 판돈이 큰 것부터 적었다.</p>
     <div class="finds">
-
       <div class="find">
         <span class="q">발견 1 · 화면 4</span>
         <b>침묵 모드에서 화면에 무엇을 보이나</b>
-        <p>US-02는 소리를 내지 않고 진동으로 넘어간다는 것만 정합니다. 그런데 앱이 읽어 주지 않으면 <strong>앞 절과 뒷 절을 나누는 근거가 사라집니다</strong> — 사용자가 양쪽을 다 바치기 때문입니다. 소리 모드의 화면을 그대로 쓰면 화면이 거짓말을 합니다.</p>
+        <p>US-02 는 소리를 내지 않고 진동으로 넘어간다는 것만 정한다. 그런데 앱이 읽어 주지 않으면 <strong>앞 절과 뒷 절을 나누는 근거가 사라진다</strong> — 사용자가 양쪽을 다 바치기 때문이다. 소리 모드의 화면을 그대로 쓰면 화면이 거짓말을 한다.</p>
         <p class="prov-note">잠정 결정: 기도문을 한 덩어리로 묶고 진동 안내 한 줄을 두었다. 단과 알 번호는 남겼다 — 화면을 보지 않는 것이 전제이지만 주머니에서 꺼내 봤을 때 자리를 잃으면 안 되기 때문이다.</p>
       </div>
-
       <div class="find">
-        <span class="q">발견 6 · 화면 2와 6</span>
+        <span class="q">발견 2 · 화면 2와 6</span>
         <b>이어가기 카드가 몇 개까지 보이나</b>
-        <p>US-04에 따라 지향마다 자리가 따로 저장되므로, 지향이 셋이면 저장된 자리도 셋일 수 있습니다. US-04의 Then은 "그 지향의 저장된 자리가 카드에 보인다"고 해서 <strong>선택된 지향의 자리 하나만</strong> 보이는 것으로 읽힙니다. 그러면 다른 지향에 남은 자리는 지향을 바꿀 때까지 보이지 않는데, 이것은 여러 지향을 함께 바치는 사람에게 "잊힌 기도"를 만듭니다. 01단계 정정이 짚은 통증("끊기면 그날을 잃는다")이 지향 단위에서 되살아나는 자리입니다.</p>
+        <p>US-04 에 따라 지향마다 자리가 따로 저장되므로, 지향이 셋이면 저장된 자리도 셋일 수 있다. US-04 의 Then 은 "그 지향의 저장된 자리가 카드에 보인다"고 해서 <strong>선택된 지향의 자리 하나만</strong> 보이는 것으로 읽힌다. 그러면 다른 지향에 남은 자리는 지향을 바꿀 때까지 보이지 않는데, 이것은 여러 지향을 함께 바치는 사람에게 잊힌 기도를 만든다. 01단계 정정이 짚은 통증(끊기면 그날을 잃는다)이 지향 단위에서 되살아나는 자리다.</p>
         <p class="prov-note">잠정 결정: 카드 한 장(선택된 지향)만 그렸다. 대신 지향 시트의 목록에 어느 지향에 자리가 남아 있는지를 표시해, 최소한 찾아갈 수는 있게 했다.</p>
       </div>
-
       <div class="find">
-        <span class="q">발견 4 · 화면 5</span>
+        <span class="q">발견 3 · 화면 5</span>
         <b>5단 앞뒤의 시작 기도와 마침 기도가 있나</b>
-        <p>06의 화면 목록과 유저 스토리 넷에는 <strong>5단 진행만</strong> 있습니다. 실제 묵주기도에는 5단 앞에 시작 기도(사도신경·주님의 기도·성모송·영광송)가, 뒤에 마침 기도가 놓입니다. 01단계가 적은 통증 중 하나가 "신비 묵상·청원·감사 기도문을 못 외운다"였으므로, 이 앞뒤가 빠지면 통증의 일부가 그대로 남습니다. 판본 확인이 필요한 사항이라 단정하지 않고 질문으로 올립니다.</p>
+        <p>06 의 화면 목록과 유저 스토리 넷에는 <strong>5단 진행만</strong> 있다. 실제 묵주기도에는 5단 앞에 시작 기도가, 뒤에 마침 기도가 놓인다. 01단계가 적은 통증 중 하나가 "신비 묵상·청원·감사 기도문을 못 외운다"였으므로, 이 앞뒤가 빠지면 통증의 일부가 그대로 남는다. 판본 확인이 필요한 사항이라 단정하지 않고 질문으로 올린다.</p>
         <p class="prov-note">잠정 결정: 그리지 않았다. 넣기로 하면 기도 화면이 한 종류 더 늘고 플로의 반복 구간 앞뒤가 바뀐다.</p>
       </div>
-
       <div class="find">
-        <span class="q">발견 2 · 화면 3과 4</span>
+        <span class="q">발견 4 · 화면 3과 4</span>
         <b>"여기서 끝내기"에 확인을 두나</b>
-        <p>자리를 지우는 되돌릴 수 없는 동작인데 06에 확인 단계가 없습니다. 확인을 둔다면 06 §4의 톤 규칙이 문구를 제약합니다 — "정말 포기하시겠습니까" 같은 표현은 끊김을 벌주는 쪽이라 쓸 수 없습니다.</p>
+        <p>자리를 지우는 되돌릴 수 없는 동작인데 06 에 확인 단계가 없다. 확인을 둔다면 06 §4 의 톤 규칙이 문구를 제약한다 — "정말 포기하시겠습니까" 같은 표현은 끊김을 벌주는 쪽이라 쓸 수 없다.</p>
         <p class="prov-note">잠정 결정: 확인 없이 바로 실행하는 것으로 그리고, 단추를 점선(약한 위계)으로 두어 잘못 누르기 어렵게 했다.</p>
       </div>
-
       <div class="find">
-        <span class="q">발견 3 · 화면 6</span>
+        <span class="q">발견 5 · 화면 6</span>
         <b>첫 실행의 기본 지향 이름과 지향 추가 항목</b>
-        <p>온보딩을 금지했으므로 첫 실행에 지향이 하나 미리 있어야 합니다(06 §3이 "첫 실행에는 지향이 하나 있고"라고 적었습니다). 그 이름이 정해지지 않았습니다. 지향을 추가할 때 이름 말고 더 받는 것이 있는지도 정해지지 않았습니다.</p>
+        <p>온보딩을 금지했으므로 첫 실행에 지향이 하나 미리 있어야 한다(06 §3 이 "첫 실행에는 지향이 하나 있고"라고 적었다). 그 이름이 정해지지 않았다. 지향을 추가할 때 이름 말고 더 받는 것이 있는지도 정해지지 않았다.</p>
         <p class="prov-note">잠정 결정: 이름 한 줄만 받는 것으로 그렸다.</p>
       </div>
-
       <div class="find">
-        <span class="q">발견 5 · 화면 3과 4</span>
+        <span class="q">발견 6 · 화면 3과 4</span>
         <b>기도 도중에 지금 어느 지향인지 보이나</b>
-        <p>US-04는 홈에서 지향을 고르는 것만 규정하고, 기도 화면에는 지향 표시가 없습니다. 두세 지향을 함께 바치는 사람이 <strong>지금 어느 지향으로 바치고 있는지 화면에서 확인할 방법이 없습니다.</strong> 지향이 곧 이 기도의 목적이므로, 없어도 되는지 확인이 필요합니다.</p>
+        <p>US-04 는 홈에서 지향을 고르는 것만 규정하고, 기도 화면에는 지향 표시가 없다. 두세 지향을 함께 바치는 사람이 <strong>지금 어느 지향으로 바치고 있는지 화면에서 확인할 방법이 없다.</strong> 지향이 곧 이 기도의 목적이므로, 없어도 되는지 확인이 필요하다.</p>
         <p class="prov-note">잠정 결정: 넣지 않았다. 단과 신비 이름 자리에 함께 두는 것이 후보다.</p>
       </div>
-
     </div>
   </section>
 
   <section>
-    <div class="sec-head">
-      <span class="eyebrow">5 · 판정</span>
-      <h2>이 문서가 07-a의 조건을 만족하나</h2>
-    </div>
-    <div class="tablewrap"><table>
-      <tr><th>조건</th><th>상태</th></tr>
-      <tr><td>화면 목록이 닫혔다</td><td>닫혔습니다. 화면 셋과 시트 둘, 그리고 홈·기도의 상태 분기를 더해 일곱 장입니다</td></tr>
-      <tr><td>빠진 화면이 없다</td><td>플로의 모든 노드가 일곱 장 중 하나에 대응합니다. 발견 4가 확정되면 한 종류가 늘 수 있습니다</td></tr>
-      <tr><td>모든 Given·When·Then이 지목된다</td><td>열아홉 조건 중 열여덟이 화면을 찾았고, 하나(받는 사이 길이)는 타이밍이라 07-c 항목입니다</td></tr>
-      <tr><td>색을 쓰지 않았다</td><td>회색 단계만 썼습니다</td></tr>
-      <tr><td>각 와이어프레임 아래 기능 설명</td><td>일곱 장 모두 한 단락씩 있습니다</td></tr>
-    </table></div>
-    <p><strong>보는 법</strong> — 어디서: 이 파일(<code>07-prototype/a-wireframe.html</code>)을 브라우저로 열면 · 무엇을 하면: 유저 플로 도해와 화면 일곱 장을 위에서 아래로 읽으면 · 무엇이 보이나: 화면이 몇 개이고 어느 화면에서 어디로 가는지, 그리고 06이 아직 정하지 않은 여섯 자리가 보입니다.</p>
+    <div class="sec-head"><span class="eyebrow">5 · 판정</span><h2>이 문서가 07-a 의 조건을 만족하나</h2></div>
+    <div class="tablewrap"><table><tr><th>조건</th><th>상태</th></tr><tr><td>화면 목록이 닫혔다</td><td>화면 7장</td></tr>
+      <tr><td>모든 Given·When·Then 이 지목된다</td><td>조건 19개 중 18개가 화면을 찾았다</td></tr>
+      <tr><td>색을 쓰지 않았다 (회색 단계만)</td><td>엔진이 무채색 토큰만 쓴다</td></tr>
+      <tr><td>각 와이어프레임 아래 기능 설명</td><td>7장에 설명이 있다</td></tr></table></div>
+    <p><strong>보는 법</strong> — 어디서: 이 파일(<code>07-prototype/a-wireframe.html</code>)을 브라우저로 열면 · 무엇을 하면: 유저 플로와 화면들을 위에서 아래로 읽으면 · 무엇이 보이나: 화면이 몇 개이고 어느 화면에서 어디로 가는지, 그리고 06 이 아직 정하지 않은 자리가 보인다.</p>
   </section>
 
   <footer>
-    <span>07-a 산출물입니다. 다음은 07-b 목업이며, 시작 조건은 06의 디자인 토큰 절과 <code>07-prototype/refs/</code>의 레퍼런스 이미지입니다. 둘 다 아직 비어 있습니다.</span>
-    <span>절차는 <code>docs/stage-07-procedure.md</code>, 산출물 정의는 <code>docs/prototype-vocabulary.md</code>, 브리프는 <code>07-prototype/00-brief.md</code>입니다.</span>
+    <span>07-a 산출물이다. 다음은 07-b 목업이며, 시작 조건은 06 의 디자인 토큰 절과 <code>07-prototype/refs/</code> 의 레퍼런스 이미지다. 레퍼런스는 2026-09-05 에 채워졌고 디자인 토큰이 남았다.</span>
+    <span>이 파일은 <code>.claude/skills/atelier-npi/bundle4/wireframe.mjs</code> 가 <code>a-wireframe.spec.json</code> 을 읽어 생성했다. 손으로 고치지 말고 spec 을 고친 뒤 다시 생성한다.</span>
   </footer>
 </main>

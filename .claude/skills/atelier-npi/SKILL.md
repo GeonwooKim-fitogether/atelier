@@ -1,6 +1,6 @@
 ---
 name: atelier-npi
-description: Atelier NPI 9-stage workflow. Pain Point raw → Foundry 인계 패키지까지. CEO와 대화로 진행. trigger - CEO가 "Atelier 시작" 발화 시 atelier-npi Skill 자동 fire (단일 trigger). 현재 Stage 01·02 1차 구축, 03~09 미구축 (Phased Build-and-Test로 순차 진화).
+description: Atelier NPI 9-stage workflow. Pain Point raw → Foundry 인계 패키지까지. CEO와 대화로 진행. trigger - CEO가 "Atelier 시작" 발화 시 atelier-npi Skill 자동 fire (단일 trigger). 현재 Stage 01·02 1차 구축 · 묶음 4(06·07·08) 구축(bundle4/ 장치) · 03~05·09 잠정 (Phased Build-and-Test로 순차 진화).
 ---
 
 # atelier-npi Skill v0.3
@@ -128,7 +128,7 @@ trigger 발화 "Atelier 시작" → Skill fire → **즉시 다음 read·view �
 | **1** | 01 Intake | Pain Point clue 인터뷰 (CEO 발화 + 3 축 정리) | **v2 (2026-05-29 재정의)** |
 | **2** | 02 Research / 03 Analysis | 발산 + 정제 — 빈 영역 발견·정의 | v0.3 (정비 필요) |
 | **3** | 04 Ideation / 05 Prioritization | 해결책 발산 + 수렴 | 잠정 |
-| **4** | 06 Planning / 07 Prototyping / 08 Validation | 완성본 만들기 | 07 실행 서식 구축 (`docs/stage-07-procedure.md`) · 06·08 미구축 |
+| **4** | 06 Planning / 07 Prototyping / 08 Validation | 완성본 만들기 | **구축 (2026-09-05)** — 아래 묶음 4 절 + `bundle4/` 장치 |
 | **5** | 09 Handoff Packaging | 3 완료 문서 → Foundry | 미구축 |
 
 각 stage 시각 reference: `workflows/type1-external-service.html` · `workflows/node-graph.html` (Dashboard).
@@ -662,10 +662,68 @@ Hold → 04 Ideation 회귀. Kill → funnel.
 
 ---
 
-## Stage 06~09 (미구축)
+## 묶음 4 — 06 서비스 설계 · 07 시제품 · 08 검증 (2026-09-05 구축)
 
-각 stage 잠정 구조는 `workflows/type1-external-service.html` 참고.
-시스템은 *그 stage 시점에 구체화*. Phased Build-and-Test.
+**목적**: 05가 정한 V1을 사람이 실제로 써 볼 수 있는 것으로 만들고, 그것으로 지표를 잰다.
+
+**장치**: `bundle4/` 폴더가 이 묶음의 기계다. 지휘는 이 절이 하고, 판정은 스크립트가 한다.
+
+```bash
+node .claude/skills/atelier-npi/bundle4/gate.mjs <slug>       # 지금 어느 관문에 걸려 있나
+node .claude/skills/atelier-npi/bundle4/wireframe.mjs <slug>  # 07-a 를 spec 에서 생성
+```
+
+**원칙 — 단계에 들어가기 전에 게이트를 먼저 돌린다.** 06·07·08은 앞 단계 산출물을 조건으로 걸고 있는데, 그 조건이 지켜졌는지는 **아무도 오류를 내지 않는 방식으로** 어긋난다. 2026-09-05에 07-b가 06의 디자인 토큰을 요구했는데 06에 그 절이 없어 교착에 빠진 것이 그 예다. 게이트는 그 빠짐을 단계 진입 전에 잡는다.
+
+### Stage 06 — 서비스 설계
+
+정본: 『프로덕트 기획』 5-1 유저 스토리 · 5-4 백 오피스 · 5-5 정보 구조. 산출: `06-service-design.md`.
+
+여섯 절을 갖춘다 (게이트 G06-1~6, 서식은 `bundle4/schema.md` §1).
+
+1. **유저 스토리** — 걸킨 네 부분 (제목·우선순위 / AS·I WANT·SO THAT / Given·When·Then / 비고)
+2. **정보 구조** — 화면 목록과 이동. 책의 세 유형(계층적·플랫·콘텐츠 드리븐) 중 어느 것인지, 셋 다 아니면 왜인지
+3. **백 오피스** — 없으면 없다고 적는다. 책이 강조한 "데이터가 전무한 시점부터 시작한다"를 지킨다
+4. **디자인 토큰** — 색·글자 크기·간격·컴포넌트 상태·모션 다섯. **이 절이 07-b의 시작 조건이다**
+5. **톤 규칙** — 쓰지 않는 말과 대신 쓰는 말
+6. **접근성 기준** — 최소 대비·최소 터치 영역·글자 확대 지원
+
+**디자인 토큰을 정할 때는 레퍼런스를 먼저 받는다.** 레퍼런스 없이 정하면 AI 기본값이 나온다. 수집 부탁의 서식은 `docs/stage-07-procedure.md` §5에 있다.
+
+### Stage 07 — 시제품
+
+정본: 5-2 유저 플로 & 와이어프레임. 실행 서식은 `docs/stage-07-procedure.md`, 산출물 정의는 `docs/prototype-vocabulary.md`. 산출: `07-prototype/` 폴더.
+
+**순서가 있고, 07-d 없이 08로 가지 않는다.**
+
+| 단계 | 무엇을 만드나 | 누가 | 넘어가는 조건 |
+|---|---|---|---|
+| 07-a | 유저 플로 + 와이어프레임 | 세션이 spec을 채우고 엔진이 생성 | 화면 목록이 닫히고 모든 Given·When·Then이 지목된다 |
+| 07-b | 목업 (정본 화면) | **`kimdesigner` 서브에이전트를 호출한다** | 06 디자인 토큰을 적용했고 공방장이 "이 화면을 쓰고 싶다"고 판정했다 |
+| 07-c | 기능 프로토타입 | 세션 | 동작 가설을 사람이 실제로 겪어 확인했다 |
+| 07-d | 통합 시제품 | 세션 | 07-b의 화면 + 07-c의 동작. 08에 넘길 수 있다 |
+
+07-b와 07-c는 병렬이어도 된다. **07-b에서 kimdesigner를 부르지 않으면 07-b를 한 것이 아니다** — 그 에이전트가 렌더·스크린샷·다섯 렌즈 진단 루프를 돈다.
+
+07-a 작업 흐름:
+1. `00-brief.md`를 서식대로 채운다 (`docs/stage-07-procedure.md` §3). **빈 대괄호가 남으면 06으로 돌아간다** — 발견하는 것이 이 서식의 목적 절반이다
+2. `a-wireframe.spec.json`을 채운다 (서식은 `bundle4/schema.md` §2)
+3. 흐름 도해가 필요하면 `a-flow.svg`를 손으로 그린다 (책 5-2 기호: 둥근 사각형 시작·끝, 직사각형 화면·동작, 마름모 분기)
+4. `wireframe.mjs`로 생성하고 게이트로 잰다
+
+### Stage 08 — 검증
+
+정본: 5-6 QA와 테스트 케이스. 산출: `08-validation.md`.
+
+**들어가기 전 조건 하나**: 07-d가 있어야 한다(게이트 G08-1). 없이 들어가면 지표가 나빠도 기능 탓인지 화면 탓인지 가릴 수 없다.
+
+- 05가 정한 **접는 지표**를 그대로 쓴다. 검증 중에 지표를 바꾸지 않는다
+- 사용자 관점 완결성은 `qa-swarm` 스킬로 돌린다 (07에서는 부르지 않는다)
+- 3차 판정(계속·보류·중단)은 **사람만** 내린다 (헌장 §4.2)
+
+### 묶음 4 → 5 수렴 게이트
+
+`gate.mjs`의 관문 여섯이 모두 통과(사람 판정 `○` 포함)해야 09로 간다.
 
 ---
 
@@ -707,7 +765,8 @@ stage = 한 파일 원칙. 07-prototype/만 폴더 (HTML 다수 파일).
 - v0.4 — Stage 03 Analysis 본격 구축 (mobile-rosary cycle 진행하며)
 - v0.5 — Stage 04 Ideation 본격 구축
 - v0.6 — Stage 05 Prioritization 본격 구축
-- v0.7 ~ v0.9 — Stage 06~09 순차 구축
+- **v0.7 (2026-09-05) — 묶음 4(06·07·08) 구축.** `bundle4/gate.mjs`(여섯 관문 기계 판정) + `bundle4/wireframe.mjs`(07-a 고정 엔진). mobile-rosary 로 첫 발동해 교착 원인(06 디자인 토큰 절 없음)을 기계가 지목하는 것을 확인했다
+- v0.8 — Stage 09 Handoff 구축
 - charter v0.3 박힘 후 reference 갱신
 
 charter §16 미해결 — Phased Build-and-Test로 진화.

@@ -31,6 +31,7 @@
   - `standards/` 아틀리에 운영 기준 (시각화 의무·포지셔닝 맵 정본·3 카테고리 시간축 분리)
   - `lessons.md` 체계의 결함 기록 — 창고 승격 후보 누적소
 - `.claude/skills/atelier-npi/SKILL.md` Skill 본체 (이 저장소 고유)
+  - `bundle4/` 묶음 4(06·07·08) 장치 — `gate.mjs`가 여섯 관문을 기계로 판정하고, `wireframe.mjs`가 07-a를 고정 엔진으로 뽑는다. **단계 진입 전에 `node .claude/skills/atelier-npi/bundle4/gate.mjs <slug>`를 돌린다**
 - `.claude/` 아래 공용 규칙·스킬·훅 — 창고(Template-repository)에서 동기화 봇(`.github/workflows/sync-skills.yml`)이 내려 줌. 공용 파일은 여기서 고치지 않고 창고에서 고친다(원본 우선 규칙)
 
 세션 밖 떠오른 idea는 *Atelier에 직접 박지 않고* 핸드폰 메모 등에 두었다가, 다음 세션에서 말로 전달.
