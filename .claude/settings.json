@@ -16,6 +16,15 @@
   "hooks": {
     "PreToolUse": [
       {
+        "matcher": "Skill|Write|Edit|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/retired-guard.py"
+          }
+        ]
+      },
+      {
         "matcher": "mcp__Supabase__execute_sql|mcp__Supabase__apply_migration",
         "hooks": [
           {
