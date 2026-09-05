@@ -2,6 +2,13 @@
   "output": "workflows/type1-external-service.html",
   "cards": [
     {
+      "id": "grid",
+      "bundle": "control",
+      "name": "격자 — 어느 칸이 차 있고 어느 칸이 비어 있나",
+      "status": "찬 칸 22 · 절반 3 · 비어 채워야 함 3 · 해당 없음 2 · 대기 3",
+      "lead": "\n\n      "
+    },
+    {
       "id": "control",
       "bundle": "control",
       "name": "결정 큐 — 공방장이 답해야 진행되는 것",
@@ -46,22 +53,22 @@
     {
       "id": "stage-06",
       "bundle": "bundle-4",
-      "name": "설계 — PRD · 디자인 시스템 · 서비스 설계 · 화면 명세 · 화면 지도",
-      "status": "제3판 재작성 ✓ · 문서 5 · 공방장 재검토 대기",
+      "name": "설계 — 무엇을 만들지 정한다",
+      "status": "제3판 확정 ✓ · 문서 5 · 공방장 재검토 대기",
       "lead": "\n\n      "
     },
     {
       "id": "stage-07",
       "bundle": "bundle-4",
-      "name": "시제품 만들기 — 유저 플로 &amp; 와이어프레임",
-      "status": "경쟁 앱 3사 장치 반영 · 후보 10 재제작 · 월드컵 대기",
+      "name": "시제품 만들기 — 실제로 만들어 본다",
+      "status": "기도 화면 동작 ✓ · 시안 20 판정 대기 · 새 화면 5 미착수",
       "lead": "\n\n      "
     },
     {
       "id": "stage-08",
       "bundle": "bundle-4",
-      "name": "검증 — QA와 테스트 케이스",
-      "status": "대기 · 책 5장이 정한 것 정리됨",
+      "name": "검증 — 무엇을 보고 계속할지 정한다",
+      "status": "대기 · 재야 할 지표 둘이 이 카드에 없었다",
       "lead": "\n\n      "
     },
     {
