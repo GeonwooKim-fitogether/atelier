@@ -1,0 +1,82 @@
+{
+  "output": "workflows/type1-external-service.html",
+  "cards": [
+    {
+      "id": "grid",
+      "bundle": "control",
+      "name": "격자 — 어느 칸이 차 있고 어느 칸이 비어 있나",
+      "status": "찬 칸 22 · 절반 3 · 비어 채워야 함 3 · 해당 없음 2 · 대기 3",
+      "lead": "\n\n      "
+    },
+    {
+      "id": "control",
+      "bundle": "control",
+      "name": "결정 큐 — 공방장이 답해야 진행되는 것",
+      "status": "열림 1 · 닫힘 14",
+      "lead": "\n\n      <!-- 01단계 — 문제·고민 인터뷰 (완료) -->\n      "
+    },
+    {
+      "id": "stage-01",
+      "bundle": "bundle-1",
+      "name": "시작 — 문제·고민 인터뷰",
+      "status": "완료 ✓",
+      "lead": "\n      "
+    },
+    {
+      "id": "stage-02",
+      "bundle": "bundle-2",
+      "name": "외부 정보 수집 — Deep Research",
+      "status": "완료 ✓ — 15+ search · 30+ 출처 · + 경쟁사 실화면 36장 디자인 조사(2026-08-30)",
+      "lead": "\n\n      <!-- 02단계 — Deep Research 완료 -->\n      "
+    },
+    {
+      "id": "stage-03",
+      "bundle": "bundle-2",
+      "name": "정리·분석 — 빵빵·풍성·깊이 (25 page deep)",
+      "status": "완료 ✓ · 책 도구 모두 적용 · 진행 결정",
+      "lead": "\n\n      <!-- 03단계 — 정리·분석 deep 자료 (25 page 통째 표·시각화) -->\n      "
+    },
+    {
+      "id": "stage-04",
+      "bundle": "bundle-3",
+      "name": "아이디어 펼치기 — 해결책 발산 (좁히지 않는 자리)",
+      "status": "완료 ✓ · HMW 12 · 크레이지 8 · 수익 후보 8 · 인접 이식 8",
+      "lead": "\n\n      "
+    },
+    {
+      "id": "stage-05",
+      "bundle": "bundle-3",
+      "name": "우선순위 정하기 — 수렴 + 2차 판정",
+      "status": "수렴 완료 ✓ · 판정은 공방장 대기",
+      "lead": "\n\n      "
+    },
+    {
+      "id": "stage-06",
+      "bundle": "bundle-4",
+      "name": "설계 — 무엇을 만들지 정한다",
+      "status": "제3판 확정 ✓ · 문서 5 · 공방장 재검토 대기",
+      "lead": "\n\n      "
+    },
+    {
+      "id": "stage-07",
+      "bundle": "bundle-4",
+      "name": "시제품 만들기 — 실제로 만들어 본다",
+      "status": "기도 화면 동작 ✓ · 시안 20 판정 대기 · 새 화면 5 미착수",
+      "lead": "\n\n      "
+    },
+    {
+      "id": "stage-08",
+      "bundle": "bundle-4",
+      "name": "검증 — 무엇을 보고 계속할지 정한다",
+      "status": "대기 · 재야 할 지표 둘이 이 카드에 없었다",
+      "lead": "\n\n      "
+    },
+    {
+      "id": "stage-09",
+      "bundle": "bundle-5",
+      "name": "인계 자료 묶기 — 서비스 기획서",
+      "status": "대기 · 책 5장이 정한 것 정리됨",
+      "lead": "\n\n      "
+    }
+  ]
+}

@@ -1,0 +1,73 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>방향 8 — 돌탑</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Noto+Serif+KR:wght@400;600&family=Noto+Sans+KR:wght@400&display=swap">
+<style>
+:root{--haze:#B8B3A8;--stone:#6E6A63;--moss:#7F8F6A;--earth:#4A423A;--sky:#DCE3E4}
+*{box-sizing:border-box;margin:0;padding:0}html,body{height:100%}
+body{background:linear-gradient(180deg,var(--sky) 0,#CBD2D0 52%,#B9BDB5 100%);background-attachment:fixed;color:var(--earth);font:15px/1.64 "Noto Sans KR",system-ui,sans-serif;max-width:430px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column}
+.gd{font-family:"Gowun Dodum",sans-serif}
+header{padding:20px 22px 0}
+.k{font-size:11.5px;letter-spacing:.13em;color:#7C776E}
+h1{font-family:"Gowun Dodum",sans-serif;font-size:26px;line-height:1.22;margin-top:5px;color:var(--earth)}
+.pray{padding:14px 22px 0;height:252px;display:flex;flex-direction:column;justify-content:flex-start;overflow:hidden}
+.a{font-family:"Noto Serif KR",serif;font-size:17px;line-height:1.74;color:#78736A}
+.b{font-family:"Noto Serif KR",serif;font-weight:600;font-size:19.5px;line-height:1.72;margin-top:9px}
+.mine .a{color:#948E84}.mine .b{color:var(--moss)}
+.turn{font-size:11.5px;letter-spacing:.12em;color:#7C776E;margin-top:12px}
+.turn.mine{color:var(--moss)}
+.field{flex:1;display:flex;align-items:flex-end;justify-content:center;padding:0 10px}
+svg{width:100%;max-width:400px;height:auto;display:block}
+footer{padding:0 22px calc(18px + env(safe-area-inset-bottom))}
+.row{display:flex;gap:18px;padding-top:12px;border-top:1px solid rgba(74,66,58,.16)}
+button{font:400 15px/1 "Noto Sans KR";border:0;background:none;color:var(--earth);cursor:pointer}
+.row button{font-size:13px;color:#7C776E;min-height:44px}
+/* 큰 단추도 블록으로 — 옆에 다른 것이 붙지 않게 */
+.go{display:block;font-family:"Gowun Dodum",sans-serif;font-size:20px;background:var(--earth);color:#E8EAE4;padding:17px 32px;border-radius:30px;align-self:flex-start;min-height:56px}
+.alt{font-size:14px;color:#7C776E;margin-top:12px;display:block;width:100%;min-height:44px}
+.card{background:rgba(255,255,255,.5);border-left:3px solid var(--moss);padding:13px 15px;margin-bottom:16px}
+.card b{font-family:"Gowun Dodum",sans-serif;font-size:16.5px}
+.card span{display:block;font-size:12.5px;color:#7C776E;margin-top:4px}
+.nums{display:flex;gap:26px;margin:16px 0}
+.nums b{display:block;font-family:"Gowun Dodum",sans-serif;font-size:30px}
+.nums span{font-size:11.5px;color:#7C776E}
+.veil{position:fixed;inset:0;max-width:430px;margin:0 auto;background:rgba(219,224,222,.96);display:flex;flex-direction:column;justify-content:center;padding:26px 22px}
+</style></head><body>
+<div id="app" style="display:contents"></div>
+<script src="engine.js"></script>
+<script>
+/* 길가와 절 어귀의 돌탑. 성모송 한 번에 돌 하나가 쌓인다 —
+   한 단이 탑 하나, 다섯 탑이 서면 끝난다. 평면을 채우는 것이 아니라 중력을 거슬러 쌓는 것이다. */
+function cairns(dec,bead){
+  const W=400,H=230,base=H-16, cx=[54,132,210,288,362];
+  let s='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="다섯 개의 돌탑 — 기도 하나에 돌 하나가 쌓인다">';
+  s+='<line x1="8" y1="'+base+'" x2="'+(W-8)+'" y2="'+base+'" stroke="#8F948A" stroke-width="1.2"/>';
+  for(let d=1;d<=5;d++){
+    const full=d<dec, cur=d===dec, n=full?10:cur?Math.max(0,bead+1):0;
+    let y=base;
+    for(let k=0;k<n;k++){
+      const w=30-k*1.9, h=13-k*.55, rot=((d*7+k*13)%9-4)*0.9;
+      y-=h+1.6;
+      s+='<g transform="translate('+cx[d-1]+','+(y+h/2)+') rotate('+rot+')"><ellipse rx="'+(w/2).toFixed(1)+'" ry="'+(h/2).toFixed(1)+'" fill="'+(cur&&k===n-1?"#7F8F6A":full?"#6E6A63":"#7A766E")+'" stroke="#585349" stroke-width="1"/></g>';
+    }
+    if(n===0) s+='<ellipse cx="'+cx[d-1]+'" cy="'+(base-3)+'" rx="15" ry="3.4" fill="none" stroke="#9AA096" stroke-width="1" stroke-dasharray="3 3"/>';
+    s+='<text x="'+cx[d-1]+'" y="'+(base+13)+'" text-anchor="middle" font-size="11" fill="#7C776E" font-family="Gowun Dodum, sans-serif">'+d+'</text>';
+  }
+  return s+'</svg>';
+}
+const R=Rosary.create({onChange:render}); let S=R.snapshot(); const app=document.getElementById("app");
+function render(s){ S=s; const st=s.step, dec=st?st.dec:0, bead=st&&st.of===10?st.bead:(st&&st.dec>0?9:-1);
+  if(s.phase==="idle"){ app.innerHTML='<header><div class="k">'+s.todayName+' · '+s.mystName+'</div><h1>다섯 개의 탑</h1></header>'
+   +'<div class="field" style="flex-direction:column;justify-content:flex-end"><div style="opacity:.5;width:100%">'+cairns(1,2)+'</div><div style="font-size:12px;color:#7C776E;padding:8px 0 4px">성모송 한 번에 돌 하나가 쌓입니다</div></div>'
+   +'<footer>'+(s.pos?'<div class="card"><b>'+Rosary.MYST[s.pos.k][0]+' · '+s.posWhere+'</b><span>'+s.posAgo+'에 멈췄습니다 · 그날의 신비로 이어집니다</span></div><button class="go" data-a="resume">이어서 바치기</button><button class="alt" data-a="start">처음부터 다시</button>':'<div class="card"><b>'+s.intent+'</b><span>성모송 한 번에 돌 하나 · 약 20분</span></div><button class="go" data-a="start">시작</button>')
+   +'<div class="row"><button data-a="silent">'+(s.silent?"침묵 진행":"소리 진행")+'</button><button data-a="speed">받는 사이 '+({0.75:"느리게",1:"보통",1.35:"빠르게"})[s.speed]+'</button><button data-a="addIntent">지향 더하기</button></div></footer>'; return; }
+  if(s.phase==="done"){ app.innerHTML='<header><div class="k">'+s.mystName+'</div><h1>다섯 탑이 섰습니다</h1></header><div class="field">'+cairns(6,9)+'</div><footer><div class="nums"><div><b>50</b><span>성모송</span></div><div><b>'+s.elapsedMin+'</b><span>걸린 분</span></div><div><b>'+s.resumes+'</b><span>이어서</span></div></div><div style="color:#7C776E;font-size:13.5px">'+s.intent+'을 위하여</div><button class="alt" data-a="home">돌아가기</button></footer>'; return; }
+  const mine=s.phase==="mine";
+  app.innerHTML='<header><div class="k">'+st.label+'</div><h1 style="font-size:20px">'+(st.mystery||s.mystName)+'</h1></header>'
+   +'<div class="pray '+(mine?"mine":"")+'"><div class="a">'+st.a+'</div>'+(st.b?'<div class="b">'+st.b+'</div>':'')+'<div class="turn '+(mine?"mine":"")+'">'+(mine?"내 차례":"듣는 중")+'</div></div>'
+   +'<div class="field">'+cairns(dec,bead)+'</div>'
+   +'<footer><div class="row"><button data-a="pause">잠시 멈춤</button><button data-a="end">여기서 끝내기</button></div></footer>'
+   +(s.phase==="paused"?'<div class="veil"><div class="k">멈춰 있습니다</div><h1 style="margin:6px 0 14px">'+st.label+'</h1><div class="card"><b>자리는 남아 있습니다</b><span>'+(st.mystery||s.mystName)+'</span></div><button class="go" data-a="continue">이어서 바치기</button><button class="alt" data-a="home">홈으로</button></div>':'');
+}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-a]");if(!b)return;({start:()=>R.start(),resume:()=>R.start({fromSaved:true}),pause:()=>R.pause(),continue:()=>R.resume(),end:()=>R.end(),home:()=>R.home(),silent:()=>R.toggleSilent(),speed:()=>R.setSpeed(S.speed===1?1.35:S.speed===1.35?.75:1),addIntent:()=>{const n=prompt("지향 이름 (24자)");if(n)R.addIntent(n);}})[b.dataset.a]?.();});
+R.demoFromURL();
+</script></body></html>

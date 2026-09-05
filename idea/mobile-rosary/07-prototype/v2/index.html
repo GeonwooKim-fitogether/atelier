@@ -1,0 +1,472 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>묵주기도</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ============ 디자인 시스템 (06-design-system.md) ============ */
+:root{
+  --night:#0C0A11; --vigil:#17131F; --vigil-2:#221C2E;
+  --wax:#E8D6A8; --wax-dim:#B8A876; --marian:#9C8CC9;
+  --linen:#F2EEE6; --dusk:#8A8296; --ash:#57516A;
+  --line:rgba(242,238,230,.10); --line-2:rgba(242,238,230,.2);
+  --serif:"Noto Serif KR","Nanum Myeongjo",Georgia,serif;
+  --sans:"Noto Sans KR",-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --ease:cubic-bezier(.4,0,.2,1);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{background:var(--night);color:var(--linen);font-family:var(--sans);font-size:16px;line-height:1.6;overscroll-behavior:none}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+.app{max-width:480px;margin:0 auto;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;position:relative}
+.screen{display:none;flex:1;flex-direction:column;padding:26px 22px 30px;opacity:0}
+.screen.on{display:flex;animation:scr .5s var(--ease) forwards}
+@keyframes scr{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){ *{animation-duration:.01ms !important;transition-duration:.01ms !important} }
+
+/* ============ 홈 ============ */
+.brand{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.brand h1{font-family:var(--serif);font-size:19px;font-weight:600;letter-spacing:.5px}
+.iconbtn{width:40px;height:40px;border-radius:50%;border:1px solid var(--line);color:var(--ash);font-size:13px;display:flex;align-items:center;justify-content:center}
+
+.notice{
+  background:rgba(232,214,168,.07);border:1px solid rgba(232,214,168,.25);border-radius:12px;
+  padding:13px 15px;font-size:13px;color:var(--linen);line-height:1.65;margin:10px 0 4px;display:none
+}
+.notice.on{display:block}
+.notice b{color:var(--wax);font-weight:500}
+
+/* 오늘의 신비 — 세리프. 조용한 머리 */
+.mystery{padding:26px 2px 22px;border-bottom:1px solid var(--line)}
+.mystery .k{font-size:12px;letter-spacing:2.5px;color:var(--marian);font-weight:500;margin-bottom:10px}
+.mystery .v{font-family:var(--serif);font-size:27px;font-weight:600;letter-spacing:-.3px;line-height:1.4}
+.mystery .d{font-size:13px;color:var(--dusk);margin-top:7px}
+
+/* 이어가기 — 없는 것이 기본 */
+.resume{
+  display:none;width:100%;text-align:left;margin-top:18px;
+  background:linear-gradient(150deg,rgba(232,214,168,.13),rgba(232,214,168,.03));
+  border:1px solid rgba(232,214,168,.35);border-radius:14px;padding:17px 18px;
+  transition:transform .15s var(--ease)
+}
+.resume:active{transform:scale(.985)}
+.resume.on{display:block}
+.resume .k{font-size:11.5px;letter-spacing:1.8px;color:var(--wax);font-weight:500;margin-bottom:7px}
+.resume .v{font-family:var(--serif);font-size:18px;font-weight:600;line-height:1.5}
+.resume .d{font-size:12.5px;color:var(--dusk);margin-top:6px}
+
+.sec{font-size:11.5px;letter-spacing:2px;color:var(--ash);font-weight:500;margin:26px 0 10px}
+.intent{
+  width:100%;text-align:left;display:flex;align-items:center;gap:14px;min-height:80px;
+  background:var(--vigil);border:1px solid var(--line);border-radius:13px;
+  padding:15px 17px;margin-bottom:9px;transition:border-color .3s,background .3s
+}
+.intent[aria-checked="true"]{border-color:rgba(232,214,168,.5);background:var(--vigil-2)}
+.intent .dot{width:8px;height:8px;border-radius:50%;background:var(--ash);flex:0 0 auto;transition:all .3s}
+.intent[aria-checked="true"] .dot{background:var(--wax);box-shadow:0 0 12px rgba(232,214,168,.55)}
+.intent .body{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.intent .nm{font-size:16px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.intent .pg{font-size:12.5px;color:var(--dusk)}
+.intent .pg b{color:var(--wax-dim);font-weight:500}
+.intent-add{
+  width:100%;min-height:56px;border:1px dashed var(--line-2);border-radius:13px;
+  font-size:14px;color:var(--dusk);transition:color .2s,border-color .2s
+}
+.intent-add:active{color:var(--linen)}
+
+.start{margin-top:auto;padding-top:28px}
+.btn-primary{
+  width:100%;min-height:84px;border-radius:18px;position:relative;
+  background:var(--wax);color:#221B08;font-size:19px;font-weight:700;letter-spacing:0;
+  box-shadow:0 10px 40px rgba(232,214,168,.18);transition:transform .15s var(--ease),filter .2s
+}
+.btn-primary:active{transform:scale(.985);filter:brightness(.93)}
+.toggles{display:flex;gap:10px;margin-top:12px}
+.tg{
+  flex:1;min-height:60px;border:1px solid var(--line);border-radius:13px;background:var(--vigil);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+  transition:border-color .3s,background .3s
+}
+.tg .t{font-size:13.5px;font-weight:500;color:var(--dusk);transition:color .3s}
+.tg .s{font-size:11px;color:var(--ash)}
+.tg[aria-pressed="true"]{border-color:rgba(156,140,201,.5);background:var(--vigil-2)}
+.tg[aria-pressed="true"] .t{color:var(--linen)}
+.tg[aria-pressed="true"] .s{color:var(--marian)}
+.hint{font-size:12px;color:var(--ash);line-height:1.7;margin-top:16px;text-align:center}
+.hint b{color:var(--dusk);font-weight:500}
+
+/* ============ 기도 — 알이 주인공 ============ */
+#pray{padding:20px 22px 26px;justify-content:space-between;text-align:center}
+.pr-top{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.pr-stage{font-size:12.5px;letter-spacing:1.2px;color:var(--marian);font-weight:500}
+.pr-intent{font-size:12px;color:var(--ash);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:45%}
+
+/* 시그니처 — 숨 쉬는 알 */
+.bead-stage{position:relative;width:min(64vw,270px);height:min(64vw,270px);margin:26px auto 10px}
+.bead-ring{position:absolute;inset:0;transform:rotate(-90deg)}
+.bead-ring circle{fill:none;stroke-width:2.5}
+.bead-ring .track{stroke:rgba(242,238,230,.09)}
+.bead-ring .arc{stroke:var(--wax);stroke-linecap:round;transition:stroke-dashoffset .45s linear;opacity:.85}
+.bead-core{
+  position:absolute;inset:13%;border-radius:50%;
+  background:radial-gradient(circle at 38% 32%, #241E31 0%, #15111E 62%, #100C18 100%);
+  box-shadow:inset 0 0 34px rgba(0,0,0,.55), 0 0 0 rgba(232,214,168,0);
+  display:flex;align-items:center;justify-content:center;
+  transition:box-shadow 1.2s var(--ease), transform .6s var(--ease);
+}
+.bead-core .count{font-family:var(--serif);font-size:44px;font-weight:600;color:var(--linen);letter-spacing:1px}
+.bead-core .of{font-size:13px;color:var(--ash);margin-top:2px}
+/* 내 차례 — 4초 호흡 */
+@keyframes breathe{
+  0%,100%{box-shadow:inset 0 0 34px rgba(0,0,0,.55), 0 0 26px rgba(232,214,168,.10)}
+  50%{box-shadow:inset 0 0 20px rgba(0,0,0,.3), 0 0 78px rgba(232,214,168,.42)}
+}
+.bead-stage.turn .bead-core{animation:breathe 4s ease-in-out infinite}
+.bead-stage.turn .bead-core .count{color:var(--wax)}
+.bead-stage.pulse .bead-core{transform:scale(1.07)}
+@media (prefers-reduced-motion:reduce){
+  .bead-stage.turn .bead-core{animation:none;box-shadow:inset 0 0 20px rgba(0,0,0,.3), 0 0 60px rgba(232,214,168,.35)}
+}
+.decades{display:flex;gap:7px;justify-content:center;margin-top:6px}
+.dec{width:30px;height:3px;border-radius:2px;background:rgba(242,238,230,.10);transition:background .5s}
+.dec.done{background:rgba(156,140,201,.45)}
+.dec.now{background:var(--marian)}
+
+/* 기도문 — 세리프 */
+.pr-body{flex:1;display:flex;flex-direction:column;justify-content:center;padding:14px 0 8px;min-height:0}
+.pr-kind{font-size:12px;letter-spacing:2.5px;color:var(--ash);font-weight:500;margin-bottom:15px}
+.pr-a{font-family:var(--serif);font-size:clamp(19px,5.6vw,24px);line-height:1.72;font-weight:400;color:var(--linen);transition:color .45s,opacity .45s}
+.pr-b{font-family:var(--serif);font-size:clamp(16px,4.8vw,20px);line-height:1.72;color:var(--ash);margin-top:18px;transition:color .5s}
+.pr-b.turn{color:var(--wax)}
+
+.pr-foot{display:flex;gap:10px}
+.pr-foot button{
+  flex:1;min-height:64px;border:1px solid var(--line);border-radius:15px;background:var(--vigil);
+  font-size:14px;font-weight:500;color:var(--dusk);line-height:1.35;transition:border-color .2s,color .2s
+}
+.pr-foot button:active{border-color:var(--line-2);color:var(--linen)}
+#btnPause{flex:1.5;color:var(--linen);border-color:rgba(232,214,168,.28)}
+.pr-foot small{display:block;font-size:10.5px;color:var(--ash);font-weight:400;margin-top:2px}
+
+/* ============ 완주 ============ */
+#done{align-items:center;justify-content:center;text-align:center}
+#done .halo{
+  width:120px;height:120px;border-radius:50%;margin-bottom:26px;
+  background:radial-gradient(circle at 40% 35%, rgba(232,214,168,.28), rgba(232,214,168,.05) 65%);
+  border:1px solid rgba(232,214,168,.3);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--serif);font-size:34px;color:var(--wax)
+}
+#done h2{font-family:var(--serif);font-size:25px;font-weight:600;letter-spacing:-.3px}
+#done p{font-size:14.5px;color:var(--dusk);margin-top:8px}
+#done .stat{display:flex;gap:34px;margin:30px 0 34px}
+#done .stat div{text-align:center}
+#done .stat b{display:block;font-family:var(--serif);font-size:27px;font-weight:600;color:var(--wax)}
+#done .stat span{font-size:11.5px;color:var(--ash);letter-spacing:.5px}
+
+/* ============ 시트 ============ */
+.sheet-bg{position:fixed;inset:0;background:rgba(5,4,9,.7);backdrop-filter:blur(3px);display:none;z-index:40}
+.sheet-bg.on{display:block;animation:fadein .4s var(--ease)}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+.sheet{
+  position:fixed;left:0;right:0;bottom:0;max-width:480px;margin:0 auto;z-index:41;
+  background:var(--vigil);border-radius:22px 22px 0 0;border-top:1px solid var(--line-2);
+  padding:26px 22px calc(30px + env(safe-area-inset-bottom));display:none;max-height:84vh;overflow-y:auto
+}
+.sheet.on{display:block;animation:sheetup .5s var(--ease)}
+@keyframes sheetup{from{transform:translateY(24px);opacity:0}to{transform:none;opacity:1}}
+.sheet h3{font-family:var(--serif);font-size:19px;font-weight:600;margin-bottom:6px}
+.sheet .sub{font-size:13px;color:var(--dusk);margin-bottom:18px;line-height:1.7}
+.sheet input{
+  width:100%;background:var(--night);border:1px solid var(--line-2);border-radius:13px;
+  padding:16px;font-size:16px;color:var(--linen);margin-bottom:12px;font-family:var(--sans)
+}
+.sheet input::placeholder{color:var(--ash)}
+.sheet .row{display:flex;gap:10px}
+.sheet .row button{flex:1;min-height:58px;border-radius:14px;font-size:15px;font-weight:500;border:1px solid var(--line);color:var(--dusk)}
+.sheet .row .go{background:var(--wax);color:#221B08;border-color:transparent;font-weight:700}
+.speed{display:flex;gap:9px;margin:4px 0 20px}
+.speed button{
+  flex:1;min-height:64px;border:1px solid var(--line);border-radius:13px;background:var(--night);
+  display:flex;flex-direction:column;gap:3px;align-items:center;justify-content:center;transition:border-color .3s
+}
+.speed b{font-size:14.5px;font-weight:500;color:var(--dusk)}
+.speed span{font-size:11px;color:var(--ash)}
+.speed button[aria-pressed="true"]{border-color:rgba(232,214,168,.5);background:var(--vigil-2)}
+.speed button[aria-pressed="true"] b{color:var(--wax)}
+.about{font-size:13px;color:var(--dusk);line-height:1.8}
+.about h4{font-size:13px;color:var(--wax);font-weight:500;margin:15px 0 5px}
+.about strong{color:var(--linen);font-weight:500}
+.about ul{margin-left:17px}
+.about li{margin-bottom:5px}
+</style>
+</head>
+<body>
+<div class="app">
+
+<section class="screen on" id="home">
+  <div class="brand"><h1>묵주기도</h1><button class="iconbtn" id="btnAbout" aria-label="이 시제품에 대하여">i</button></div>
+  <div class="notice" id="ttsWarn"></div>
+
+  <div class="mystery">
+    <div class="k" id="mysteryDay"></div>
+    <div class="v" id="mysteryName"></div>
+    <div class="d">요일에 따라 오늘의 신비가 정해집니다</div>
+  </div>
+
+  <button class="resume" id="resumeCard">
+    <div class="k">이어서 바치기</div>
+    <div class="v" id="resumeText"></div>
+    <div class="d" id="resumeSub"></div>
+  </button>
+
+  <div class="sec">지향</div>
+  <div id="intentList"></div>
+  <button class="intent-add" id="btnAddIntent">지향 추가</button>
+
+  <div class="start">
+    <button class="btn-primary" id="btnStart">시작</button>
+    <div class="toggles">
+      <button class="tg" id="tgSilent" aria-pressed="false"><span class="t">침묵 진행</span><span class="s">소리 없이 진동만</span></button>
+      <button class="tg" id="tgSpeed" aria-pressed="false"><span class="t">받는 사이</span><span class="s" id="speedLabel">보통</span></button>
+    </div>
+    <div class="hint">앞 절은 앱이, <b>뒷 절은 직접</b> 바칩니다.<br>중간에 끊겨도 그 자리가 남습니다.</div>
+  </div>
+</section>
+
+<section class="screen" id="pray">
+  <div>
+    <div class="pr-top"><div class="pr-stage" id="prStage"></div><div class="pr-intent" id="prIntent"></div></div>
+    <div class="bead-stage" id="beadStage">
+      <svg class="bead-ring" viewBox="0 0 100 100">
+        <circle class="track" cx="50" cy="50" r="48"></circle>
+        <circle class="arc" id="arc" cx="50" cy="50" r="48" stroke-dasharray="301.6" stroke-dashoffset="301.6"></circle>
+      </svg>
+      <div class="bead-core"><div><div class="count" id="beadCount">·</div><div class="of" id="beadOf"></div></div></div>
+    </div>
+    <div class="decades" id="decades"></div>
+  </div>
+
+  <div class="pr-body">
+    <div class="pr-kind" id="prKind"></div>
+    <div class="pr-a" id="prA"></div>
+    <div class="pr-b" id="prB"></div>
+  </div>
+
+  <div class="pr-foot">
+    <button id="btnPause">잠시 멈춤<small>자리가 남습니다</small></button>
+    <button id="btnStop">여기서 끝내기<small>처음부터 다시</small></button>
+  </div>
+</section>
+
+<section class="screen" id="done">
+  <div class="halo"><svg width="40" height="52" viewBox="0 0 40 52" fill="none"><path d="M20 2 V50 M4 16 H36" stroke="#E8D6A8" stroke-width="2.5" stroke-linecap="round"/></svg></div>
+  <h2>다 바쳤습니다</h2>
+  <p id="doneIntent"></p>
+  <div class="stat">
+    <div><b>50</b><span>성모송</span></div>
+    <div><b id="statMin">—</b><span>분</span></div>
+    <div><b id="statResume">0</b><span>번 이어서</span></div>
+  </div>
+  <button class="btn-primary" id="btnHome" style="max-width:280px">돌아가기</button>
+</section>
+
+</div>
+
+<div class="sheet-bg" id="sheetBg"></div>
+<div class="sheet" id="sheetIntent">
+  <h3>지향 추가</h3>
+  <div class="sub">누구를, 무엇을 위해 바치는지 적습니다. 지향마다 진행이 따로 기억됩니다.</div>
+  <input id="intentInput" placeholder="예: 어머니 건강" maxlength="24">
+  <div class="row"><button id="intentCancel">취소</button><button class="go" id="intentSave">추가</button></div>
+</div>
+<div class="sheet" id="sheetSpeed">
+  <h3>받는 사이</h3>
+  <div class="sub">앱이 앞 절을 읽고 나서, 뒷 절을 바칠 수 있도록 기다리는 시간입니다.</div>
+  <div class="speed" id="speedPicker">
+    <button data-sp="0.75" aria-pressed="false"><b>느리게</b><span>천천히 바침</span></button>
+    <button data-sp="1" aria-pressed="true"><b>보통</b><span>기본</span></button>
+    <button data-sp="1.35" aria-pressed="false"><b>빠르게</b><span>익숙한 분</span></button>
+  </div>
+  <div class="row"><button class="go" id="speedClose">닫기</button></div>
+</div>
+<div class="sheet" id="sheetAbout">
+  <h3>이 시제품이 확인하려는 것</h3>
+  <div class="sub">Atelier · mobile-rosary V1 · 07-d 통합 시제품</div>
+  <div class="about">
+    <p><strong>2026-08-28 판정으로 확정된 V1 세 기능</strong>이 실제로 한 흐름이 되는지, 그리고 이 화면이 <strong>Marcello보다 세련되다</strong>는 가설(03단계 포지셔닝)이 맞는지를 함께 봅니다.</p>
+    <h4>교대 낭송 (구현 가 · USP 2)</h4>
+    <ul><li>앱이 앞 절을 읽고 정해진 사이만큼 기다립니다. 음성 인식 없음.</li><li>내 차례가 되면 가운데 알이 <strong>숨을 쉽니다</strong> — 글자를 읽지 않아도 곁눈질로 압니다.</li></ul>
+    <h4>침묵 진행</h4>
+    <ul><li>소리를 끄고 진동만으로 알이 넘어갑니다. 알마다 한 번, 단이 바뀔 때 세 번.</li></ul>
+    <h4>끊기면 이어 준다 (USP 3)</h4>
+    <ul><li>알마다 자리가 저장되고 지향마다 따로 기억됩니다. 끊긴 것을 벌주는 말은 어디에도 없습니다.</li></ul>
+    <h4>아직 아닌 것</h4>
+    <ul><li>음성은 브라우저 합성음입니다. 성우·사제 목소리는 V1.5.</li><li>54일 리본·다국어는 뒤 판입니다.</li></ul>
+  </div>
+  <div class="row" style="margin-top:18px"><button class="go" id="aboutClose">닫기</button></div>
+</div>
+
+<script>
+/* 기도문 · 진행 엔진 — v1 검증본 이식 */
+const P={
+ sign:{k:'성호경',a:'성부와 성자와 성령의 이름으로.',b:'아멘.'},
+ creed:{k:'사도신경',a:'전능하신 천주 성부, 천지의 창조주를 저는 믿나이다. 그 외아들 우리 주 예수 그리스도님, 성령으로 인하여 동정 마리아께 잉태되어 나시고, 본시오 빌라도 통치 아래서 고난을 받으시고, 십자가에 못 박혀 돌아가시고 묻히셨으며,',b:'저승에 가시어 사흗날에 죽은 이들 가운데서 부활하시고, 하늘에 올라 전능하신 천주 성부 오른편에 앉으시며, 산 이와 죽은 이를 심판하러 오시리라 믿나이다. 성령을 믿으며, 거룩하고 보편된 교회와 모든 성인의 통공을 믿으며, 죄의 용서와 육신의 부활을 믿으며, 영원한 삶을 믿나이다. 아멘.'},
+ our:{k:'주님의 기도',a:'하늘에 계신 우리 아버지, 아버지의 이름이 거룩히 빛나시며 아버지의 나라가 오시며 아버지의 뜻이 하늘에서와 같이 땅에서도 이루어지소서.',b:'오늘 저희에게 일용할 양식을 주시고 저희에게 잘못한 이를 저희가 용서하오니 저희 죄를 용서하시고 저희를 유혹에 빠지지 않게 하시고 악에서 구하소서. 아멘.'},
+ hail:{k:'성모송',a:'은총이 가득하신 마리아님, 기뻐하소서. 주님께서 함께 계시니 여인 중에 복되시며 태중의 아들 예수님 또한 복되십니다.',b:'천주의 성모 마리아님, 이제와 저희 죽을 때에 저희 죄인을 위하여 빌어 주소서. 아멘.'},
+ glory:{k:'영광송',a:'영광이 성부와 성자와 성령께,',b:'처음과 같이 이제와 항상 영원히. 아멘.'},
+ fatima:{k:'구원을 비는 기도',a:'예수님, 저희 죄를 용서하시며 저희를 지옥 불에서 구하시고,',b:'연옥 영혼을 돌보시며 가장 버림받은 영혼을 돌보소서. 아멘.'}};
+const MY={joyful:{name:'환희의 신비',days:[1,6],list:['마리아께서 예수님을 잉태하심을 묵상합시다.','마리아께서 엘리사벳을 찾아보심을 묵상합시다.','마리아께서 예수님을 낳으심을 묵상합시다.','마리아께서 예수님을 성전에서 봉헌하심을 묵상합시다.','마리아께서 잃으셨던 예수님을 성전에서 찾으심을 묵상합시다.']},
+ luminous:{name:'빛의 신비',days:[4],list:['예수님께서 요르단 강에서 세례받으심을 묵상합시다.','예수님께서 카나에서 첫 기적을 행하심을 묵상합시다.','예수님께서 하느님 나라를 선포하심을 묵상합시다.','예수님께서 거룩하게 변모하심을 묵상합시다.','예수님께서 성체성사를 세우심을 묵상합시다.']},
+ sorrowful:{name:'고통의 신비',days:[2,5],list:['예수님께서 우리를 위하여 피땀 흘리심을 묵상합시다.','예수님께서 우리를 위하여 매 맞으심을 묵상합시다.','예수님께서 우리를 위하여 가시관 쓰심을 묵상합시다.','예수님께서 우리를 위하여 십자가 지심을 묵상합시다.','예수님께서 우리를 위하여 십자가에 못 박혀 돌아가심을 묵상합시다.']},
+ glorious:{name:'영광의 신비',days:[0,3],list:['예수님께서 부활하심을 묵상합시다.','예수님께서 승천하심을 묵상합시다.','예수님께서 성령을 보내심을 묵상합시다.','마리아께서 하늘에 불려 올라가심을 묵상합시다.','마리아께서 하늘의 여왕이 되심을 묵상합시다.']}};
+const DAY=['일요일','월요일','화요일','수요일','목요일','금요일','토요일'];
+function todayMystery(){const d=new Date().getDay();for(const k in MY){if(MY[k].days.includes(d))return{key:k,...MY[k]}}return{key:'joyful',...MY.joyful}}
+function buildSteps(m){const s=[];const push=(p,x)=>s.push(Object.assign({kind:p.k,a:p.a,b:p.b},x));
+ push(P.sign,{decade:0,bead:0,stage:'시작 기도'});push(P.creed,{decade:0,bead:0,stage:'시작 기도'});push(P.our,{decade:0,bead:0,stage:'시작 기도'});
+ for(let i=0;i<3;i++)push(P.hail,{decade:0,bead:i+1,beads:3,stage:'시작 기도'});push(P.glory,{decade:0,bead:0,stage:'시작 기도'});
+ for(let d=1;d<=5;d++){s.push({kind:'제 '+d+' 단',a:m.list[d-1],b:'',decade:d,bead:0,stage:m.name+' 제'+d+'단',announce:true});
+  push(P.our,{decade:d,bead:0,stage:m.name+' 제'+d+'단'});
+  for(let i=0;i<10;i++)push(P.hail,{decade:d,bead:i+1,beads:10,stage:m.name+' 제'+d+'단'});
+  push(P.glory,{decade:d,bead:0,stage:m.name+' 제'+d+'단'});push(P.fatima,{decade:d,bead:0,stage:m.name+' 제'+d+'단'});}
+ return s}
+
+const KEY='rosary.v2';
+const defaults={intents:[{id:'i1',name:'오늘의 지향',progress:null}],active:'i1',silent:false,speed:1};
+let S=load();
+function load(){try{const r=localStorage.getItem(KEY);if(r)return Object.assign({},defaults,JSON.parse(r))}catch(e){}return JSON.parse(JSON.stringify(defaults))}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+const activeIntent=()=>S.intents.find(i=>i.id===S.active)||S.intents[0];
+
+let koVoice=null,voicesReady=false;
+function noVoiceNotice(){const w=document.getElementById('ttsWarn');w.classList.add('on');
+ w.innerHTML='이 기기에 <b>한국어 음성</b>이 없어 소리 없이 진행됩니다. 진동과 받는 사이는 그대로 동작합니다.'}
+function pickVoice(){const vs=speechSynthesis.getVoices();if(!vs.length)return;
+ koVoice=vs.find(v=>v.lang==='ko-KR')||vs.find(v=>/^ko/i.test(v.lang))||null;voicesReady=true;
+ if(!koVoice)noVoiceNotice();else document.getElementById('ttsWarn').classList.remove('on')}
+if('speechSynthesis' in window){pickVoice();speechSynthesis.onvoiceschanged=pickVoice;
+ setTimeout(()=>{if(!voicesReady){voicesReady=true;koVoice=null;noVoiceNotice()}},1200)}
+else noVoiceNotice();
+function speak(t,done){if(S.silent||!koVoice||!('speechSynthesis'in window)){done();return}
+ try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.voice=koVoice;u.lang='ko-KR';u.rate=.92;
+ let f=false;const fin=()=>{if(!f){f=true;done()}};u.onend=fin;u.onerror=fin;speechSynthesis.speak(u);
+ setTimeout(fin,900+t.length*140)}catch(e){done()}}
+function buzz(p){if(navigator.vibrate){try{navigator.vibrate(p)}catch(e){}}}
+
+let steps=[],idx=0,running=false,timer=null,arcTimer=null,startedAt=0,myst=null,resumeUsed=0;
+const $=id=>document.getElementById(id);
+const show=id=>{document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));$(id).classList.add('on')};
+const ARC=301.6;
+
+function renderHome(){
+ myst=todayMystery();
+ $('mysteryDay').textContent=DAY[new Date().getDay()]+' · 오늘의 신비';
+ $('mysteryName').textContent=myst.name;
+ const list=$('intentList');list.innerHTML='';
+ S.intents.forEach(it=>{const b=document.createElement('button');b.className='intent';
+  b.setAttribute('aria-checked',String(it.id===S.active));
+  const pg=it.progress?'<b>'+pLabel(it.progress)+'</b> 에서 멈춤':'아직 시작하지 않음';
+  b.innerHTML='<span class="dot"></span><span class="body"><span class="nm">'+esc(it.name)+'</span><span class="pg">'+pg+'</span></span>';
+  b.onclick=()=>{S.active=it.id;save();renderHome()};list.appendChild(b)});
+ const it=activeIntent(),r=$('resumeCard');
+ if(it.progress){r.classList.add('on');
+  $('resumeText').textContent=pLabel(it.progress)+'부터 이어서';
+  $('resumeSub').textContent=esc(it.name)+' · '+ago(it.progress.at)+' 멈춤'}
+ else r.classList.remove('on');
+ $('tgSilent').setAttribute('aria-pressed',String(!!S.silent));
+ $('speedLabel').textContent=S.speed<1?'느리게':(S.speed>1?'빠르게':'보통');
+ $('btnStart').textContent=it.progress?'처음부터 다시':'시작'}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+function pLabel(p){return p.decade===0?'시작 기도':'제'+p.decade+'단 '+(p.bead>0?p.bead+'번째 알':'')}
+function ago(ts){const m=Math.floor((Date.now()-ts)/60000);if(m<1)return'방금';if(m<60)return m+'분 전';
+ const h=Math.floor(m/60);if(h<24)return h+'시간 전';const d=Math.floor(h/24);return d===1?'어제':d+'일 전'}
+
+function begin(fromResume){
+ myst=todayMystery();steps=buildSteps(myst);const it=activeIntent();
+ if(fromResume&&it.progress){idx=Math.min(it.progress.idx,steps.length-1);resumeUsed=(it.progress.resumes||0)+1}
+ else{idx=0;resumeUsed=0}
+ startedAt=Date.now();running=true;wake();show('pray');
+ $('prIntent').textContent=it.name;runStep()}
+
+function runStep(){
+ if(!running)return;
+ if(idx>=steps.length){finish();return}
+ const st=steps[idx];
+ $('prStage').textContent=st.stage;$('prKind').textContent=st.kind;
+ $('prA').textContent=st.a;$('prB').textContent=st.b||'';
+ $('prB').classList.remove('turn');
+ const bs=$('beadStage');bs.classList.remove('turn');
+ if(st.beads){$('beadCount').textContent=st.bead;$('beadOf').textContent=st.beads===10?'/ 10':'/ 3'}
+ else{$('beadCount').textContent='·';$('beadOf').textContent=''}
+ renderDecades(st);persist(st);
+ if(st.announce){buzz([28,60,28,60,28]);bs.classList.add('pulse');setTimeout(()=>bs.classList.remove('pulse'),600)}else buzz(18);
+ // 테두리 arc: 읽는 동안 차오른다
+ const arc=$('arc');arc.style.transition='none';arc.style.strokeDashoffset=ARC;
+ const readMs=(S.silent||!koVoice)?400:(700+st.a.length*120);
+ requestAnimationFrame(()=>{arc.style.transition='stroke-dashoffset '+readMs+'ms linear';arc.style.strokeDashoffset=0});
+ speak(st.a,()=>{
+  if(!running)return;
+  const ms=pauseFor(st);
+  if(st.b){$('prB').classList.add('turn');bs.classList.add('turn')}
+  arc.style.transition='none';arc.style.strokeDashoffset=ARC;
+  timer=setTimeout(()=>{if(!running)return;idx++;runStep()},ms)})}
+
+function pauseFor(st){
+ if(!st.b)return 2200/S.speed;
+ const base=900+st.b.length*132;
+ const silentBonus=(S.silent||!koVoice)?st.a.length*118:0;
+ return Math.round((base+silentBonus)/S.speed)}
+
+function renderDecades(st){
+ const dec=$('decades');
+ if(!dec.dataset.built){for(let i=0;i<5;i++){const d=document.createElement('span');d.className='dec';dec.appendChild(d)}dec.dataset.built='1'}
+ [...dec.children].forEach((el,i)=>{el.className='dec'+(i+1<st.decade?' done':'')+(i+1===st.decade?' now':'')})}
+
+function persist(st){const it=activeIntent();
+ it.progress={idx,decade:st.decade,bead:st.bead,at:Date.now(),resumes:resumeUsed};save()}
+
+function pause(keep){running=false;clearTimeout(timer);
+ if('speechSynthesis'in window)speechSynthesis.cancel();unwake();
+ if(keep===false){activeIntent().progress=null;save()}
+ renderHome();show('home')}
+function finish(){running=false;clearTimeout(timer);
+ if('speechSynthesis'in window)speechSynthesis.cancel();unwake();
+ buzz(200); // 완주 — 눈 감은 사용자에게 끝을 알린다 (06-screen-spec 진동 사전)
+ const it=activeIntent();
+ $('doneIntent').textContent=it.name+'\uc744 \uc704\ud558\uc5ec';
+ $('statMin').textContent=Math.max(1,Math.round((Date.now()-startedAt)/60000));
+ $('statResume').textContent=resumeUsed;
+ it.progress=null;save();show('done')}
+
+let wl=null;
+async function wake(){try{if('wakeLock'in navigator)wl=await navigator.wakeLock.request('screen')}catch(e){}}
+function unwake(){try{if(wl){wl.release();wl=null}}catch(e){}}
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&running){running=false;clearTimeout(timer);
+ if('speechSynthesis'in window)speechSynthesis.cancel()}});
+
+$('btnStart').onclick=()=>{activeIntent().progress=null;save();begin(false)};
+$('resumeCard').onclick=()=>begin(true);
+$('btnPause').onclick=()=>pause(true);
+$('btnStop').onclick=()=>pause(false);
+$('btnHome').onclick=()=>{renderHome();show('home')};
+$('tgSilent').onclick=()=>{S.silent=!S.silent;save();renderHome();if(S.silent)buzz([20,50,20])};
+const openSheet=id=>{$('sheetBg').classList.add('on');$(id).classList.add('on')};
+const closeSheets=()=>{$('sheetBg').classList.remove('on');document.querySelectorAll('.sheet').forEach(s=>s.classList.remove('on'))};
+$('sheetBg').onclick=closeSheets;
+$('btnAddIntent').onclick=()=>{$('intentInput').value='';openSheet('sheetIntent');setTimeout(()=>$('intentInput').focus(),100)};
+$('intentCancel').onclick=closeSheets;
+$('intentSave').onclick=()=>{const v=$('intentInput').value.trim();if(!v)return closeSheets();
+ const id='i'+Date.now();S.intents.push({id,name:v,progress:null});S.active=id;save();closeSheets();renderHome()};
+$('tgSpeed').onclick=()=>{document.querySelectorAll('#speedPicker button').forEach(b=>b.setAttribute('aria-pressed',String(parseFloat(b.dataset.sp)===S.speed)));openSheet('sheetSpeed')};
+document.querySelectorAll('#speedPicker button').forEach(b=>{b.onclick=()=>{S.speed=parseFloat(b.dataset.sp);save();
+ document.querySelectorAll('#speedPicker button').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));renderHome()}});
+$('speedClose').onclick=closeSheets;
+$('btnAbout').onclick=()=>openSheet('sheetAbout');
+$('aboutClose').onclick=closeSheets;
+renderHome();
+</script>
+</body>
+</html>

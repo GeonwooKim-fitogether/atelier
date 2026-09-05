@@ -1,0 +1,555 @@
+<!doctype html>
+<html lang="ko"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>묵주기도 — v4 시안</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&family=Noto+Sans+KR:wght@400;500;700&display=swap">
+<style>
+:root{
+  --ground:#10161F; --surface:#18202C; --surface-2:#222C3B;
+  --hanji:#F0EAD9; --chija:#D9AE4C; --chija-hi:#F2DCA0;
+  --dusk:#8E93A3; --ash:#4A5262; --line:rgba(240,234,217,.10);
+  --season:#7E8B6B;              /* 전례색 슬롯 — 기본 연중(쑥빛) */
+  --bead-past:#C9BFA6; --bead-next:#3A4354; --bead-big:#8DA2BC;
+  --on-chija:#1A1205; --veil-1:#54697F; --veil-2:#2E3D50; --robe-1:#9FAE9B; --robe-2:#5E6C60; --collar:#EFE9DA; --skin:#D8BEA2;
+}
+[data-season="lent"]  {--season:#7A6699}
+[data-season="ord"]   {--season:#7E8B6B}
+[data-season="feast"] {--season:#E4DED0}
+[data-season="pass"]  {--season:#9E4A57}
+[data-theme="day"]{
+  --ground:#EDE7D8; --surface:#F5F1E6; --surface-2:#E2DAC7;
+  --hanji:#1F2530; --chija:#8A6516; --chija-hi:#6E4F0F;
+  --dusk:#5C6272; --ash:#A9A395; --line:rgba(31,37,48,.12);
+  --bead-past:#6B6045; --bead-next:#C6BEAB; --bead-big:#41546B;
+  --on-chija:#FBF6EA; --veil-1:#9FB3C6; --veil-2:#6F869E; --robe-1:#CBD5C6; --robe-2:#A3B3A2; --collar:#FBF8F0; --skin:#EBD5BC;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%}
+body{
+  background:var(--ground); color:var(--hanji);
+  font-family:"Noto Sans KR",-apple-system,sans-serif;
+  word-break:keep-all; overflow-wrap:break-word;
+  display:flex; align-items:center; justify-content:center;
+  transition:background .8s ease;
+}
+#app{
+  width:min(100vw,412px); height:min(100vh,880px);
+  position:relative; overflow:hidden; background:var(--ground);
+  display:flex; flex-direction:column;
+  color:var(--hanji);
+  transition:background .8s ease,color .8s ease;
+}
+.scr{position:absolute;inset:0;display:none;flex-direction:column}
+.scr.on{display:flex}
+
+/* ── 배경 성화 (SVG) ─────────────────── */
+#art{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+
+/* ── 홈 ──────────────────────────────── */
+.pad{padding:0 26px}
+.home-top{padding-top:64px;position:relative;z-index:2}
+.kicker{font-size:12.5px;letter-spacing:.14em;color:var(--dusk);font-weight:500}
+.today{font-family:"Noto Serif KR",serif;font-size:31px;font-weight:600;margin:8px 0 0;line-height:1.32}
+.today small{display:block;font-size:15px;font-weight:400;color:var(--dusk);margin-top:7px;letter-spacing:.01em}
+.seasonpill{
+  display:inline-flex;align-items:center;gap:7px;margin-top:16px;
+  font-size:12px;color:var(--dusk);
+}
+.seasonpill i{width:9px;height:9px;border-radius:50%;background:var(--season);display:block}
+.home-bot{margin-top:auto;padding-bottom:38px;position:relative;z-index:2}
+.resume{
+  display:block;width:100%;text-align:left;
+  background:var(--surface);border:1px solid var(--line);
+  border-radius:16px;padding:17px 19px;margin-bottom:14px;
+  color:inherit;font-family:inherit;cursor:pointer;
+}
+.resume .r1{font-size:12.5px;color:var(--chija);letter-spacing:.04em;font-weight:500}
+.resume .r2{font-size:17px;margin-top:5px;font-weight:500}
+.resume .r3{font-size:12.5px;color:var(--dusk);margin-top:4px}
+.big{
+  width:100%;min-height:80px;border:0;border-radius:18px;
+  background:var(--chija);color:var(--on-chija);
+  font-family:"Noto Serif KR",serif;font-size:21px;font-weight:600;
+  cursor:pointer;letter-spacing:.02em;
+}
+.big.ghost{background:transparent;color:var(--hanji);border:1px solid var(--line);min-height:62px;font-size:17px;margin-top:10px}
+.opts{display:flex;gap:9px;margin-top:18px;flex-wrap:wrap}
+.opt{
+  flex:1 1 0;min-width:96px;min-height:52px;border-radius:12px;
+  background:var(--surface);border:1px solid var(--line);color:var(--dusk);
+  font-family:inherit;font-size:13px;cursor:pointer;padding:8px;
+}
+.opt b{display:block;color:var(--hanji);font-size:14px;font-weight:500;margin-top:2px}
+.opt[aria-pressed="true"]{border-color:var(--chija);color:var(--chija)}
+.opt[aria-pressed="true"] b{color:var(--chija)}
+
+/* ── 기도 화면 ───────────────────────── */
+.bar{
+  height:46px;display:flex;align-items:center;justify-content:space-between;
+  padding:0 20px;position:relative;z-index:3;flex:none;
+}
+.bar .st{font-size:12.5px;color:var(--dusk);letter-spacing:.05em}
+.bar button{background:none;border:0;color:var(--dusk);font-family:inherit;font-size:13px;cursor:pointer;padding:8px}
+
+/* FR-24 기도문 영역 고정 높이 */
+.textbox{
+  flex:none;height:190px;padding:0 26px;position:relative;z-index:3;
+  display:flex;flex-direction:column;justify-content:center;
+}
+.mystery{
+  font-size:12.5px;color:var(--season);letter-spacing:.1em;font-weight:500;
+  margin-bottom:9px;
+}
+.line{
+  font-family:"Noto Serif KR",serif;font-size:22px;line-height:1.62;font-weight:400;
+  margin:0;transition:opacity .45s ease,color .45s ease;
+}
+.line.mine{color:var(--chija-hi);font-weight:600}
+.who{
+  font-size:12px;color:var(--dusk);margin-top:11px;letter-spacing:.06em;
+  min-height:17px;
+}
+.who.mine{color:var(--chija)}
+
+/* 묵주 */
+.stage{flex:1;position:relative;z-index:2;min-height:0}
+#ros{position:absolute;inset:0;width:100%;height:100%}
+.ctrl{
+  flex:none;height:82px;padding:0 26px;display:flex;gap:11px;align-items:center;position:relative;z-index:3;
+}
+.ctrl button{
+  flex:1;height:60px;border-radius:14px;border:1px solid var(--line);
+  background:var(--surface);color:var(--hanji);font-family:inherit;font-size:15px;cursor:pointer;
+}
+.ctrl button.pri{background:var(--chija);color:var(--on-chija);border-color:transparent;font-weight:600}
+
+/* 완주 */
+.done{align-items:center;justify-content:center;text-align:center;padding:0 34px}
+.done h2{font-family:"Noto Serif KR",serif;font-size:30px;font-weight:600;margin:26px 0 0}
+.done p{color:var(--dusk);font-size:15px;line-height:1.75;margin:14px 0 0}
+.done .amt{font-size:13px;color:var(--chija);margin-top:20px;letter-spacing:.05em}
+
+/* 시트 */
+.sheet{
+  position:absolute;inset:0;z-index:20;display:none;
+  background:rgba(8,11,16,.72);align-items:flex-end;
+}
+[data-theme="day"] .sheet{background:rgba(60,55,40,.42)}
+.sheet.on{display:flex}
+.sheet .in{
+  width:100%;background:var(--surface);border-radius:22px 22px 0 0;
+  padding:24px 26px 34px;border-top:1px solid var(--line);
+}
+.sheet h3{font-family:"Noto Serif KR",serif;font-size:20px;margin:0 0 4px;font-weight:600}
+.sheet p{color:var(--dusk);font-size:13.5px;line-height:1.7;margin:0 0 18px}
+.note{
+  position:absolute;left:20px;right:20px;top:246px;z-index:9;
+  background:var(--surface-2);border:1px solid var(--line);border-radius:12px;
+  padding:13px 16px;font-size:13px;color:var(--dusk);line-height:1.6;display:none;
+}
+.note.on{display:block}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style></head><body>
+<div id="app" data-season="ord">
+
+  <svg id="art" viewBox="0 0 412 880" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <defs>
+      <radialGradient id="halo" cx="50%" cy="50%">
+        <stop offset="0%"  stop-color="var(--chija)" stop-opacity=".30"/>
+        <stop offset="55%" stop-color="var(--chija)" stop-opacity=".10"/>
+        <stop offset="100%" stop-color="var(--chija)" stop-opacity="0"/>
+      </radialGradient>
+      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%"   stop-color="var(--ground)"/>
+        <stop offset="46%"  stop-color="var(--surface)"/>
+        <stop offset="100%" stop-color="var(--ground)"/>
+      </linearGradient>
+      <linearGradient id="veilg" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="var(--veil-1)"/><stop offset="100%" stop-color="var(--veil-2)"/>
+      </linearGradient>
+      <linearGradient id="robeg" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="var(--robe-1)"/><stop offset="100%" stop-color="var(--robe-2)"/>
+      </linearGradient>
+    </defs>
+    <rect width="412" height="880" fill="url(#sky)"/>
+    <g id="symbol" opacity=".45"></g>
+    <g opacity=".82">
+      <!-- 후광 -->
+      <circle cx="206" cy="318" r="126" fill="url(#halo)"/>
+      <circle cx="206" cy="318" r="132" fill="none" stroke="var(--chija)" stroke-width="1" opacity=".16"/>
+      <!-- 장옷 뒤: 어깨에서 아래로 흐른다 -->
+      <path d="M206 236 C256 236 284 280 290 340 C295 380 312 402 334 420 C354 438 362 512 366 880 L46 880 C50 512 58 438 78 420 C100 402 117 380 122 340 C128 280 156 236 206 236 Z"
+            fill="url(#veilg)" opacity=".9"/>
+      <!-- 저고리 (장옷 앞이 열린 자리) -->
+      <path d="M152 880 C158 660 176 508 206 480 C236 508 254 660 260 880 Z" fill="url(#robeg)" opacity=".9"/>
+      <path d="M180 880 L206 496 L232 880" fill="none" stroke="var(--collar)" stroke-width="12" stroke-linejoin="round" opacity=".85"/>
+      <path d="M214 512 C229 526 232 552 223 574" fill="none" stroke="#8E3F4C" stroke-width="6.5" stroke-linecap="round" opacity=".8"/>
+      <!-- 얼굴 -->
+      <ellipse cx="206" cy="318" rx="50" ry="59" fill="var(--skin)"/>
+      <path d="M206 263 C231 263 246 279 249 293 C240 282 224 277 206 277 C188 277 172 282 163 293 C166 279 181 263 206 263 Z" fill="#332C23" opacity=".7"/>
+      <path d="M206 264 L206 277" stroke="#241F19" stroke-width="1.4" opacity=".5"/>
+      <!-- 이목구비: 가늘게, 아래를 온화하게 본다 -->
+      <path d="M184 306 C189 302 196 302 201 306" fill="none" stroke="#8A7361" stroke-width="1.4" stroke-linecap="round" opacity=".55"/>
+      <path d="M211 306 C216 302 223 302 228 306" fill="none" stroke="#8A7361" stroke-width="1.4" stroke-linecap="round" opacity=".55"/>
+      <path d="M185 320 C190 326 197 326 202 320" fill="none" stroke="#463829" stroke-width="2.1" stroke-linecap="round"/>
+      <path d="M210 320 C215 326 222 326 227 320" fill="none" stroke="#463829" stroke-width="2.1" stroke-linecap="round"/>
+      <path d="M206 322 L206 338 C206 341 209 342 211 340" fill="none" stroke="#C9A88C" stroke-width="1.8" stroke-linecap="round"/>
+      <path d="M198 352 C202 355 210 355 214 352" fill="none" stroke="#AE7C6A" stroke-width="2.1" stroke-linecap="round"/>
+      <!-- 장옷 앞: 얼굴을 감싸되 이목구비는 비운다 (FR-23) -->
+      <path fill-rule="evenodd" fill="url(#veilg)"
+        d="M206 226 C258 226 286 272 292 336 C297 378 316 400 340 418 C360 436 368 512 372 880 L266 880 C260 700 250 556 238 508 L174 508 C162 556 152 700 146 880 L40 880 C44 512 52 436 72 418 C96 400 115 378 120 336 C126 272 154 226 206 226 Z
+           M206 246 C240 246 264 278 264 320 C264 366 240 396 206 396 C172 396 148 366 148 320 C148 278 172 246 206 246 Z"/>
+      <!-- 옷주름 -->
+      <g fill="none" stroke="#7C93AB" stroke-linecap="round" opacity=".38">
+        <path d="M206 226 C154 226 126 272 120 336" stroke-width="1.6"/>
+        <path d="M206 226 C258 226 286 272 292 336" stroke-width="1.6"/>
+        <path d="M92 470 C84 580 74 740 68 880" stroke-width="1.2"/>
+        <path d="M320 470 C328 580 338 740 344 880" stroke-width="1.2"/>
+        <path d="M120 520 C114 620 108 760 104 880" stroke-width="1"/>
+        <path d="M292 520 C298 620 304 760 308 880" stroke-width="1"/>
+      </g>
+    </g>
+  </svg>
+
+  <!-- ══ 홈 ══ -->
+  <section class="scr on" id="s-home">
+    <div class="pad home-top">
+      <div class="kicker" id="dayname">수요일</div>
+      <h1 class="today">영광의 신비<small>오늘 바칠 다섯 단이 이미 정해져 있습니다</small></h1>
+      <div class="seasonpill"><i></i><span id="seasonname">연중 시기</span></div>
+    </div>
+    <div class="pad home-bot">
+      <button class="resume" id="resume" hidden>
+        <div class="r1">이어서 바치기</div>
+        <div class="r2" id="rwhere">제2단 4번째 알</div>
+        <div class="r3" id="rwhen">12분 전에 멈췄습니다</div>
+      </button>
+      <button class="big" id="start">묵주기도 시작</button>
+      <div class="opts">
+        <button class="opt" id="o-silent" aria-pressed="false">침묵 진행<b>꺼짐</b></button>
+        <button class="opt" id="o-speed" aria-pressed="false">받는 사이<b>보통</b></button>
+        <button class="opt" id="o-theme" aria-pressed="false">화면<b>밤</b></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ 기도 ══ -->
+  <section class="scr" id="s-pray">
+    <div class="bar">
+      <span class="st" id="pos">시작 기도</span>
+      <button id="pause">잠시 멈춤</button>
+    </div>
+    <div class="textbox">
+      <div class="mystery" id="myst">제1단 · 예수님께서 부활하심</div>
+      <p class="line" id="line">성부와 성자와 성령의 이름으로. 아멘.</p>
+      <div class="who" id="who">앱이 읽는 중</div>
+    </div>
+    <div class="stage"><svg id="ros" viewBox="0 0 412 562" aria-hidden="true"></svg></div>
+    <div class="ctrl">
+      <button id="prev">이전</button>
+      <button id="next" class="pri">다음</button>
+    </div>
+    <div class="note" id="note"></div>
+  </section>
+
+  <!-- ══ 완주 ══ -->
+  <section class="scr done" id="s-done">
+    <svg width="88" height="88" viewBox="0 0 88 88" aria-hidden="true">
+      <circle cx="44" cy="44" r="42" fill="none" stroke="var(--chija)" stroke-width="1.5" opacity=".5"/>
+      <circle cx="44" cy="44" r="15" fill="var(--chija)"/>
+    </svg>
+    <h2>다 바쳤습니다</h2>
+    <p id="donemsg">영광의 신비 다섯 단을 마쳤습니다.<br>오늘 하루도 평안하시기를 바랍니다.</p>
+    <div class="amt" id="doneamt"></div>
+    <button class="big ghost" id="tohome" style="margin-top:34px">처음으로</button>
+  </section>
+
+  <!-- ══ 멈춤 시트 ══ -->
+  <div class="sheet" id="sheet"><div class="in">
+    <h3>잠시 멈출까요</h3>
+    <p>지금 자리를 기억해 두면, 다음에 열 때 이어서 바칠 수 있습니다.</p>
+    <button class="big" id="keep">자리를 남기고 나가기</button>
+    <button class="big ghost" id="drop">여기서 끝내기</button>
+    <button class="big ghost" id="back">계속 바치기</button>
+  </div></div>
+</div>
+
+<script>
+/* ─────────── 기도문 ─────────── */
+const P={
+  sign:{a:"성부와 성자와 성령의 이름으로. 아멘.",b:""},
+  creed:{a:"전능하신 천주 성부, 천지의 창조주를 저는 믿나이다.",b:""},
+  our:{a:"하늘에 계신 우리 아버지, 아버지의 이름이 거룩히 빛나시며 아버지의 나라가 오시며 아버지의 뜻이 하늘에서와 같이 땅에서도 이루어지소서.",
+       b:"오늘 저희에게 일용할 양식을 주시고 저희에게 잘못한 이를 저희가 용서하오니 저희 죄를 용서하시고 저희를 유혹에 빠지지 않게 하시고 악에서 구하소서. 아멘."},
+  hail:{a:"은총이 가득하신 마리아님, 기뻐하소서! 주님께서 함께 계시니 여인 중에 복되시며 태중의 아들 예수님 또한 복되시나이다.",
+        b:"천주의 성모 마리아님, 이제와 저희 죽을 때에 저희 죄인을 위하여 빌어주소서. 아멘."},
+  glory:{a:"영광이 성부와 성자와 성령께,",b:"처음과 같이 이제와 항상 영원히. 아멘."},
+  save:{a:"예수님, 저희 죄를 용서하시며 저희를 지옥 불에서 구하시고,",b:"연옥 영혼을 도우시며 가장 버림받은 영혼을 구원하소서."}
+};
+const MYST={
+  joy:["환희의 신비",["마리아님께서 예수님을 잉태하심","마리아님께서 엘리사벳을 찾아보심","마리아님께서 예수님을 낳으심","마리아님께서 예수님을 성전에 바치심","마리아님께서 잃으셨던 예수님을 성전에서 찾으심"]],
+  light:["빛의 신비",["예수님께서 요르단 강에서 세례 받으심","예수님께서 카나에서 첫 기적을 행하심","예수님께서 하느님 나라를 선포하심","예수님께서 거룩하게 변모하심","예수님께서 성체성사를 세우심"]],
+  sorrow:["고통의 신비",["예수님께서 우리를 위하여 피땀 흘리심","예수님께서 우리를 위하여 매맞으심","예수님께서 우리를 위하여 가시관 쓰심","예수님께서 우리를 위하여 십자가 지심","예수님께서 우리를 위하여 십자가에 못박혀 돌아가심"]],
+  glory:["영광의 신비",["예수님께서 부활하심","예수님께서 승천하심","성령께서 강림하심","성모님께서 하늘에 올림을 받으심","성모님께서 하늘의 여왕으로 관을 쓰심"]]
+};
+const DAYS=["glory","joy","sorrow","glory","light","sorrow","joy"];   // 일~토
+const DAYNM=["일요일","월요일","화요일","수요일","목요일","금요일","토요일"];
+
+/* ─────────── 77단계 (시작 기도 7 + 각 단 14 × 5) ─────────── */
+function build(key){
+  const [name,list]=MYST[key], q=[];
+  q.push({t:"sign",p:P.sign,label:"시작 기도",m:name});
+  q.push({t:"creed",p:P.creed,label:"시작 기도",m:name});
+  q.push({t:"our",p:P.our,label:"시작 기도",m:name});
+  for(let i=0;i<3;i++) q.push({t:"hail",p:P.hail,label:"시작 기도",m:name,bead:i});
+  q.push({t:"glory",p:P.glory,label:"시작 기도",m:name});
+  for(let d=1;d<=5;d++){
+    const mm=`제${d}단 · ${list[d-1]}`;
+    q.push({t:"decl",p:{a:list[d-1]+"을 묵상합시다.",b:""},label:`제${d}단`,m:mm,dec:d});
+    q.push({t:"our",p:P.our,label:`제${d}단`,m:mm,dec:d,big:true});
+    for(let i=0;i<10;i++) q.push({t:"hail",p:P.hail,label:`제${d}단 · ${i+1}번째 알`,m:mm,dec:d,bead:i});
+    q.push({t:"glory",p:P.glory,label:`제${d}단`,m:mm,dec:d});
+    q.push({t:"save",p:P.save,label:`제${d}단`,m:mm,dec:d});
+  }
+  return q;
+}
+
+/* ─────────── 상태 ─────────── */
+const S={key:DAYS[new Date().getDay()],q:[],i:0,silent:false,speed:1,theme:"night",
+         playing:false,phase:"idle",t0:Date.now(),timer:null};
+const $=id=>document.getElementById(id);
+const app=$("app");
+
+/* 전례 시기 (프로토타입: 월로 근사) */
+function season(){
+  const m=new Date().getMonth()+1;
+  if(m===3||m===4) return ["lent","대림·사순 시기"];
+  if(m===12) return ["lent","대림 시기"];
+  if(m===5||m===8) return ["feast","성모 축일"];
+  if(m===6) return ["pass","성령강림 시기"];
+  return ["ord","연중 시기"];
+}
+
+/* ─────────── 음성 ─────────── */
+let ko=null, voicesReady=false;
+function pickVoice(){
+  const v=speechSynthesis.getVoices();
+  ko=v.find(x=>/ko(-|_)?KR/i.test(x.lang))||v.find(x=>/^ko/i.test(x.lang))||null;
+  voicesReady=true;
+}
+if("speechSynthesis" in window){ pickVoice(); speechSynthesis.onvoiceschanged=pickVoice; setTimeout(pickVoice,900); }
+
+/* 받는 사이 = FR-13 */
+function pauseFor(st){
+  const b=st.p.b||"";
+  if(!b) return Math.round(1900/S.speed);
+  const base=900+b.length*132;
+  const bonus=(S.silent||!ko)?st.p.a.length*118:0;
+  return Math.round((base+bonus)/S.speed);
+}
+
+/* ─────────── 묵주 SVG (FR-21) ─────────── */
+const NS="http://www.w3.org/2000/svg";
+function drawRosary(){
+  const g=$("ros"); g.innerHTML="";
+  const cx=206, cy=292, rx=126, ry=112;
+  const st=S.q[S.i]||{};
+  // 현재 알의 절대 인덱스 (고리 55알 기준)
+  let cur=-1;
+  if(st.dec) cur=(st.dec-1)*11 + (st.t==="our"?0:(st.bead!=null?st.bead+1:10));
+  const thread=document.createElementNS(NS,"ellipse");
+  thread.setAttribute("cx",cx);thread.setAttribute("cy",cy);
+  thread.setAttribute("rx",rx);thread.setAttribute("ry",ry);
+  thread.setAttribute("fill","none");
+  thread.setAttribute("stroke","var(--line)");thread.setAttribute("stroke-width","1.2");
+  g.appendChild(thread);
+  for(let i=0;i<55;i++){
+    const a=(90+i*(360/55))*Math.PI/180;
+    const x=cx+rx*Math.cos(a), y=cy+ry*Math.sin(a);
+    const big=(i%11===0);
+    const c=document.createElementNS(NS,"circle");
+    c.setAttribute("cx",x.toFixed(1));c.setAttribute("cy",y.toFixed(1));
+    c.setAttribute("r", big?9.5:5.6);            /* FR-26 화면폭 8%↑ */
+    let fill = i<cur ? "var(--bead-past)" : (big?"var(--bead-big)":"var(--bead-next)");
+    if(i===cur){
+      fill="var(--chija)";
+      const halo=document.createElementNS(NS,"circle");
+      halo.setAttribute("cx",x.toFixed(1));halo.setAttribute("cy",y.toFixed(1));
+      halo.setAttribute("r", big?24:19);
+      halo.setAttribute("fill","var(--chija)");
+      halo.setAttribute("opacity", S.phase==="mine"?".30":".13");
+      if(S.phase==="mine"){
+        const an=document.createElementNS(NS,"animate");
+        an.setAttribute("attributeName","opacity");
+        an.setAttribute("values",".14;.42;.14");
+        an.setAttribute("dur","4s");an.setAttribute("repeatCount","indefinite");
+        halo.appendChild(an);
+      }
+      g.appendChild(halo);
+    }
+    c.setAttribute("fill",fill);
+    g.appendChild(c);
+  }
+  // 꼬리 + 십자가
+  const tail=[[cy+ry+18,"big"],[cy+ry+42,""],[cy+ry+57,""],[cy+ry+72,""],[cy+ry+96,"big"]];
+  const ln=document.createElementNS(NS,"line");
+  ln.setAttribute("x1",cx);ln.setAttribute("y1",cy+ry);
+  ln.setAttribute("x2",cx);ln.setAttribute("y2",cy+ry+112);
+  ln.setAttribute("stroke","var(--line)");ln.setAttribute("stroke-width","1.2");
+  g.appendChild(ln);
+  tail.forEach(([y,k])=>{
+    const c=document.createElementNS(NS,"circle");
+    c.setAttribute("cx",cx);c.setAttribute("cy",y);
+    c.setAttribute("r",k==="big"?9.5:5.6);
+    c.setAttribute("fill",S.i>0?"var(--bead-past)":(k==="big"?"var(--bead-big)":"var(--bead-next)"));
+    g.appendChild(c);
+  });
+  const cr=document.createElementNS(NS,"path");
+  cr.setAttribute("d",`M${cx} ${cy+ry+106} v30 M${cx-11} ${cy+ry+117} h22`);
+  cr.setAttribute("stroke","var(--chija)");cr.setAttribute("stroke-width","4.5");
+  cr.setAttribute("stroke-linecap","round");cr.setAttribute("fill","none");
+  cr.setAttribute("opacity",".85");
+  g.appendChild(cr);
+}
+
+/* ─────────── 신비별 상징 (FR-22 부분) ─────────── */
+const SYM={
+  1:'<circle cx="206" cy="128" r="26" fill="none" stroke="var(--chija)" stroke-width="2"/>',
+  2:'<path d="M206 100 v52 M188 120 l18-20 18 20" fill="none" stroke="var(--chija)" stroke-width="2.4" stroke-linecap="round"/>',
+  3:'<path d="M188 138 c7-16 29-16 36 0 c-9 7-27 7-36 0z" fill="var(--chija)" opacity=".8"/><path d="M206 104 v20" stroke="var(--chija)" stroke-width="2"/>',
+  4:'<path d="M176 144 c0-18 20-25 30-16 c13-13 32-2 29 16z" fill="var(--chija)" opacity=".65"/>',
+  5:'<path d="M182 148 l5-29 13 16 7-23 7 23 13-16 5 29z" fill="none" stroke="var(--chija)" stroke-width="2.2" stroke-linejoin="round"/>'
+};
+function drawSymbol(){
+  const st=S.q[S.i]||{};
+  $("symbol").innerHTML = st.dec ? (SYM[st.dec]||"") : "";
+}
+
+/* ─────────── 진행 ─────────── */
+function render(){
+  const st=S.q[S.i]; if(!st) return;
+  $("pos").textContent=st.label;
+  $("myst").textContent=st.m;
+  drawRosary(); drawSymbol();
+}
+function speak(txt){
+  return new Promise(res=>{
+    if(S.silent||!ko||!("speechSynthesis" in window)){ setTimeout(res, Math.min(4200, 380+txt.length*66)); return; }
+    speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(txt);
+    u.voice=ko; u.lang="ko-KR"; u.rate=0.92*S.speed; u.pitch=1;
+    u.onend=res; u.onerror=res;
+    speechSynthesis.speak(u);
+  });
+}
+async function runStep(){
+  const st=S.q[S.i]; if(!st) return;
+  S.phase="app";
+  $("line").textContent=st.p.a; $("line").classList.remove("mine");
+  $("who").textContent = st.p.b ? "앱이 앞 절을 바칩니다" : "함께 바칩니다";
+  $("who").classList.remove("mine");
+  render();
+  await speak(st.p.a);
+  if(!S.playing) return;
+  if(st.p.b){
+    S.phase="mine";
+    $("line").textContent=st.p.b; $("line").classList.add("mine");
+    $("who").textContent="이제 이어 바치세요"; $("who").classList.add("mine");
+    render();
+    if(navigator.vibrate) navigator.vibrate(S.silent?[28]:18);
+  }
+  save();
+  S.timer=setTimeout(()=>{ if(S.playing) advance(1); }, pauseFor(st));
+}
+function advance(d){
+  clearTimeout(S.timer); if("speechSynthesis" in window) speechSynthesis.cancel();
+  const prevDec=(S.q[S.i]||{}).dec;
+  S.i+=d;
+  if(S.i>=S.q.length){ finish(); return; }
+  if(S.i<0) S.i=0;
+  const nd=(S.q[S.i]||{}).dec;
+  if(navigator.vibrate && nd && nd!==prevDec) navigator.vibrate([22,70,22,70,22]);
+  runStep();
+}
+function finish(){
+  S.playing=false; localStorage.removeItem("mr.pos");
+  const mins=Math.max(1,Math.round((Date.now()-S.t0)/60000));
+  $("doneamt").textContent=`${MYST[S.key][0]} · ${mins}분`;
+  $("donemsg").innerHTML=`${MYST[S.key][0]} 다섯 단을 마쳤습니다.<br>오늘 하루도 평안하시기를 바랍니다.`;
+  show("s-done");
+}
+
+/* ─────────── 저장 ─────────── */
+function save(){ try{ localStorage.setItem("mr.pos",JSON.stringify({k:S.key,i:S.i,at:Date.now()})); }catch(e){} }
+function loadPos(){ try{ return JSON.parse(localStorage.getItem("mr.pos")||"null"); }catch(e){ return null; } }
+function ago(ms){
+  const m=Math.round((Date.now()-ms)/60000);
+  if(m<1) return "방금 멈췄습니다";
+  if(m<60) return `${m}분 전에 멈췄습니다`;
+  const h=Math.round(m/60); if(h<24) return `${h}시간 전에 멈췄습니다`;
+  return "어제 멈췄습니다";
+}
+function whereText(q,i){
+  const st=q[i]; if(!st) return "";
+  if(!st.dec) return "시작 기도";
+  return `제${st.dec}단 ${st.bead!=null?st.bead+1+"번째 알":""}`.trim();
+}
+
+/* ─────────── 화면 ─────────── */
+function show(id){ document.querySelectorAll(".scr").forEach(s=>s.classList.toggle("on",s.id===id)); }
+function homeInit(){
+  $("symbol").innerHTML="";
+  const d=new Date().getDay();
+  S.key=DAYS[d];
+  $("dayname").textContent=DAYNM[d];
+  document.querySelector(".today").firstChild.textContent=MYST[S.key][0];
+  const [sc,sn]=season(); app.dataset.season=sc; $("seasonname").textContent=sn;
+  const p=loadPos();
+  if(p && p.k===S.key && p.i>0){
+    const q=build(p.k);
+    $("resume").hidden=false;
+    $("rwhere").textContent=whereText(q,p.i);
+    $("rwhen").textContent=ago(p.at);
+  } else $("resume").hidden=true;
+}
+function begin(from){
+  S.q=build(S.key); S.i=from||0; S.playing=true; S.t0=Date.now();
+  show("s-pray");
+  if(!S.silent && !ko){
+    $("note").textContent="이 기기에 한국어 음성이 없어 소리 없이 진행됩니다. 진동과 받는 사이는 그대로 동작합니다.";
+    $("note").classList.add("on"); setTimeout(()=>$("note").classList.remove("on"),6000);
+  }
+  runStep();
+}
+
+/* ─────────── 배선 ─────────── */
+$("start").onclick=()=>begin(0);
+$("resume").onclick=()=>{ const p=loadPos(); begin(p?p.i:0); };
+$("next").onclick=()=>advance(1);
+$("prev").onclick=()=>advance(-1);
+$("pause").onclick=()=>{ S.playing=false; clearTimeout(S.timer); if("speechSynthesis" in window)speechSynthesis.cancel(); $("sheet").classList.add("on"); };
+$("back").onclick=()=>{ $("sheet").classList.remove("on"); S.playing=true; runStep(); };
+$("keep").onclick=()=>{ save(); $("sheet").classList.remove("on"); homeInit(); show("s-home"); };
+$("drop").onclick=()=>{ localStorage.removeItem("mr.pos"); $("sheet").classList.remove("on"); homeInit(); show("s-home"); };
+$("tohome").onclick=()=>{ homeInit(); show("s-home"); };
+$("o-silent").onclick=e=>{ S.silent=!S.silent; e.currentTarget.setAttribute("aria-pressed",S.silent);
+  e.currentTarget.querySelector("b").textContent=S.silent?"켜짐":"꺼짐"; };
+const SP=[[0.75,"느리게"],[1,"보통"],[1.35,"빠르게"]]; let spi=1;
+$("o-speed").onclick=e=>{ spi=(spi+1)%3; S.speed=SP[spi][0];
+  e.currentTarget.querySelector("b").textContent=SP[spi][1];
+  e.currentTarget.setAttribute("aria-pressed",spi!==1); };
+$("o-theme").onclick=e=>{ S.theme=S.theme==="night"?"day":"night";
+  app.dataset.theme=S.theme==="day"?"day":"";
+  e.currentTarget.querySelector("b").textContent=S.theme==="day"?"낮":"밤";
+  e.currentTarget.setAttribute("aria-pressed",S.theme==="day"); };
+
+/* 화면 꺼짐 방지 (FR-20) */
+let wl=null;
+document.addEventListener("visibilitychange",async()=>{
+  if(document.visibilityState==="visible" && S.playing && "wakeLock" in navigator){
+    try{ wl=await navigator.wakeLock.request("screen"); }catch(e){}
+  }
+});
+homeInit(); drawRosary();
+</script></body></html>

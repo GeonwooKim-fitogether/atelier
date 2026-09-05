@@ -1,0 +1,59 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>방향 6 — 손</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@400;500&display=swap">
+<style>
+:root{--ebony:#241B15;--jujube:#7B4A2D;--pearl:#E6DCCB;--brass:#B9A26A;--shade:#120D0A;--soft:#8A7E6E}
+*{box-sizing:border-box;margin:0;padding:0}html,body{height:100%}
+body{background:var(--shade);color:var(--pearl);font:15px/1.6 "Noto Sans KR",system-ui,sans-serif;max-width:430px;margin:0 auto;min-height:100vh;position:relative;overflow:hidden;-webkit-tap-highlight-color:transparent}
+.gb{font-family:"Gowun Batang","Noto Serif KR",serif}
+.beads{position:absolute;inset:0;z-index:0}.beads svg{width:100%;height:100%}
+.ui{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;padding:26px 22px calc(24px + env(safe-area-inset-bottom))}
+.eye{font-size:11px;letter-spacing:.22em;color:var(--soft)}
+h1{font-family:"Gowun Batang",serif;font-weight:700;font-size:30px;line-height:1.3;margin-top:8px}
+.who{font-size:13px;color:var(--soft);margin-top:5px}
+.sp{flex:1}
+.pr{background:rgba(18,13,10,.82);border-left:2px solid var(--brass);padding:14px 16px;max-width:19em;backdrop-filter:blur(3px)}
+.pr .a{font-family:"Gowun Batang",serif;font-size:19px;line-height:1.7}
+.pr .b{font-family:"Gowun Batang",serif;font-size:19px;line-height:1.7;color:var(--soft);margin-top:9px}
+.pr.mine .a{color:var(--soft)}.pr.mine .b{color:var(--brass);font-weight:700}
+.turn{margin-top:14px;font-size:11px;letter-spacing:.2em;color:var(--soft)}.turn.mine{color:var(--brass)}
+button{font:500 15px/1 "Noto Sans KR";border:0;background:none;cursor:pointer;color:var(--soft)}
+.b1{font-family:"Gowun Batang",serif;font-size:19px;color:var(--shade);background:var(--brass);padding:16px 28px;min-height:54px;border-radius:2px;align-self:flex-start}
+.b2{font-size:13px;margin-top:12px;align-self:flex-start}
+.res{font-size:12px;color:var(--soft);margin-bottom:10px}
+.opts{display:flex;gap:18px;margin-top:20px;font-size:12px}.opts button{font-size:12px}
+.n{display:flex;gap:24px;margin:18px 0}.n b{display:block;font-family:"Gowun Batang",serif;font-size:26px;color:var(--brass)}.n span{font-size:11px;color:var(--soft)}
+.hint{font-size:12px;color:var(--soft);margin-top:10px}
+.veil{position:absolute;inset:0;z-index:2;background:rgba(18,13,10,.92);display:flex;flex-direction:column;justify-content:center;padding:26px 22px}
+</style></head><body>
+<div class="beads" id="beads"></div><div class="ui" id="ui"></div>
+<script src="engine.js"></script>
+<script>
+const R=Rosary.create({onChange:render}); let S=R.snapshot(); let manual=false;
+function bead(cx,cy,r,tone,cur){ // 나뭇결 알
+  const id="g"+Math.round(cy);
+  return '<defs><radialGradient id="'+id+'" cx="36%" cy="30%"><stop offset="0" stop-color="'+(cur?"#C9A87E":tone==="p"?"#F2ECE0":"#96603C")+'"/><stop offset=".62" stop-color="'+(cur?"#8A5C33":tone==="p"?"#CFC2AC":"#6B4027")+'"/><stop offset="1" stop-color="#2A1C13"/></radialGradient></defs>'
+   +'<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="url(#'+id+')"/>'
+   +'<ellipse cx="'+(cx-r*.3)+'" cy="'+(cy-r*.36)+'" rx="'+(r*.28)+'" ry="'+(r*.16)+'" fill="#fff" opacity="'+(cur?.3:.16)+'"/>'
+   +(cur?'<circle cx="'+cx+'" cy="'+cy+'" r="'+(r+13)+'" fill="none" stroke="#B9A26A" stroke-opacity=".45" stroke-width="1.5"/>':''); }
+function beads(s){ const cx=195, live=s.phase!=="idle"&&s.phase!=="done";
+  const big=s.step&&s.step.bead<0, r=64;
+  let o='<line x1="'+cx+'" y1="0" x2="'+cx+'" y2="844" stroke="#3A2A1E" stroke-width="3"/>';
+  o+=bead(cx,86,r*.62,"j",false)+bead(cx,760,r*.62,"j",false);
+  o+=bead(cx,420,live?(big?r*1.18:r):r*.8,live?(big?"j":"p"):"j",live);
+  return '<svg viewBox="0 0 390 844" preserveAspectRatio="xMidYMid slice">'+o+'</svg>'; }
+function render(s){ S=s; document.getElementById("beads").innerHTML=beads(s); const u=document.getElementById("ui");
+  if(s.phase==="idle"){ u.innerHTML='<div class="eye">'+s.todayName+'</div><h1>'+s.mystName+'</h1><div class="who">'+s.intent+'을 위하여</div><div class="sp"></div>'
+    +(s.pos?'<div class="res">'+Rosary.MYST[s.pos.k][0]+' · '+s.posWhere+' · '+s.posAgo+'</div><button class="b1" data-a="resume">이어서 바치기</button><button class="b2" data-a="start">처음부터 다시</button>':'<button class="b1" data-a="start">묵주를 잡습니다</button>')
+    +'<div class="opts"><button data-a="manual">'+(manual?"손으로 넘김":"저절로 넘김")+'</button><button data-a="silent">'+(s.silent?"침묵":"소리")+'</button></div><div class="hint">손으로 넘김을 켜면 알을 톡 칠 때마다 다음 기도로 갑니다.</div>'; return; }
+  if(s.phase==="done"){ u.innerHTML='<div class="sp"></div><div class="eye">'+s.mystName+'</div><h1>다 바쳤습니다</h1><div class="who">'+s.intent+'을 위하여</div><div class="n"><div><b>50</b><span>성모송</span></div><div><b>'+s.elapsedMin+'</b><span>걸린 분</span></div><div><b>'+s.resumes+'</b><span>이어서</span></div></div><button class="b2" data-a="home">묵주를 놓습니다</button>'; return; }
+  const st=s.step, mine=s.phase==="mine";
+  u.innerHTML='<div class="eye">'+st.label+' · '+(st.mystery||s.mystName)+'</div>'+(manual?'<div style="position:absolute;inset:0" data-a="next"></div>':'')+'<div class="sp"></div>'
+    +'<div class="pr '+(mine?"mine":"")+'"><div class="a">'+st.a+'</div>'+(st.b?'<div class="b">'+st.b+'</div>':'')+'<div class="turn '+(mine?"mine":"")+'">'+(manual?"알을 톡 치면 넘어갑니다":mine?"내 차례":"앱이 읽고 있습니다")+'</div></div>'
+    +'<div class="opts"><button data-a="pause">잠시 멈춤</button><button data-a="end">여기서 끝내기</button><button data-a="manual">'+(manual?"손으로":"저절로")+'</button></div>'
+    +(s.phase==="paused"?'<div class="veil"><div class="eye">멈춰 있습니다</div><h1 style="font-size:25px">'+st.label+'</h1><div class="who">자리는 남아 있습니다</div><button class="b1" data-a="continue" style="margin-top:16px">이어서 바치기</button><button class="b2" data-a="home">홈으로</button></div>':'');
+}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-a]");if(!b)return;const a=b.dataset.a;
+  ({start:()=>R.start(),resume:()=>R.start({fromSaved:true}),pause:()=>R.pause(),continue:()=>R.resume(),end:()=>R.end(),home:()=>R.home(),silent:()=>R.toggleSilent(),manual:()=>{manual=!manual;render(S);},next:()=>{if(manual)R.next();}})[a]?.();});
+R.demoFromURL();
+</script></body></html>

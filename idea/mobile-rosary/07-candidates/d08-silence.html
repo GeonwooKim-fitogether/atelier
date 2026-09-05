@@ -1,0 +1,49 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>방향 8 — 침묵</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@200;300;400&family=Noto+Sans+KR:wght@300;400;500&display=swap">
+<style>
+:root{--void:#050506;--faint:#1A1A1E;--ash:#6E6A66;--bone:#E4E0D8;--ember:#C46A3D}
+*{box-sizing:border-box;margin:0;padding:0}html,body{height:100%}
+body{background:var(--void);color:var(--bone);font:15px/1.6 "Noto Sans KR",system-ui,sans-serif;max-width:430px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:28px;-webkit-tap-highlight-color:transparent}
+.bs{font-family:"Big Shoulders Display","Arial Narrow",sans-serif;font-weight:200}
+.dot{width:16px;height:16px;border-radius:50%;background:var(--faint);transition:background .6s,box-shadow .6s}
+.dot.mine{background:var(--bone);box-shadow:0 0 0 14px rgba(228,224,216,.06),0 0 0 30px rgba(228,224,216,.03);animation:br 4s ease-in-out infinite}
+@keyframes br{0%,100%{transform:scale(1)}50%{transform:scale(1.32)}}
+@media(prefers-reduced-motion:reduce){.dot.mine{animation:none}}
+.huge{font-family:"Big Shoulders Display","Arial Narrow",sans-serif;font-weight:200;font-size:190px;line-height:.82;letter-spacing:-.03em}
+.huge span{font-size:56px;color:var(--ash)}
+.lbl{font-size:14px;color:var(--ash);letter-spacing:.16em;margin-top:14px}
+h1{font-family:"Big Shoulders Display",sans-serif;font-weight:300;font-size:46px;line-height:1.05;letter-spacing:-.01em}
+.ko{font-family:"Noto Sans KR";font-size:26px;font-weight:300;line-height:1.3}
+.who{font-size:13px;color:var(--ash);margin-top:8px}
+button{font:400 15px/1 "Noto Sans KR";border:0;background:none;cursor:pointer;color:var(--ash)}
+.b1{border:1px solid #2A2A2E;border-radius:999px;padding:17px 36px;min-height:56px;color:var(--bone);font-size:17px;margin-top:26px}
+.b2{font-size:13px;margin-top:14px}
+.res{font-size:12px;color:var(--ash);margin-top:8px}
+.code{display:grid;gap:9px;margin-top:30px;font-size:13px;color:var(--ash);text-align:left}
+.code b{color:var(--bone);font-weight:400;letter-spacing:.34em;margin-right:12px;font-family:"Big Shoulders Display",sans-serif;font-size:19px}
+.row{display:flex;gap:20px;margin-top:26px;font-size:12px;color:var(--ash)}.row button{font-size:12px}
+.text{max-width:18em;margin-top:20px;font-size:16px;line-height:1.7;color:var(--ash)}.text.mine{color:var(--bone)}
+</style></head><body>
+<div id="app" style="display:contents"></div>
+<script src="engine.js"></script>
+<script>
+const R=Rosary.create({onChange:render}); let S=R.snapshot(); const app=document.getElementById("app"); let reveal=false, t=null;
+function render(s){ S=s;
+  if(s.phase==="idle"){ app.innerHTML='<div class="lbl">'+s.todayName+'</div><div class="ko">'+s.mystName+'</div><div class="who">'+s.intent+'을 위하여</div>'
+    +(s.pos?'<button class="b1" data-a="resume">이어서 · '+s.posWhere+'</button><div class="res">'+Rosary.MYST[s.pos.k][0]+' · '+s.posAgo+'</div><button class="b2" data-a="start">처음부터 다시</button>':'<button class="b1" data-a="start">눈을 감고 시작</button>')
+    +'<div class="code"><div><b>·</b>알이 넘어갈 때 짧게 한 번</div><div><b>· · ·</b>단이 바뀔 때 세 번</div><div><b>—</b>다 바치면 길게 한 번</div></div>'
+    +'<div class="row"><button data-a="silent">'+(s.silent?"진동만":"소리 + 진동")+'</button><button data-a="speed">사이 '+({0.75:"느리게",1:"보통",1.35:"빠르게"})[s.speed]+'</button></div>'
+    +'<div class="who" style="margin-top:22px;max-width:19em">기도 중에는 화면이 거의 꺼져 있습니다. 어디쯤인지 궁금하면 화면을 한 번 톡 치세요.</div>'; return; }
+  if(s.phase==="done"){ app.innerHTML='<div class="huge">畢</div><div class="ko" style="margin-top:18px">다 바쳤습니다</div><div class="who">'+s.mystName+' · 성모송 50 · '+s.elapsedMin+'분</div><button class="b2" data-a="home">돌아가기</button>'; return; }
+  const st=s.step, mine=s.phase==="mine";
+  if(s.phase==="paused"){ app.innerHTML='<div class="ko">멈춰 있습니다</div><div class="who">'+st.label+' · 자리는 남아 있습니다</div><button class="b1" data-a="continue">이어서 바치기</button><button class="b2" data-a="home">홈으로</button>'; return; }
+  if(reveal){ app.innerHTML='<div class="huge">'+(st.bead>=0?st.bead+1:"·")+(st.of?'<span> / '+st.of+'</span>':'')+'</div><div class="lbl">'+st.label+'</div><div class="who">'+(st.mystery||s.mystName)+'</div>'
+    +'<div class="text '+(mine?"mine":"")+'">'+(mine&&st.b?st.b:st.a)+'</div><div class="row"><button data-a="pause">잠시 멈춤</button><button data-a="end">끝내기</button><button data-a="hide">닫기</button></div>'; return; }
+  app.innerHTML='<div style="position:fixed;inset:0" data-a="reveal"></div><div class="dot '+(mine?"mine":"")+'"></div>'; }
+document.addEventListener("click",e=>{const b=e.target.closest("[data-a]");if(!b)return;const a=b.dataset.a;
+  ({start:()=>R.start(),resume:()=>R.start({fromSaved:true}),pause:()=>R.pause(),continue:()=>R.resume(),end:()=>R.end(),home:()=>R.home(),silent:()=>R.toggleSilent(),speed:()=>R.setSpeed(S.speed===1?1.35:S.speed===1.35?.75:1),
+    reveal:()=>{reveal=true;render(S);clearTimeout(t);t=setTimeout(()=>{reveal=false;render(S);},4000);},hide:()=>{reveal=false;render(S);}})[a]?.();});
+const dm=new URLSearchParams(location.search).get("demo"); if(dm==="pray"||dm==="mine") reveal=true;
+R.demoFromURL();
+</script></body></html>

@@ -1,0 +1,65 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>방향 9 — 판화 성모</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@400;500&display=swap">
+<style>
+:root{--jjok:#22384F;--hanji:#EFE7D6;--gam:#8B4A2F;--ok:#8AA79B;--muk:#1A1815;--soft:#7C7466}
+*{box-sizing:border-box;margin:0;padding:0}html,body{height:100%}
+body{background:var(--hanji);color:var(--muk);font:15px/1.6 "Noto Sans KR",system-ui,sans-serif;max-width:430px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column}
+.gb{font-family:"Gowun Batang","Noto Serif KR",serif}
+.cut{flex:0 0 auto;background:var(--hanji);position:relative}
+.cut svg{display:block;width:100%;height:auto}
+main{flex:1;padding:18px 22px calc(20px + env(safe-area-inset-bottom));display:flex;flex-direction:column;border-top:2px solid var(--muk)}
+.eye{font-size:11px;letter-spacing:.2em;color:var(--soft)}
+h1{font-family:"Gowun Batang",serif;font-weight:700;font-size:29px;line-height:1.28;margin-top:6px}
+.who{font-size:13px;color:var(--soft);margin-top:5px}
+.sp{flex:1}
+.pr{min-height:132px}
+.pr .a{font-family:"Gowun Batang",serif;font-size:20px;line-height:1.7}
+.pr .b{font-family:"Gowun Batang",serif;font-size:20px;line-height:1.7;color:var(--soft);margin-top:9px}
+.pr.mine .a{color:var(--soft)}.pr.mine .b{color:var(--gam);font-weight:700}
+.turn{margin-top:14px;font-size:11px;letter-spacing:.2em;color:var(--soft)}.turn.mine{color:var(--gam)}
+button{font:500 15px/1 "Noto Sans KR";border:0;background:none;cursor:pointer;color:var(--soft);text-align:left}
+.b1{font-family:"Gowun Batang",serif;font-size:19px;font-weight:700;color:var(--hanji);background:var(--jjok);padding:16px 26px;min-height:54px;align-self:flex-start}
+.b2{font-size:13px;margin-top:10px;align-self:flex-start}
+.res{font-size:12px;color:var(--soft);margin-bottom:10px}
+.opts{display:flex;gap:18px;margin-top:18px;font-size:12px}.opts button{font-size:12px}
+.n{display:flex;gap:24px;margin:16px 0}.n b{display:block;font-family:"Gowun Batang",serif;font-size:26px}.n span{font-size:11px;color:var(--soft)}
+.veil{position:fixed;inset:0;background:rgba(239,231,214,.96);max-width:430px;margin:0 auto;display:flex;flex-direction:column;justify-content:center;padding:26px 22px}
+</style></head><body>
+<div class="cut" id="cut"></div><main id="ui"></main>
+<script src="engine.js"></script>
+<script>
+const R=Rosary.create({onChange:render}); let S=R.snapshot();
+function cut(s){ const live=s.phase!=="idle"&&s.phase!=="done";
+  const cur = s.step ? (s.step.dec? (s.step.dec-1)*11+(s.step.bead>=0?s.step.bead+1:0) : (s.step.bead>=0?s.step.bead:0)) : -1;
+  // 손 아래에 걸린 묵주 — 얼굴 근처에 오지 않는다
+  let beads=""; const bx=195, by=430;
+  for(let i=0;i<11;i++){ const a=(-90+i*(360/22)-100)*Math.PI/180, x=bx+68*Math.cos(a), y=by+34+50*Math.sin(a)+34;
+    const on=s.phase==="done"||(live&&i<=(cur%11)); beads+='<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="'+(on?7.5:6)+'" fill="'+(on?"#8B4A2F":"#EFE7D6")+'" stroke="#1A1815" stroke-width="2.4"/>'; }
+  return '<svg viewBox="0 0 390 500" aria-label="한복 성모 판화">'
+   +'<rect width="390" height="500" fill="#EFE7D6"/>'
+   +'<circle cx="195" cy="196" r="122" fill="#8AA79B"/>'                                   /* 후광 — 옥색 원판 */
+   +'<path d="M72 500 C72 300 118 108 195 108 C272 108 318 300 318 500 Z" fill="#22384F"/>' /* 너울 */
+   +'<path d="M195 138 C150 138 128 178 128 218 C128 268 158 300 195 300 C232 300 262 268 262 218 C262 178 240 138 195 138 Z" fill="#EFE7D6"/>' /* 얼굴 */
+   +'<path d="M124 232 C124 168 152 128 195 128 C238 128 266 168 266 232 L252 222 C250 176 228 146 195 146 C162 146 140 176 138 222 Z" fill="#22384F"/>' /* 너울 앞자락 */
+   +'<path d="M167 226 q13 -6 26 0 M197 226 q13 -6 26 0" stroke="#1A1815" stroke-width="3.4" fill="none" stroke-linecap="round"/>' /* 감은 눈 */
+   +'<path d="M195 238 v20" stroke="#1A1815" stroke-width="3" stroke-linecap="round"/>'
+   +'<path d="M184 274 h22" stroke="#1A1815" stroke-width="3.2" stroke-linecap="round"/>'
+   +'<path d="M140 500 C140 400 160 336 195 336 C230 336 250 400 250 500 Z" fill="#8AA79B"/>' /* 안쪽 옷 */
+   +'<path d="M195 372 m-52 34 q52 -30 104 0 q-30 44 -52 44 q-22 0 -52 -44 Z" fill="#EFE7D6" stroke="#1A1815" stroke-width="2.6"/>' /* 모아 쥔 두 손 */
+   +beads
+   +'<path d="M178 500 h34 M195 476 v34" stroke="#1A1815" stroke-width="5" stroke-linecap="square"/>'
+   +'</svg>'; }
+function render(s){ S=s; document.getElementById("cut").innerHTML=cut(s); const u=document.getElementById("ui");
+  if(s.phase==="idle"){ u.innerHTML='<div class="eye">'+s.todayName+'</div><h1>'+s.mystName+'</h1><div class="who">'+s.intent+'을 위하여</div><div class="sp"></div>'
+    +(s.pos?'<div class="res">'+Rosary.MYST[s.pos.k][0]+' · '+s.posWhere+' · '+s.posAgo+'</div><button class="b1" data-a="resume">이어서 바치기</button><button class="b2" data-a="start">처음부터 다시</button>':'<button class="b1" data-a="start">시작</button>')
+    +'<div class="opts"><button data-a="silent">'+(s.silent?"침묵 진행":"소리로 진행")+'</button><button data-a="speed">받는 사이 '+({0.75:"느리게",1:"보통",1.35:"빠르게"})[s.speed]+'</button></div>'; return; }
+  if(s.phase==="done"){ u.innerHTML='<div class="eye">'+s.mystName+'</div><h1>다 바쳤습니다</h1><div class="who">'+s.intent+'을 위하여</div><div class="n"><div><b>50</b><span>성모송</span></div><div><b>'+s.elapsedMin+'</b><span>걸린 분</span></div><div><b>'+s.resumes+'</b><span>이어서</span></div></div><div class="sp"></div><button class="b2" data-a="home">돌아가기</button>'; return; }
+  const st=s.step, mine=s.phase==="mine";
+  u.innerHTML='<div class="eye">'+st.label+' · '+(st.mystery||s.mystName)+'</div><div class="pr '+(mine?"mine":"")+'" style="margin-top:12px"><div class="a">'+st.a+'</div>'+(st.b?'<div class="b">'+st.b+'</div>':'')+'<div class="turn '+(mine?"mine":"")+'">'+(mine?"내 차례":"앱이 읽고 있습니다")+'</div></div><div class="sp"></div>'
+    +'<div class="opts"><button data-a="pause">잠시 멈춤</button><button data-a="end">여기서 끝내기</button></div>'
+    +(s.phase==="paused"?'<div class="veil"><div class="eye">멈춰 있습니다</div><h1 style="font-size:26px">'+st.label+'</h1><div class="who">자리는 남아 있습니다</div><div style="height:20px"></div><button class="b1" data-a="continue">이어서 바치기</button><button class="b2" data-a="home">홈으로</button></div>':'');
+}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-a]");if(!b)return;({start:()=>R.start(),resume:()=>R.start({fromSaved:true}),pause:()=>R.pause(),continue:()=>R.resume(),end:()=>R.end(),home:()=>R.home(),silent:()=>R.toggleSilent(),speed:()=>R.setSpeed(S.speed===1?1.35:S.speed===1.35?.75:1)})[b.dataset.a]?.();});
+R.demoFromURL();
+</script></body></html>

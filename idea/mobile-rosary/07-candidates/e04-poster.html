@@ -1,0 +1,63 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>방향 4 — 벽보</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=Noto+Sans+KR:wght@400;500&display=swap">
+<style>
+:root{--hanji:#F5EFE1;--vermil:#A8322A;--ink:#23201C;--seal:#C4562F;--grey:#9A9384;--line:#E0D7C3}
+*{box-sizing:border-box;margin:0;padding:0}html,body{height:100%}
+body{background:#EBE3D2;color:var(--ink);font:15px/1.64 "Noto Sans KR",system-ui,sans-serif;max-width:430px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column}
+.my{font-family:"Nanum Myeongjo","Noto Serif KR",serif}
+.poster{background:var(--hanji);margin:14px 14px 0;padding:20px 20px 16px;box-shadow:0 1px 0 #DDD3BE,0 8px 18px rgba(35,32,28,.07);position:relative}
+.poster:before{content:"";position:absolute;left:0;right:0;top:0;height:5px;background:repeating-linear-gradient(90deg,var(--vermil) 0 9px,transparent 9px 18px)}
+.k{font-size:11.5px;letter-spacing:.14em;color:var(--grey)}
+.tt{font-family:"Nanum Myeongjo",serif;font-weight:800;font-size:15px;color:var(--vermil);letter-spacing:.22em;margin-bottom:9px}
+h1{font-family:"Nanum Myeongjo",serif;font-weight:800;font-size:29px;line-height:1.28}
+.meta{display:flex;align-items:center;gap:9px;margin-top:13px;padding-top:12px;border-top:1px solid var(--line)}
+.seal{width:38px;height:38px;flex:0 0 38px;border:1.5px solid var(--seal);color:var(--seal);display:flex;align-items:center;justify-content:center;font-family:"Nanum Myeongjo",serif;font-weight:800;font-size:17px}
+.meta .who b{font-family:"Nanum Myeongjo",serif;font-weight:700;font-size:15.5px}
+.meta .who span{display:block;font-size:11.5px;color:var(--grey);margin-top:2px}
+.note{font-size:10.5px;color:var(--grey);margin-top:9px;padding-top:8px;border-top:1px dotted var(--line)}
+main{flex:1;display:flex;flex-direction:column;padding:0 22px calc(18px + env(safe-area-inset-bottom))}
+.pray{height:276px;padding-top:20px;border-top:1px solid #DDD3BE;margin-top:16px;display:flex;flex-direction:column;justify-content:flex-start;overflow:hidden}
+.a{font-family:"Nanum Myeongjo",serif;font-size:18px;line-height:1.76;color:#8F8878}
+.b{font-family:"Nanum Myeongjo",serif;font-size:20.5px;line-height:1.74;margin-top:9px}
+.mine .a{color:#A9A292}.mine .b{color:var(--vermil);font-weight:700}
+.turn{font-size:11.5px;letter-spacing:.13em;color:var(--grey);margin-top:14px}
+.turn.mine{color:var(--vermil)}
+.sp{flex:1}
+.row{display:flex;gap:18px;padding-top:13px;border-top:1px solid #DDD3BE}
+button{font:400 15px/1 "Noto Sans KR";border:0;background:none;color:var(--ink);cursor:pointer}
+.row button{font-size:13px;color:var(--grey);min-height:44px}
+/* 큰 단추도 블록으로 — 옆에 다른 것이 붙지 않게 */
+.go{display:block;font-family:"Nanum Myeongjo",serif;font-weight:800;font-size:20px;background:var(--vermil);color:var(--hanji);padding:17px 32px;align-self:flex-start;min-height:56px}
+.alt{font-size:14px;color:var(--grey);margin-top:12px;display:block;width:100%;min-height:44px}
+.card{border:1px solid var(--line);background:var(--hanji);padding:13px 15px;margin-bottom:18px}
+.card b{font-family:"Nanum Myeongjo",serif;font-weight:700;font-size:16.5px}
+.card span{display:block;font-size:12.5px;color:var(--grey);margin-top:4px}
+.nums{display:flex;gap:26px;margin:18px 0}
+.nums b{display:block;font-family:"Nanum Myeongjo",serif;font-weight:800;font-size:31px}
+.nums span{font-size:11.5px;color:var(--grey)}
+.veil{position:fixed;inset:0;max-width:430px;margin:0 auto;background:rgba(235,227,210,.97);display:flex;flex-direction:column;justify-content:center;padding:26px 22px}
+</style></head><body>
+<div id="app" style="display:contents"></div>
+<script src="engine.js"></script>
+<script>
+/* 지향을 개인 메모가 아니라 본당 게시판의 벽보로 다룬다 — Rosario 의 공동 지향을 한국 본당 어법으로.
+   사람 수는 시안용 고정값이다(지향 이름에서 만들어 낸 것이며 실제 연결이 아니다). 화면에도 그렇게 적는다. */
+const R=Rosary.create({onChange:render}); let S=R.snapshot(); const app=document.getElementById("app");
+const together=n=>{ let h=0; for(const c of n) h=(h*31+c.charCodeAt(0))%97; return 4+h%29; };
+function poster(s,sub){ return '<div class="poster"><div class="tt">지 향</div><h1>'+s.intent+'</h1>'
+  +'<div class="meta"><div class="seal">共</div><div class="who"><b>지금 '+together(s.intent)+'명이 함께 바칩니다</b><span>'+(sub||(s.todayName+' · '+s.mystName))+'</span></div></div>'
+  +'<div class="note">이 숫자는 시안용 표시입니다 — 아직 실제로 연결되어 있지 않습니다.</div></div>'; }
+function render(s){ S=s;
+  if(s.phase==="idle"){ app.innerHTML=poster(s)
+   +'<main>'+(s.pos?'<div class="card"><b>'+Rosary.MYST[s.pos.k][0]+' · '+s.posWhere+'</b><span>'+s.posAgo+'에 멈췄습니다 · 그날의 신비로 이어집니다</span></div><button class="go" data-a="resume">이어서 바치기</button><button class="alt" data-a="start">처음부터 다시</button>':'<div class="card"><b>앞 절은 앱이, 뒷 절은 당신이</b><span>성모송 50번 · 약 20분</span></div><button class="go" data-a="start">시작</button>')
+   +'<div class="sp"></div><div class="row"><button data-a="silent">'+(s.silent?"침묵 진행":"소리 진행")+'</button><button data-a="speed">받는 사이 '+({0.75:"느리게",1:"보통",1.35:"빠르게"})[s.speed]+'</button><button data-a="addIntent">지향 더하기</button></div></main>'; return; }
+  if(s.phase==="done"){ app.innerHTML=poster(s,"다 바쳤습니다")+'<main><div class="nums"><div><b>50</b><span>성모송</span></div><div><b>'+s.elapsedMin+'</b><span>걸린 분</span></div><div><b>'+s.resumes+'</b><span>이어서</span></div></div><div class="sp"></div><button class="alt" data-a="home">돌아가기</button></main>'; return; }
+  const st=s.step, mine=s.phase==="mine";
+  app.innerHTML=poster(s,st.label+' · '+(st.mystery||s.mystName))
+   +'<main><div class="pray '+(mine?"mine":"")+'"><div class="a">'+st.a+'</div>'+(st.b?'<div class="b">'+st.b+'</div>':'')+'<div class="turn '+(mine?"mine":"")+'">'+(mine?"내 차례":"듣는 중")+'</div></div><div class="sp"></div><div class="row"><button data-a="pause">잠시 멈춤</button><button data-a="end">여기서 끝내기</button></div></main>'
+   +(s.phase==="paused"?'<div class="veil"><div class="k">멈춰 있습니다</div><h1 style="font-size:26px;margin:6px 0 14px">'+st.label+'</h1><div class="card"><b>자리는 남아 있습니다</b><span>'+(st.mystery||s.mystName)+'</span></div><button class="go" data-a="continue">이어서 바치기</button><button class="alt" data-a="home">홈으로</button></div>':'');
+}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-a]");if(!b)return;({start:()=>R.start(),resume:()=>R.start({fromSaved:true}),pause:()=>R.pause(),continue:()=>R.resume(),end:()=>R.end(),home:()=>R.home(),silent:()=>R.toggleSilent(),speed:()=>R.setSpeed(S.speed===1?1.35:S.speed===1.35?.75:1),addIntent:()=>{const n=prompt("지향 이름 (24자)");if(n)R.addIntent(n);}})[b.dataset.a]?.();});
+R.demoFromURL();
+</script></body></html>
