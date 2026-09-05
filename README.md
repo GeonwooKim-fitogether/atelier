@@ -38,4 +38,5 @@
 용어는 charter §5.3에 박혀 있다. 한 줄로 — Mockup은 정적 시각, Prototype은 HTML 클릭 가능 사용 시뮬레이션, MVP는 실 코드 + 시장 배포. 경계는 시장 노출 여부.
 
 - [`docs/prototype-vocabulary.md`](./docs/prototype-vocabulary.md) — 목업·프로토타입·시제품이 각각 무엇에 답하는 도구인지. 07단계 산출물 정의의 정본
+- [`docs/stage-07-procedure.md`](./docs/stage-07-procedure.md) — 07단계 **실행 서식**의 정본. 07 브리프(대괄호 사양서)·레퍼런스 수집·디자인 토큰 자리·07-a~d 판정 증명·누구를 부르나. 산출물의 정의는 위 어휘 문서가, 무엇을 만들면 통과인지는 이 문서가 정한다
 - [`docs/claude-code-mobile-app-playbook.md`](./docs/claude-code-mobile-app-playbook.md) — Claude Code로 스마트폰 앱을 만드는 10단계 절차. 코덱스 홈페이지 제작 글을 앱(Expo) 제작용으로 옮긴 것으로, 09단계 인계 뒤 MVP를 만들 때의 출발점

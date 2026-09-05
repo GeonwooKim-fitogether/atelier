@@ -128,7 +128,7 @@ trigger 발화 "Atelier 시작" → Skill fire → **즉시 다음 read·view �
 | **1** | 01 Intake | Pain Point clue 인터뷰 (CEO 발화 + 3 축 정리) | **v2 (2026-05-29 재정의)** |
 | **2** | 02 Research / 03 Analysis | 발산 + 정제 — 빈 영역 발견·정의 | v0.3 (정비 필요) |
 | **3** | 04 Ideation / 05 Prioritization | 해결책 발산 + 수렴 | 잠정 |
-| **4** | 06 Planning / 07 Prototyping / 08 Validation | 완성본 만들기 | 미구축 |
+| **4** | 06 Planning / 07 Prototyping / 08 Validation | 완성본 만들기 | 07 실행 서식 구축 (`docs/stage-07-procedure.md`) · 06·08 미구축 |
 | **5** | 09 Handoff Packaging | 3 완료 문서 → Foundry | 미구축 |
 
 각 stage 시각 reference: `workflows/type1-external-service.html` · `workflows/node-graph.html` (Dashboard).
