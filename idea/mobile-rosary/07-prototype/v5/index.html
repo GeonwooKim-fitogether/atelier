@@ -232,11 +232,11 @@ body{background:#EDE7D8;font-family:"Noto Sans KR",system-ui,sans-serif}
 <!-- ══ C 하루 완주 ══ -->
 <div class="scr" id="s-dayDone">
   <div style="position:relative;height:100%;display:flex;flex-direction:column;padding:56px 24px 26px;box-sizing:border-box">
-    <div style="font:400 10.5px/1 'Noto Sans KR',sans-serif;color:#5C6272;letter-spacing:.24em;padding-bottom:16px;border-bottom:1px solid rgba(31,37,48,.16)">9월 5일 · 스물세 번째 날</div>
+    <div id="cd-head" style="font:400 10.5px/1 'Noto Sans KR',sans-serif;color:#5C6272;letter-spacing:.24em;padding-bottom:16px;border-bottom:1px solid rgba(31,37,48,.16)">9월 5일 · 스물세 번째 날</div>
     <div style="font:400 34px/1.35 'Noto Serif KR',serif;color:#1F2530;margin:48px 0 18px">다 바쳤습니다</div>
     <div style="font:400 13px/1.7 'Noto Sans KR',sans-serif;color:#5C6272">어머니 병환 회복을 위하여<br>고통의 신비 다섯 단</div>
     <div id="rib-day" class="t" style="display:flex;gap:2px;margin-top:44px"></div>
-    <div style="font:400 11px/1 'Noto Sans KR',sans-serif;color:#5C6272;margin-top:10px">54일 중 21일 바쳤습니다 · 남은 31일</div>
+    <div id="cd-sum" style="font:400 11px/1 'Noto Sans KR',sans-serif;color:#5C6272;margin-top:10px">54일 중 21일 바쳤습니다 · 남은 31일</div>
     <div style="margin-top:44px;display:flex;flex-direction:column">
       <div style="display:flex;justify-content:space-between;padding:16px 0;border-top:1px solid rgba(31,37,48,.16)"><span style="font:400 13px/1 'Noto Sans KR',sans-serif;color:#5C6272">성모송</span><span style="font:500 13px/1 'Noto Sans KR',sans-serif;color:#1F2530">50번</span></div>
       <div style="display:flex;justify-content:space-between;padding:16px 0;border-top:1px solid rgba(31,37,48,.16)"><span style="font:400 13px/1 'Noto Sans KR',sans-serif;color:#5C6272">걸린 시간</span><span style="font:500 13px/1 'Noto Sans KR',sans-serif;color:#1F2530">18분</span></div>
@@ -255,12 +255,12 @@ body{background:#EDE7D8;font-family:"Noto Sans KR",system-ui,sans-serif}
       <div style="font:400 11px/1 'Noto Sans KR',sans-serif;color:#5C6272" id="jd-back" class="t">돌아가기</div>
     </div>
     <div style="font:400 28px/1.35 'Noto Serif KR',serif;color:#1F2530;margin-top:26px">어머니 병환 회복</div>
-    <div style="font:400 12.5px/1 'Noto Sans KR',sans-serif;color:#82600F;margin-top:12px">23일째 · 청원 · 7월 14일 시작</div>
+    <div id="jd-meta" style="font:400 12.5px/1 'Noto Sans KR',sans-serif;color:#82600F;margin-top:12px">23일째 · 청원 · 7월 14일 시작</div>
     <div id="grid-journey" class="t" style="display:grid;grid-template-columns:repeat(9,1fr);gap:5px;margin-top:26px"></div>
-    <div style="display:flex;justify-content:space-between;margin-top:10px"><span style="font:400 10.5px/1 'Noto Sans KR',sans-serif;color:#5C6272">한 칸이 하루 · 빈 칸은 못 바친 날</span><span style="font:400 10.5px/1 'Noto Sans KR',sans-serif;color:#5C6272">54일 중 21일</span></div>
+    <div style="display:flex;justify-content:space-between;margin-top:10px"><span style="font:400 10.5px/1 'Noto Sans KR',sans-serif;color:#5C6272">한 칸이 하루 · 빈 칸은 못 바친 날</span><span id="jd-count" style="font:400 10.5px/1 'Noto Sans KR',sans-serif;color:#5C6272">54일 중 21일</span></div>
     <div style="margin-top:28px;display:flex;flex-direction:column">
-      <div style="display:flex;justify-content:space-between;padding:11px 0;border-top:1px solid rgba(31,37,48,.16)"><span style="font:400 13px/1 'Noto Sans KR',sans-serif;color:#5C6272">바친 날</span><span style="font:500 13px/1 'Noto Sans KR',sans-serif;color:#1F2530">21일</span></div>
-      <div style="display:flex;justify-content:space-between;padding:11px 0;border-top:1px solid rgba(31,37,48,.16)"><span style="font:400 13px/1 'Noto Sans KR',sans-serif;color:#5C6272">못 바친 날</span><span style="font:500 13px/1 'Noto Sans KR',sans-serif;color:#1F2530">2일</span></div>
+      <div style="display:flex;justify-content:space-between;padding:11px 0;border-top:1px solid rgba(31,37,48,.16)"><span style="font:400 13px/1 'Noto Sans KR',sans-serif;color:#5C6272">바친 날</span><span id="jd-done" style="font:500 13px/1 'Noto Sans KR',sans-serif;color:#1F2530">21일</span></div>
+      <div style="display:flex;justify-content:space-between;padding:11px 0;border-top:1px solid rgba(31,37,48,.16)"><span style="font:400 13px/1 'Noto Sans KR',sans-serif;color:#5C6272">못 바친 날</span><span id="jd-miss" style="font:500 13px/1 'Noto Sans KR',sans-serif;color:#1F2530">2일</span></div>
       <div style="display:flex;justify-content:space-between;padding:11px 0;border-top:1px solid rgba(31,37,48,.16)"><span style="font:400 13px/1 'Noto Sans KR',sans-serif;color:#5C6272">성모송</span><span style="font:500 13px/1 'Noto Sans KR',sans-serif;color:#1F2530">1,050번</span></div>
       <div style="display:flex;justify-content:space-between;padding:11px 0;border-top:1px solid rgba(31,37,48,.16)"><span style="font:400 13px/1 'Noto Sans KR',sans-serif;color:#5C6272">청원에서 감사로</span><span style="font:500 13px/1 'Noto Sans KR',sans-serif;color:#1F2530">27일째부터</span></div>
       <div style="display:flex;justify-content:space-between;padding:11px 0;border-top:1px solid rgba(31,37,48,.16);border-bottom:1px solid rgba(31,37,48,.16)"><span style="font:400 13px/1 'Noto Sans KR',sans-serif;color:#5C6272">마치는 날</span><span style="font:500 13px/1 'Noto Sans KR',sans-serif;color:#1F2530">11월 6일</span></div>
@@ -329,13 +329,13 @@ var ART_DIR = "../refs/01-sacred-images/";
 var ART = [
   {f:"01_Mary_Single", login:"50% 16%", thumb:"50% 0%", prayer:"50% 25%", finish:"50% 23%"},
   {f:"02_Mary_and_Child", login:"50% 0%", thumb:"50% 20%", prayer:"50% 21%", finish:"50% 18%"},
-  {f:"03_Prating_Jesus", login:"50% 0%", thumb:"50% 50%", prayer:"50% 21%", finish:"50% 18%"},
+  {f:"03_Prating_Jesus", login:"50% 0%", thumb:"50% 50%", prayer:"50% 37%", finish:"50% 18%"},
   {f:"04_Cross", login:"50% 0%", thumb:"50% 50%", prayer:"50% 21%", finish:"50% 15%"},
   {f:"05_Jesus_and_Sheep", login:"50% 11%", thumb:"50% 0%", prayer:"50% 24%", finish:"50% 22%"},
   {f:"06_Side_Jesus", login:"50% 12%", thumb:"50% 0%", prayer:"50% 22%", finish:"50% 20%"},
   {f:"07_Relief_Holy_Family", login:"50% 0%", thumb:"50% 30%", prayer:"50% 15%", finish:"50% 9%"},
   {f:"08_Mary_Profile", login:"50% 38%", thumb:"50% 42%", prayer:"50% 39%", finish:"50% 42%"},
-  {f:"09_Color_Jesus", login:"50% 0%", thumb:"50% 0%", prayer:"50% 0%", finish:"50% 0%"},
+  {f:"09_Color_Jesus", login:"50% 0%", thumb:"50% 0%", prayer:"50% 7%", finish:"50% 0%"},
   {f:"10_Blue_Mary", login:"50% 49%", thumb:"50% 60%", prayer:"50% 46%", finish:"50% 50%"},
   {f:"11_Mary_Rosary_White_Gold", login:"50% 6%", thumb:"81% 50%", prayer:"50% 34%", finish:"50% 37%"},
   {f:"12_Mary_Child_Neutral", login:"50% 45%", thumb:"50% 53%", prayer:"50% 44%", finish:"50% 47%"},
@@ -427,11 +427,41 @@ function seedDays() {                 // 시안의 54칸이 말하는 그대로
   return a;
 }
 var J = [
-  {title:"어머니 병환 회복", day:23, meta:"23일째 · 청원", mystery:"고통의 신비",
+  {title:"어머니 병환 회복", kind:"청원", mystery:"고통의 신비",
    group:false, days:seedDays(), step:40, art:null},
   {title:"아버지 세례를 위해", day:6, meta:"6일째 · 함께 바치기", mystery:"고통의 신비",
    group:true, myDecade:2, days:null, step:0, art:null}
 ];
+
+/* ── 날짜는 days[] 하나에서만 나온다 ─────────────────────────────────────
+   전에는 날짜 번호(J[0].day)와 리본(days[])이 따로 놀아서, 하루를 바치면
+   리본은 24일째를 가리키는데 머리글은 "스물세 번째 날"이라고 말했다.
+   게다가 리본만 저장되고 번호는 저장되지 않아 그 어긋남이 남았다.
+   이제 화면에 나오는 날짜 문구는 전부 아래 세 함수를 거친다.          */
+function dayNo(j) { return j.days ? j.days.indexOf("today") + 1 : j.day; }
+function tally(j) {
+  var d = j.days, done = 0, miss = 0, left = 0, k;
+  for (k = 0; k < 54; k++) {
+    if (d[k] === "prayed" || d[k] === "today") done++;
+    else if (d[k] === "missed") miss++;
+    else left++;
+  }
+  return {done: done, miss: miss, left: left};
+}
+/* 스물세 번째 · 스물네 번째 … 우리말 차례수 */
+var NAT1 = ["", "한", "두", "세", "네", "다섯", "여섯", "일곱", "여덟", "아홉"];
+var NAT10 = ["", "열", "스물", "서른", "마흔", "쉰"];
+function ordKo(n) {
+  if (n === 1) return "첫 번째";
+  var t = Math.floor(n / 10), o = n % 10;
+  return (NAT10[t] || "") + (o ? NAT1[o] : "") + " 번째";
+}
+/* 시안이 못박은 대응: 23일째 = 9월 5일. 거기서 하루씩 센다. */
+function dateKo(n) {
+  var d = new Date(2026, 8, 5);           /* 9월 5일 */
+  d.setDate(d.getDate() + (n - 23));
+  return (d.getMonth() + 1) + "월 " + d.getDate() + "일";
+}
 var loginArt = drawArt();
 J[0].art = drawArt(); J[1].art = drawArt();
 
@@ -444,7 +474,7 @@ var LS = "mr.v5";
 function save() {
   try {
     localStorage.setItem(LS, JSON.stringify({
-      step: J[0].step, recitation: S.recitation, rate: S.rate, days: J[0].days
+      step: J[0].step, recitation: S.recitation, days: J[0].days
     }));
   } catch (e) {}
 }
@@ -454,7 +484,6 @@ function load() {
     if (!d) return;
     if (typeof d.step === "number") J[0].step = d.step;
     if (d.recitation) S.recitation = d.recitation;
-    if (d.rate) S.rate = d.rate;
     if (d.days && d.days.length === 54) J[0].days = d.days;
   } catch (e) {}
 }
@@ -471,8 +500,8 @@ function show(name, back) {
   if (name === "invite") renderCode();
   if (name === "pray") renderPray();
   if (name === "settings") renderSettings();
-  if (name === "journey") renderGrid($("grid-journey"), J[0].days, "aspect-ratio:1");
-  if (name === "dayDone") renderRibbon($("rib-day"), J[0].days, 26);
+  if (name === "journey") renderJourney();
+  if (name === "dayDone") renderDayDone();
   if (name === "allDone") { renderAll(); }
   window.scrollTo(0, 0);
 }
@@ -495,6 +524,7 @@ function renderGrid(el, days, style) {
 
 /* ── 6. 홈 ───────────────────────────────────────────────────────────────*/
 function renderHome() {
+  $("j0-meta").textContent = dayNo(J[0]) + "일째 · " + J[0].kind;
   paint($("art-j0"), J[0].art, "thumb");
   paint($("art-j1"), J[1].art, "thumb");
   renderRibbon($("rib-home"), J[0].days, 22);
@@ -506,23 +536,35 @@ function renderHome() {
   $("j0-resume").innerHTML = where;
 }
 
-/* ── 7. 초대 코드 ────────────────────────────────────────────────────────*/
+/* ── 7. 초대 코드 ────────────────────────────────────────────────────────
+   여섯 칸 위에 보이지 않는 입력칸이 겹쳐 있다. 그 입력칸을 절대 옮기지
+   않는 것이 중요하다 — 이미 문서에 있는 요소를 appendChild 로 다시 붙이면
+   그것은 '옮기는' 일이고, 포커스를 가진 입력 요소가 옮겨지면 브라우저가
+   포커스를 놓는다. 그러면 한 번 탭에 한 글자밖에 못 넣는다.
+   그래서 칸은 처음 한 번만 만들고, 이후에는 칸의 스타일과 글자만 고친다. */
+var CELL = {
+  cur:  "flex:1;height:76px;border:1px solid #82600F;background:rgba(130,96,15,.06);display:flex;align-items:center;justify-content:center;font:500 28px/1 'Noto Sans KR',sans-serif;color:#82600F",
+  done: "flex:1;height:76px;border:1px solid #1F2530;display:flex;align-items:center;justify-content:center;font:500 28px/1 'Noto Sans KR',sans-serif;color:#1F2530",
+  empty:"flex:1;height:76px;border:1px solid rgba(31,37,48,.22);display:flex;align-items:center;justify-content:center"
+};
+var codeCells = null;
 function renderCode() {
   var row = $("inv-row"), inp = $("inv-input");
   if (!row) return;
-  var cells = "", k, c;
-  for (k = 0; k < 6; k++) {
-    c = S.code[k];
-    if (c && k === S.code.length - 1)
-      cells += '<div style="flex:1;height:76px;border:1px solid #82600F;background:rgba(130,96,15,.06);display:flex;align-items:center;justify-content:center;font:500 28px/1 \'Noto Sans KR\',sans-serif;color:#82600F">' + c + '</div>';
-    else if (c)
-      cells += '<div style="flex:1;height:76px;border:1px solid #1F2530;display:flex;align-items:center;justify-content:center;font:500 28px/1 \'Noto Sans KR\',sans-serif;color:#1F2530">' + c + '</div>';
-    else
-      cells += '<div style="flex:1;height:76px;border:1px solid rgba(31,37,48,.22);display:flex;align-items:center;justify-content:center"></div>';
+  if (!codeCells) {                       /* 칸 만들기는 딱 한 번 */
+    codeCells = [];
+    for (var i = 0; i < 6; i++) {
+      var d = document.createElement("div");
+      row.insertBefore(d, inp);           /* 입력칸은 늘 마지막 자리에 그대로 */
+      codeCells.push(d);
+    }
   }
-  row.innerHTML = cells;
-  row.appendChild(inp);
-  inp.value = S.code;
+  for (var k = 0; k < 6; k++) {
+    var c = S.code[k] || "", d = codeCells[k];
+    d.style.cssText = c ? (k === S.code.length - 1 ? CELL.cur : CELL.done) : CELL.empty;
+    if (d.textContent !== c) d.textContent = c;
+  }
+  if (inp && inp.value !== S.code) inp.value = S.code;
 }
 
 /* ── 8. 묵주 그림 ────────────────────────────────────────────────────────
@@ -567,7 +609,7 @@ function renderPray() {
   if (!st) return;
   paint($("art-pray"), j.art, "prayer");
   $("pr-title").textContent = j.title;
-  $("pr-day").textContent = "· " + j.day + "일째";
+  $("pr-day").textContent = "· " + dayNo(j) + "일째";
   $("pr-step").textContent = st.head;
   $("pr-a").textContent = st.p.a;
   var b = $("pr-b");
@@ -654,12 +696,28 @@ function finishDay() {
   var j = J[S.cur];
   if (j.days) {
     var k = j.days.indexOf("today");
-    if (k >= 0 && k < 53) { j.days[k] = "prayed"; j.days[k + 1] = "today"; j.day++; }
+    if (k >= 0 && k < 53) { j.days[k] = "prayed"; j.days[k + 1] = "today"; }
     j.step = 0; save();
     /* 쉰네 날을 다 바치면 여정 완주로 */
     if (j.days.indexOf("future") < 0 && j.days.indexOf("today") < 0) { show("allDone", "home"); return; }
   }
   show("dayDone", "home");
+}
+
+/* ── 9-2. 하루 완주 · 여정 상세 — 날짜 문구를 전부 days[] 에서 끌어온다 ──*/
+function renderDayDone() {
+  var n = dayNo(J[0]), t = tally(J[0]);
+  renderRibbon($("rib-day"), J[0].days, 26);
+  $("cd-head").textContent = dateKo(n) + " · " + ordKo(n) + " 날";
+  $("cd-sum").textContent = "54일 중 " + t.done + "일 바쳤습니다 · 남은 " + t.left + "일";
+}
+function renderJourney() {
+  var n = dayNo(J[0]), t = tally(J[0]);
+  renderGrid($("grid-journey"), J[0].days, "aspect-ratio:1");
+  $("jd-meta").textContent = n + "일째 · " + J[0].kind + " · 7월 14일 시작";
+  $("jd-count").textContent = "54일 중 " + t.done + "일";
+  $("jd-done").textContent = t.done + "일";
+  $("jd-miss").textContent = t.miss + "일";
 }
 
 /* ── 10. 여정 완주 · 설정 ────────────────────────────────────────────────*/
@@ -670,19 +728,21 @@ function renderAll() {
   renderRibbon($("rib-all"), full, 30);
 }
 var RECITS = ["교대로", "전부 소리로", "소리 없이"];
-var RATES = [[0.75, "느리게"], [1, "보통"], [1.35, "빠르게"]];
+/* 소리 속도는 시안에 "보통" 하나뿐이고 다른 값이 어디에도 없다. 문구를
+   지어내지 않기 위해 이 줄은 누를 수 없게 두고, 속도는 1로 고정한다.
+   값 목록이 정해지면 그때 되살린다. */
 function renderSettings() {
   $("set-recit").textContent = S.recitation + " →";
-  for (var i = 0; i < RATES.length; i++) if (RATES[i][0] === S.rate) $("set-rate").textContent = RATES[i][1] + " →";
-  /* 시안: 고른 줄은 네 변 모두 강조 테두리, 나머지 줄은 옅은 테두리에
-     위쪽 변만 없다(첫 줄은 위쪽 변을 갖는다). borderTop 에 빈 문자열을 넣으면
-     테두리가 '되돌아오는' 게 아니라 '사라져서' 줄 높이가 1px 줄어든다. */
+  /* 시안: 첫 줄만 위쪽 변을 갖고 둘째·셋째 줄은 위쪽 변이 없다. 이 규칙은
+     어느 줄을 고르든 그대로여야 한다 — 고른 줄에만 위쪽 변을 되살리면 위 줄의
+     아래 변과 겹쳐 2px 선이 되고 묶음이 246px 에서 247px 로 자란다.
+     그래서 테두리 색만 선택에 따라 바꾸고, 변의 유무는 줄 번호로만 정한다. */
   for (var k = 0; k < 3; k++) {
     var el = $("rec-" + k);
     if (!el) continue;
-    var sel = RECITS[k] === S.recitation;
-    el.style.border = sel ? "1px solid #82600F" : "1px solid rgba(31,37,48,.18)";
-    if (k > 0 && !sel) el.style.borderTop = "none";
+    el.style.border = (RECITS[k] === S.recitation)
+      ? "1px solid #82600F" : "1px solid rgba(31,37,48,.18)";
+    if (k > 0) el.style.borderTop = "none";
   }
 }
 
@@ -739,10 +799,6 @@ on("set-close", function () { show("home"); });
 on("set-logout", function () { show("login", "login"); });
 on("set-recit", function () {
   S.recitation = RECITS[(RECITS.indexOf(S.recitation) + 1) % 3]; save(); renderSettings();
-});
-on("set-rate", function () {
-  var i = 0; for (var k = 0; k < RATES.length; k++) if (RATES[k][0] === S.rate) i = k;
-  S.rate = RATES[(i + 1) % RATES.length][0]; save(); renderSettings();
 });
 
 function setKind(k) {
