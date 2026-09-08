@@ -28,6 +28,7 @@
 - `Reference/` 『프로덕트 기획』 5개 장 PDF와 페이지 이미지 — **단계별 도구의 정본**. 대응은 `docs/book-tool-map.md`
 - `docs/` 이 저장소의 절차·기준 문서
   - `book-tool-map.md` 책 ↔ 9단계 도구 대응표 — **새 단계 전에 그 행을 읽는다**
+  - `handoff-package.md` 09단계 인계 패키지 형식 — Foundry 로 무엇을 어떤 모양으로 넘기나 (사슬의 출구)
   - `standards/` 아틀리에 운영 기준 (시각화 의무·포지셔닝 맵 정본·3 카테고리 시간축 분리)
   - `lessons.md` 체계의 결함 기록 — 창고 승격 후보 누적소
 - `.claude/skills/atelier-npi/SKILL.md` Skill 본체 (이 저장소 고유)
@@ -38,4 +39,5 @@
 용어는 charter §5.3에 박혀 있다. 한 줄로 — Mockup은 정적 시각, Prototype은 HTML 클릭 가능 사용 시뮬레이션, MVP는 실 코드 + 시장 배포. 경계는 시장 노출 여부.
 
 - [`docs/prototype-vocabulary.md`](./docs/prototype-vocabulary.md) — 목업·프로토타입·시제품이 각각 무엇에 답하는 도구인지. 07단계 산출물 정의의 정본
+- [`docs/handoff-package.md`](./docs/handoff-package.md) — 그 사슬의 **출구**. 09단계에서 Foundry 로 넘기는 패키지의 다섯 칸, 넘기지 않는 것, 인계 게이트 여섯
 - [`docs/roadmap.md`](./docs/roadmap.md) — 정체성(두 생산 라인) · 실측 장부 · 네 지평 로드맵. plan.md 위에 실행 순서와 게이트 질문을 얹는 문서
