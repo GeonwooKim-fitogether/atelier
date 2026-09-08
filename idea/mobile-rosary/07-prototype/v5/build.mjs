@@ -7,7 +7,7 @@
      없이 혼자 열리므로 아티팩트로 그대로 게시할 수 있다.
 
    무엇을 하지 않나
-     저장소의 원본 17장은 건드리지 않는다. 압축은 아티팩트용 사본에만
+     refs/01-sacred-images/ 의 원본은 건드리지 않는다. 압축은 아티팩트용 사본에만
      적용되고, 원본은 읽기만 한다. 폰트도 인라인하지 않는다 —
      Google Fonts CDN 은 아티팩트에서 허용된 출처다.
 
@@ -22,7 +22,7 @@ import { fileURLToPath } from "node:url";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const SRC = path.join(HERE, "index.html");
-const ART_DIR = path.resolve(HERE, "../refs/01-sacred-images");
+const ART_DIR = path.join(HERE, "art");   // 앱 자산 폴더 (clean-art.mjs 가 만든다)
 const DIST = path.join(HERE, "dist");
 
 /* 압축 기준 — 아티팩트 한 장에 열일곱 장을 담아야 하므로 폭을 줄인다.
@@ -64,7 +64,7 @@ let html = fs.readFileSync(SRC, "utf8");
 
 /* 1. 처음 그려지는 화면에 박혀 있는 상대 경로를 data-URI 로 바꾼다 */
 let swapped = 0;
-html = html.replace(/\.\.\/refs\/01-sacred-images\/([A-Za-z0-9_]+)\.jpg/g, (m, key) => {
+html = html.replace(/(?:\.\.\/)?art\/([A-Za-z0-9_]+)\.jpg/g, (m, key) => {
   if (!inline[key]) throw new Error("압축본에 없는 그림: " + key);
   swapped++; return inline[key];
 });
