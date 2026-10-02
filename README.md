@@ -33,6 +33,7 @@
   - `lessons.md` 체계의 결함 기록 — 창고 승격 후보 누적소
 - `.claude/skills/atelier-npi/SKILL.md` Skill 본체 (이 저장소 고유)
 - `.claude/` 아래 공용 규칙·스킬·훅 — 창고(Template-repository)에서 동기화 봇(`.github/workflows/sync-skills.yml`)이 내려 줌. 공용 파일은 여기서 고치지 않고 창고에서 고친다(원본 우선 규칙)
+- `.github/workflows/branch-pr-policy.yml` 브랜치 정리 — PR 이 머지되면 그 브랜치를 지우고, 매주 월요일에 머지된 채 남은 브랜치를 지운다. 창고 파일을 그대로 옮기고 지우지 않을 브랜치 목록(`KEEP`)만 이 저장소에 맞췄다
 
 세션 밖 떠오른 idea는 *Atelier에 직접 박지 않고* 핸드폰 메모 등에 두었다가, 다음 세션에서 말로 전달.
 
