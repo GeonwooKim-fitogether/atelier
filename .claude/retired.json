@@ -5,7 +5,7 @@
     {
       "name": "progress-dashboard",
       "decision": "decisions.md 결정 1 (2026-08-27) — 현황판을 6월 정본 하나로 통일한다",
-      "instead": "정본 현황판을 고친다. workflows/board/cards/ 의 카드 한 장을 수정하고 `node workflows/board/build.mjs` 로 workflows/type1-external-service.html 을 다시 조립한다 (헌장 §3.6). 현황판을 아티팩트로 게시하지 않는다 — 게시본은 2026-10-07 결정으로 지운다 (decisions.md 같은 날짜)"
+      "instead": "정본 현황판을 고친다. workflows/board/cards/ 의 카드 한 장을 수정하고 `node workflows/board/build.mjs` 로 workflows/type1-external-service.html 을 다시 조립한 뒤 아티팩트를 갱신한다 (헌장 §3.6)"
     }
   ],
   "paths": [
